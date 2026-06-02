@@ -1,16 +1,16 @@
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Construye rutas dentro del proyecto de esta manera: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
+# Configuración de desarrollo de inicio rápido: no apta para producción.
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# ADVERTENCIA DE SEGURIDAD: ¡mantenga en secreto la clave secreta utilizada en producción!
 SECRET_KEY = 'django-insecure-iy^e2l3-3eo+c447^q$r#gstynr1gkl5z#dzod8$^1+l6f!^pf'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# ADVERTENCIA DE SEGURIDAD: ¡no ejecute con la depuración activada en producción!
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -25,11 +25,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'productos',
     'mesas',
     'pedidos',
     'usuarios',
 ]
+
+AUTH_USER_MODEL = "usuarios.Usuario"
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -69,6 +73,16 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
+
+# =====================================
+# REST FRAMEWORK - AUTENTICACIONES
+# =====================================
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
 }
 
 
