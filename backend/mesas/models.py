@@ -1,3 +1,16 @@
 from django.db import models
 
-# Create your models here.
+class Mesa(models.Model):
+    pass
+    #codigo
+
+
+
+
+
+    class Meta:
+        db_table = "mesas"
+        
+        
+    def __str__(self):
+        return f""  
