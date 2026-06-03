@@ -34,15 +34,21 @@ class Pedido(models.Model):
 class DetallePedido(models.Model):
    """ Modelo para representar el detalle de un pedido, que incluye los productos y sus cantidades."""
 
+   id_detalle_pedido = models.AutoField(primary_key=True)
+   pedido = models.ForeignKey('pedidos.Pedido', on_delete=models.CASCADE, related_name='detalles')
+   producto = models.ForeignKey('productos.Producto', on_delete=models.PROTECT, related_name='detalles_pedido')
+   cantidad = models.IntegerField()
+   precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+   subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+   observaciones = models.TextField(blank=True, null=True)
 
-
-    class Meta:
+   class Meta:
         db_table = "detalle_pedidos"
-        verbose_name = "Detalle_Pedido"
-        verbose_name_plural = "Detalle_Pedidos"
+        verbose_name = "Detalle Pedido"
+        verbose_name_plural = "Detalle Pedidos"
     
     
-    def __str__(self):
+   def __str__(self):
         """Devuelve una representación legible del detalle del pedido."""
-        return f""
+        return f"Pedido {self.pedido.id_pedido} - Producto {self.producto.nombre} - Cantidad {self.cantidad}"
     
