@@ -1,1 +1,99 @@
-/* You can add global styles to this file, and also import other style files */
+/* SGMB - Estilos globales compartidos
+   Angular 20 + Bootstrap
+   Paleta basada en la maqueta de Figma.
+*/
+
+:root {
+  --sgmb-beige: #e8d8c0;
+  --sgmb-brown: #8b6f47;
+  --sgmb-brown-light: #a98e72;
+  --sgmb-brown-alt: #a07850;
+  --sgmb-white: #ffffff;
+  --sgmb-gray: #e7e5e5;
+  --sgmb-green: #35ee66;
+  --sgmb-red: #ee3535;
+  --sgmb-orange: #ee9135;
+  --sgmb-beige-dark: #c9b99a;
+  --sgmb-black: #0e0d0b;
+}
+
+/* Base */
+body { margin: 0; min-width: 320px; background: var(--sgmb-beige); color: var(--sgmb-black); font-family: Arial, Helvetica, sans-serif; }
+.sgmb-page { min-height: 100vh; background: var(--sgmb-beige); }
+.sgmb-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 1rem; }
+.sgmb-title { color: var(--sgmb-brown); font-weight: 700; margin: 0; }
+.sgmb-subtitle { color: var(--sgmb-brown-light); }
+
+/* Header */
+.sgmb-header { min-height: 64px; background: var(--sgmb-brown); color: var(--sgmb-white); display: flex; align-items: center; padding: .75rem 1rem; box-shadow: 0 2px 6px rgba(14,13,11,.15); }
+.sgmb-header__brand { font-size: 1.25rem; font-weight: 700; }
+.sgmb-header__section { font-size: .95rem; }
+
+/* Cards */
+.sgmb-card { background: var(--sgmb-white); border: 1px solid var(--sgmb-beige-dark); border-radius: 12px; box-shadow: 0 2px 7px rgba(14,13,11,.08); }
+.sgmb-card__header { padding: .85rem 1rem; background: var(--sgmb-brown-light); color: var(--sgmb-white); border-radius: 12px 12px 0 0; font-weight: 700; }
+.sgmb-card__body { padding: 1rem; }
+
+/* Buttons */
+.sgmb-btn { border: 0; border-radius: 7px; padding: .65rem 1rem; font-weight: 700; }
+.sgmb-btn-primary { background: var(--sgmb-brown); color: var(--sgmb-white); }
+.sgmb-btn-success { background: var(--sgmb-green); color: var(--sgmb-black); }
+.sgmb-btn-danger { background: var(--sgmb-red); color: var(--sgmb-white); }
+.sgmb-btn-warning { background: var(--sgmb-orange); color: var(--sgmb-white); }
+.sgmb-btn-light { background: var(--sgmb-beige); color: var(--sgmb-black); }
+
+/* Dashboard */
+.sgmb-dashboard { min-height: calc(100vh - 64px); display: flex; align-items: center; justify-content: center; }
+.sgmb-dashboard__content { width: 100%; max-width: 900px; text-align: center; }
+.sgmb-dashboard__welcome { margin-bottom: 2rem; }
+.sgmb-dashboard__welcome h1 { color: var(--sgmb-brown); font-size: clamp(2rem,5vw,3rem); font-weight: 700; }
+.sgmb-dashboard__welcome p { color: var(--sgmb-brown-light); }
+.sgmb-navigation-card { min-height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; color: var(--sgmb-black); }
+.sgmb-navigation-card__icon { font-size: 2rem; color: var(--sgmb-brown); margin-bottom: .5rem; }
+.sgmb-navigation-card__title { font-weight: 700; }
+
+/* Mesas */
+.sgmb-table-map { display: grid; grid-template-columns: repeat(auto-fit,minmax(110px,1fr)); gap: 1rem; }
+.sgmb-table { min-height: 105px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; font-weight: 700; }
+.sgmb-table--free { background: var(--sgmb-green); }
+.sgmb-table--occupied { background: var(--sgmb-orange); color: var(--sgmb-white); }
+.sgmb-table--reserved { background: var(--sgmb-beige-dark); }
+.sgmb-table__number { font-size: 1.4rem; }
+.sgmb-table__status { font-size: .8rem; }
+
+/* Servicios / comandas */
+.sgmb-tabs { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.sgmb-tab { border: 0; background: var(--sgmb-beige-dark); color: var(--sgmb-black); padding: .65rem 1.25rem; border-radius: 7px; font-weight: 700; }
+.sgmb-tab--active { background: var(--sgmb-brown); color: var(--sgmb-white); }
+.sgmb-order-card { border: 1px solid var(--sgmb-beige-dark); background: var(--sgmb-white); border-radius: 10px; padding: 1rem; }
+.sgmb-order-card__header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.sgmb-order-card__table { color: var(--sgmb-brown); font-weight: 700; }
+.sgmb-order-status { display: inline-block; padding: .35rem .7rem; border-radius: 999px; font-size: .8rem; font-weight: 700; }
+.sgmb-order-status--pending { background: var(--sgmb-orange); color: var(--sgmb-white); }
+.sgmb-order-status--preparing { background: var(--sgmb-beige-dark); }
+.sgmb-order-status--ready { background: var(--sgmb-green); }
+
+/* Cobros */
+.sgmb-payment-total { font-size: clamp(1.8rem,5vw,2.6rem); color: var(--sgmb-brown); font-weight: 700; }
+.sgmb-payment-method { border: 2px solid var(--sgmb-beige-dark); background: var(--sgmb-white); border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer; }
+.sgmb-payment-method--selected { border-color: var(--sgmb-brown); background: var(--sgmb-beige); }
+
+/* Login / Registro */
+.sgmb-auth { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.sgmb-auth__card { width: 100%; max-width: 460px; background: var(--sgmb-white); border-radius: 14px; box-shadow: 0 5px 18px rgba(14,13,11,.15); overflow: hidden; }
+.sgmb-auth__brand { background: var(--sgmb-brown); color: var(--sgmb-white); text-align: center; padding: 1.5rem 1rem; }
+.sgmb-auth__body { padding: 1.5rem; }
+.sgmb-form-label { color: var(--sgmb-brown); font-weight: 700; }
+.sgmb-form-control { border: 1px solid var(--sgmb-beige-dark); border-radius: 6px; min-height: 44px; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sgmb-container { padding: .75rem; }
+  .sgmb-table-map { grid-template-columns: repeat(2,1fr); gap: .75rem; }
+  .sgmb-table { min-height: 90px; }
+  .sgmb-dashboard { min-height: calc(100vh - 56px); }
+}
+@media (max-width: 480px) {
+  .sgmb-card__body, .sgmb-auth__body { padding: .75rem; }
+}
+
