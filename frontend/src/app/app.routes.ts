@@ -1,16 +1,27 @@
 import { Routes } from '@angular/router';
-import { Caja } from './caja/caja';
-import { Menu } from './menu/menu';
-import { NuevoProducto } from './nuevo-producto/nuevo-producto';
+import { Login } from './features/auth/login/login';
+import { RecuperoPassword } from './features/auth/recupero-password/recupero-password';
+import { Registro } from './features/auth/registro/registro';
+import { Bar } from './features/bar/bar';
+import { Caja } from './features/caja/caja';
+import { Cocina } from './features/cocina/cocina';
+import { Dashboard } from './features/home/dashboard/dashboard';
 import { Mesas } from './features/mesas/mesas';
-import { Servicios } from './features/servicios/servicios';
 import { Pedidos } from './features/pedidos/pedidos';
 
+
 export const routes: Routes = [
+  { path: '', component: Login, pathMatch: 'full' },
+  { path: 'recupero-password', component: RecuperoPassword },
+  { path: 'registro', component: Registro },
+  { path: 'bar', component: Bar },
   { path: 'caja', component: Caja },
-  { path: 'menu', component: Menu },
-  { path: 'nuevo-producto', component: NuevoProducto },
-  { path: 'mesas', component: Mesas},
-  { path: 'servicios', component: Servicios},
-  { path: 'pedidos', component: Pedidos}
+  { path: 'cocina', component: Cocina },
+  { path: 'dashboard', component: Dashboard },
+  { path: 'mesas', component: Mesas },
+  { path: 'pedidos', component: Pedidos },
+
+  //================FallBack===============================================
+
+  { path: '**', redirectTo: '' },
 ];
