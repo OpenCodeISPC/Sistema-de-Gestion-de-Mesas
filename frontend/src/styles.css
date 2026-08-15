@@ -1,0 +1,1042 @@
+/* =========================================================
+   01. VARIABLES / IDENTIDAD VISUAL
+   ========================================================= */
+
+:root {
+  --sgmb-brown: #8b6f47;
+  --sgmb-brown-dark: #765a38;
+  --sgmb-brown-light: #a98e72;
+  --sgmb-bg: #f7f1eb;
+  --sgmb-bg-sidebar: #f1e3d0;
+  --sgmb-white: #ffffff;
+  --sgmb-black: #161616;
+
+  --sgmb-green: #39a447;
+  --sgmb-green-dark: #2f7d35;
+  --sgmb-green-soft: #e3f4df;
+
+  --sgmb-orange: #f28b18;
+  --sgmb-orange-soft: #fff0dd;
+
+  --sgmb-red: #e52c2c;
+  --sgmb-red-soft: #fde6e1;
+
+  --sgmb-blue: #1764bd;
+
+  --sgmb-border: #b79570;
+  --sgmb-border-light: #dfd2c4;
+
+  --sgmb-shadow: 0 1px 4px rgba(75, 51, 27, .16);
+}
+
+
+/* =========================================================
+   02. BASE
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--sgmb-bg);
+  color: var(--sgmb-black);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   03. NAVBAR GLOBAL
+   ========================================================= */
+
+.sgmb-navbar {
+  width: 100%;
+  height: 98px;
+  background: var(--sgmb-brown);
+  color: var(--sgmb-white);
+}
+
+.sgmb-navbar__inner {
+  height: 100%;
+  max-width: 1500px;
+  margin: auto;
+  padding: 0 45px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.sgmb-navbar__brand {
+  width: 95px;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: none;
+}
+
+.sgmb-navbar__brand-text {
+  font-family: Georgia, serif;
+  font-size: 27px;
+  letter-spacing: 2px;
+  border: 2px solid rgba(255,255,255,.8);
+  border-radius: 22px 22px 30px 30px;
+  padding: 15px 9px;
+  background: #fdfaf5;
+  color: #4b3925;
+}
+
+.sgmb-navbar__search {
+  width: min(580px, 48vw);
+  height: 50px;
+  background: white;
+  display: flex;
+  align-items: center;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.sgmb-navbar__search-icon {
+  width: 50px;
+  height: 50px;
+  background: var(--sgmb-brown-dark);
+  color: white;
+  display: grid;
+  place-items: center;
+  font-size: 36px;
+}
+
+.sgmb-navbar__search input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  padding: 0 16px;
+  color: #555;
+  background: white;
+}
+
+.sgmb-navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.sgmb-navbar__user,
+.sgmb-navbar__logout {
+  background: transparent;
+  border: 0;
+  color: white;
+}
+
+.sgmb-navbar__user {
+  width: 58px;
+  height: 58px;
+  border: 1px solid white;
+  border-radius: 50%;
+  font-size: 27px;
+}
+
+.sgmb-navbar__logout {
+  font-size: 42px;
+}
+
+
+/* =========================================================
+   04. FOOTER
+   ========================================================= */
+
+.sgmb-footer {
+  min-height: 65px;
+  background: #f1e2cf;
+  border-top: 1px solid var(--sgmb-border-light);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 38px;
+  color: #81705b;
+}
+
+.sgmb-footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sgmb-footer__icon {
+  font-size: 24px;
+}
+
+.sgmb-footer__separator {
+  width: 1px;
+  height: 28px;
+  background: #cbbba7;
+}
+
+
+/* =========================================================
+   05. DASHBOARD
+   ========================================================= */
+
+.sgmb-dashboard {
+  min-height: calc(100vh - 98px);
+  display: flex;
+}
+
+.sgmb-sidebar {
+  width: 208px;
+  background: var(--sgmb-bg-sidebar);
+  display: flex;
+  flex-direction: column;
+}
+
+.sgmb-sidebar__spacer {
+  flex: 1;
+}
+
+.sgmb-sidebar__bottom {
+  padding: 20px;
+}
+
+.sgmb-sidebar__item {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 14px 6px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #514a43;
+  text-align: left;
+}
+
+.sgmb-sidebar__item--logout {
+  color: #a52d27;
+}
+
+.sgmb-sidebar__icon {
+  width: 28px;
+  text-align: center;
+  font-size: 23px;
+}
+
+.sgmb-dashboard__main {
+  flex: 1;
+  padding: 48px 46px 55px;
+}
+
+.sgmb-welcome {
+  text-align: center;
+}
+
+.sgmb-welcome__illustration {
+  height: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #d7bb91;
+}
+
+.sgmb-welcome__drawing {
+  font-size: 120px;
+  opacity: .55;
+}
+
+.sgmb-welcome h1 {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  font-size: clamp(48px, 5vw, 82px);
+  font-weight: 400;
+}
+
+.sgmb-welcome p {
+  margin: 12px 0 65px;
+  font-family: Arial, sans-serif;
+  font-size: 21px;
+}
+
+.sgmb-dashboard__cards {
+  max-width: 1240px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 55px;
+}
+
+.sgmb-dashboard-card {
+  min-height: 355px;
+  padding: 30px 32px 28px;
+  text-align: center;
+  border: 1px solid var(--sgmb-border-light);
+  box-shadow: var(--sgmb-shadow);
+  background: #faf8f1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sgmb-dashboard-card__icon {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 70px;
+  margin-bottom: 15px;
+}
+
+.sgmb-dashboard-card h2 {
+  margin: 0 0 12px;
+  font-size: 29px;
+}
+
+.sgmb-dashboard-card p {
+  margin: 0;
+  min-height: 65px;
+  font-family: Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.sgmb-dashboard-card button {
+  width: 90%;
+  margin-top: auto;
+  border: 0;
+  color: white;
+  padding: 12px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+}
+
+.sgmb-dashboard-card button span {
+  float: right;
+  font-size: 25px;
+  line-height: 15px;
+}
+
+.sgmb-dashboard-card--mesas .sgmb-dashboard-card__icon {
+  background: #e5efd8;
+  color: var(--sgmb-green-dark);
+}
+.sgmb-dashboard-card--mesas h2 { color: var(--sgmb-green-dark); }
+.sgmb-dashboard-card--mesas button { background: var(--sgmb-green-dark); }
+
+.sgmb-dashboard-card--cocina .sgmb-dashboard-card__icon {
+  background: #ffe4bd;
+  color: var(--sgmb-orange);
+}
+.sgmb-dashboard-card--cocina h2 { color: var(--sgmb-orange); }
+.sgmb-dashboard-card--cocina button { background: var(--sgmb-orange); }
+
+.sgmb-dashboard-card--barra .sgmb-dashboard-card__icon {
+  background: #dfe7f0;
+  color: var(--sgmb-blue);
+}
+.sgmb-dashboard-card--barra h2 { color: var(--sgmb-blue); }
+.sgmb-dashboard-card--barra button { background: var(--sgmb-blue); }
+
+.sgmb-dashboard-card--caja .sgmb-dashboard-card__icon {
+  background: #f8ddd6;
+  color: #cc2925;
+}
+.sgmb-dashboard-card--caja h2 { color: #cc2925; }
+.sgmb-dashboard-card--caja button { background: #cc2925; }
+
+
+/* =========================================================
+   06. ESTRUCTURA DE PÁGINAS
+   ========================================================= */
+
+.sgmb-page {
+  max-width: 1440px;
+  margin: auto;
+  padding: 68px 55px 45px;
+}
+
+.sgmb-page-header {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+  margin-bottom: 25px;
+}
+
+.sgmb-page-header h1 {
+  margin: 0;
+  color: var(--sgmb-brown);
+  font-size: 42px;
+  line-height: 1;
+}
+
+.sgmb-page-header p {
+  margin: 6px 0 0;
+  color: #8f7760;
+}
+
+.sgmb-tabs {
+  display: flex;
+  border: 1px solid var(--sgmb-border);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.sgmb-tab {
+  border: 0;
+  background: white;
+  color: var(--sgmb-brown);
+  padding: 9px 25px;
+}
+
+.sgmb-tab--active {
+  background: var(--sgmb-brown);
+  color: white;
+}
+
+
+/* =========================================================
+   07. RESUMEN DE MESAS
+   ========================================================= */
+
+.sgmb-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 38px;
+  margin-bottom: 25px;
+}
+
+.sgmb-summary-card {
+  min-height: 86px;
+  background: rgba(255,255,255,.65);
+  border: 1px solid var(--sgmb-border);
+  border-radius: 9px;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.sgmb-summary-card__icon,
+.sgmb-cash-summary-card__icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 27px;
+}
+
+.sgmb-icon--green { background: var(--sgmb-green); }
+.sgmb-icon--orange { background: var(--sgmb-orange); }
+.sgmb-icon--red { background: var(--sgmb-red); }
+.sgmb-icon--brown { background: var(--sgmb-brown); }
+
+.sgmb-summary-card span {
+  display: block;
+  font-size: 17px;
+}
+
+.sgmb-summary-card strong {
+  display: block;
+  font-size: 31px;
+  line-height: 1;
+}
+
+.sgmb-summary-card small {
+  color: var(--sgmb-brown);
+}
+
+
+/* =========================================================
+   08. PANEL DE MESAS
+   ========================================================= */
+
+.sgmb-tables-panel {
+  width: 70%;
+  background: rgba(255,255,255,.55);
+  border: 1px solid var(--sgmb-border);
+  border-radius: 8px;
+  padding: 15px 18px 28px;
+}
+
+.sgmb-tables-panel h2 {
+  color: var(--sgmb-brown);
+  margin: 0;
+  font-size: 25px;
+}
+
+.sgmb-sector {
+  margin-top: 8px;
+}
+
+.sgmb-sector + .sgmb-sector {
+  margin-top: 36px;
+}
+
+.sgmb-sector h3 {
+  color: var(--sgmb-brown);
+  font-size: 17px;
+  font-weight: 400;
+  margin: 0 0 10px;
+}
+
+.sgmb-sector h3 span {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  background: var(--sgmb-brown);
+  border-radius: 50%;
+}
+
+.sgmb-table-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px 12px;
+}
+
+.sgmb-table-card {
+  min-height: 75px;
+  border: 1px solid var(--sgmb-border);
+  border-radius: 9px;
+  background: #fffdfb;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.sgmb-table-status {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 26px;
+}
+
+.sgmb-table-card--available .sgmb-table-status { background: var(--sgmb-green); }
+.sgmb-table-card--occupied .sgmb-table-status { background: var(--sgmb-red); }
+.sgmb-table-card--reserved .sgmb-table-status { background: var(--sgmb-orange); }
+
+.sgmb-table-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sgmb-table-info strong {
+  display: block;
+  font-size: 20px;
+}
+
+.sgmb-table-info small {
+  font-size: 12px;
+}
+
+.sgmb-status {
+  font-size: 11px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.sgmb-status--green { color: var(--sgmb-green); }
+.sgmb-status--red { color: var(--sgmb-red); }
+.sgmb-status--orange { color: var(--sgmb-orange); }
+
+.sgmb-table-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.sgmb-table-actions button {
+  width: 28px;
+  height: 28px;
+  background: white;
+  border: 1px solid #b9aa9b;
+  border-radius: 5px;
+}
+
+
+/* =========================================================
+   09. CAJA / COBROS
+   ========================================================= */
+
+.sgmb-admin-nav {
+  height: 60px;
+  border-bottom: 1px solid #c9bcae;
+  display: flex;
+  justify-content: center;
+  gap: 75px;
+  align-items: center;
+  background: var(--sgmb-bg);
+}
+
+.sgmb-admin-nav__item {
+  color: var(--sgmb-brown);
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.sgmb-admin-nav__item--active {
+  font-weight: bold;
+}
+
+.sgmb-cash-tabs {
+  height: 60px;
+  border-bottom: 1px solid #c9bcae;
+  display: flex;
+  align-items: end;
+  padding-left: 48px;
+  gap: 25px;
+}
+
+.sgmb-cash-tabs__item {
+  height: 55px;
+  padding: 0 25px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: #aaa;
+}
+
+.sgmb-cash-tabs__item--active {
+  color: var(--sgmb-brown);
+  border-bottom-color: var(--sgmb-brown);
+}
+
+.sgmb-page-header--caja {
+  align-items: start;
+}
+
+.sgmb-page-header--caja > div:first-child {
+  flex: 1;
+}
+
+.sgmb-cash-summary {
+  flex: 2;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+.sgmb-cash-summary-card {
+  min-height: 85px;
+  border: 1px solid var(--sgmb-border-light);
+  border-radius: 8px;
+  background: rgba(255,255,255,.65);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.sgmb-cash-summary-card small {
+  display: block;
+  color: #888;
+}
+
+.sgmb-cash-summary-card strong {
+  display: block;
+  color: #76665b;
+  font-size: 25px;
+}
+
+.sgmb-badge {
+  margin-left: auto;
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.sgmb-badge--attention {
+  color: red;
+  background: #fde5e5;
+}
+
+.sgmb-badge--success {
+  color: var(--sgmb-green);
+  background: var(--sgmb-green-soft);
+}
+
+.sgmb-cash-layout {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 28px;
+}
+
+.sgmb-panel {
+  background: rgba(255,255,255,.65);
+  border: 1px solid var(--sgmb-border-light);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.sgmb-panel h2 {
+  margin: 0 0 18px;
+  color: #a98e72;
+  font-size: 23px;
+}
+
+.sgmb-payment-row {
+  min-height: 59px;
+  display: grid;
+  grid-template-columns: 1.1fr 1.1fr 1.2fr .9fr 1fr .8fr;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 10px;
+  border-bottom: 1px solid #e2d8ce;
+  color: #888;
+  font-size: 14px;
+}
+
+.sgmb-payment-row--header {
+  border: 0;
+  color: #999;
+}
+
+.sgmb-payment-row--selected {
+  background: #f3e8db;
+}
+
+.sgmb-state {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.sgmb-state--ready {
+  color: #65b34b;
+  background: #dff0d2;
+}
+
+.sgmb-state--preparing {
+  color: #ed9a5d;
+  background: #fff0df;
+}
+
+.sgmb-state--pending {
+  color: #ef755b;
+  background: #fdebe3;
+}
+
+.sgmb-state--paid {
+  color: #67c45b;
+  background: #e1f5dd;
+}
+
+.sgmb-action-button {
+  border: 0;
+  border-radius: 4px;
+  padding: 7px 10px;
+  color: white;
+}
+
+.sgmb-action-button--green {
+  background: var(--sgmb-green);
+}
+
+.sgmb-action-button--detail {
+  background: #eee5db;
+  color: #8f8172;
+}
+
+.sgmb-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #999;
+  padding: 18px 5px 0;
+}
+
+.sgmb-table-footer button {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #eadfd4;
+  background: white;
+  color: #9a8772;
+}
+
+.sgmb-table-footer button.active {
+  border-color: var(--sgmb-brown);
+}
+
+.sgmb-payment-detail__title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sgmb-payment-detail__title span {
+  background: var(--sgmb-orange);
+  color: white;
+  padding: 8px 18px;
+  border-radius: 9px;
+}
+
+.sgmb-payment-detail p {
+  color: #999;
+}
+
+.sgmb-payment-detail p em {
+  color: #72c878;
+  font-style: normal;
+}
+
+.sgmb-payment-detail h3 {
+  color: #aa947e;
+  font-size: 15px;
+  font-weight: normal;
+}
+
+.sgmb-products {
+  padding: 0;
+  list-style: none;
+}
+
+.sgmb-products li {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  gap: 5px;
+  margin: 14px 0;
+  color: #999;
+  font-size: 14px;
+}
+
+.sgmb-products b {
+  font-weight: normal;
+}
+
+.sgmb-total-lines {
+  border-top: 2px solid #e2d8ce;
+  padding-top: 10px;
+  color: #b19d8b;
+}
+
+.sgmb-total-lines p,
+.sgmb-total-lines strong {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sgmb-total-lines strong {
+  color: #a48a6e;
+  font-size: 21px;
+}
+
+.sgmb-payment-methods {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.sgmb-payment-methods button {
+  height: 36px;
+  background: transparent;
+  border: 1px solid #cdbdab;
+  color: #b9a99a;
+}
+
+.sgmb-payment-methods button.active {
+  background: var(--sgmb-brown);
+  color: white;
+}
+
+.sgmb-input-label {
+  display: block;
+  color: #9c8875;
+  margin: 18px 0 7px;
+}
+
+.sgmb-money-input {
+  height: 48px;
+  border: 1px solid #cdbdab;
+  background: white;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+}
+
+.sgmb-money-input input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  text-align: right;
+}
+
+.sgmb-detail-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 22px;
+}
+
+.sgmb-confirm-button,
+.sgmb-release-button {
+  border: 0;
+  color: white;
+  padding: 13px;
+  font-size: 16px;
+}
+
+.sgmb-confirm-button {
+  background: var(--sgmb-green);
+}
+
+.sgmb-release-button {
+  background: #ec3030;
+}
+
+
+/* =========================================================
+   10. RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+  .sgmb-dashboard__cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+  }
+
+  .sgmb-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sgmb-tables-panel {
+    width: 100%;
+  }
+
+  .sgmb-cash-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sgmb-cash-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .sgmb-admin-nav {
+    gap: 25px;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .sgmb-navbar {
+    height: 75px;
+  }
+
+  .sgmb-navbar__inner {
+    padding: 0 15px;
+    gap: 10px;
+  }
+
+  .sgmb-navbar__brand {
+    width: auto;
+  }
+
+  .sgmb-navbar__brand-text {
+    font-size: 18px;
+    padding: 9px 7px;
+  }
+
+  .sgmb-navbar__search {
+    width: 45%;
+    height: 40px;
+  }
+
+  .sgmb-navbar__search-icon {
+    width: 38px;
+    height: 40px;
+  }
+
+  .sgmb-navbar__search input {
+    min-width: 0;
+    font-size: 11px;
+  }
+
+  .sgmb-navbar__actions {
+    gap: 8px;
+  }
+
+  .sgmb-navbar__user {
+    width: 40px;
+    height: 40px;
+  }
+
+  .sgmb-navbar__logout {
+    font-size: 28px;
+  }
+
+  .sgmb-sidebar {
+    display: none;
+  }
+
+  .sgmb-dashboard__main {
+    padding: 30px 18px;
+  }
+
+  .sgmb-dashboard__cards {
+    grid-template-columns: 1fr;
+  }
+
+  .sgmb-page {
+    padding: 35px 18px;
+  }
+
+  .sgmb-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sgmb-page-header h1 {
+    font-size: 34px;
+  }
+
+  .sgmb-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .sgmb-table-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sgmb-payment-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 12px;
+  }
+
+  .sgmb-payment-row--header {
+    display: none;
+  }
+
+  .sgmb-payment-row > * {
+    min-width: 0;
+  }
+
+  .sgmb-footer {
+    padding: 12px;
+    gap: 10px;
+    text-align: center;
+  }
+}
