@@ -467,29 +467,53 @@ button {
   background: #e5efd8;
   color: var(--sgmb-green-dark);
 }
-.sgmb-dashboard-card--mesas h2 { color: var(--sgmb-green-dark); }
-.sgmb-dashboard-card--mesas button { background: var(--sgmb-green-dark); }
+
+.sgmb-dashboard-card--mesas h2 {
+  color: var(--sgmb-green-dark);
+}
+
+.sgmb-dashboard-card--mesas button {
+  background: var(--sgmb-green-dark);
+}
 
 .sgmb-dashboard-card--cocina .sgmb-dashboard-card__icon {
   background: #ffe4bd;
   color: var(--sgmb-orange);
 }
-.sgmb-dashboard-card--cocina h2 { color: var(--sgmb-orange); }
-.sgmb-dashboard-card--cocina button { background: var(--sgmb-orange); }
+
+.sgmb-dashboard-card--cocina h2 {
+  color: var(--sgmb-orange);
+}
+
+.sgmb-dashboard-card--cocina button {
+  background: var(--sgmb-orange);
+}
 
 .sgmb-dashboard-card--barra .sgmb-dashboard-card__icon {
   background: #dfe7f0;
   color: var(--sgmb-blue);
 }
-.sgmb-dashboard-card--barra h2 { color: var(--sgmb-blue); }
-.sgmb-dashboard-card--barra button { background: var(--sgmb-blue); }
+
+.sgmb-dashboard-card--barra h2 {
+  color: var(--sgmb-blue);
+}
+
+.sgmb-dashboard-card--barra button {
+  background: var(--sgmb-blue);
+}
 
 .sgmb-dashboard-card--caja .sgmb-dashboard-card__icon {
   background: #f8ddd6;
   color: #cc2925;
 }
-.sgmb-dashboard-card--caja h2 { color: #cc2925; }
-.sgmb-dashboard-card--caja button { background: #cc2925; }
+
+.sgmb-dashboard-card--caja h2 {
+  color: #cc2925;
+}
+
+.sgmb-dashboard-card--caja button {
+  background: #cc2925;
+}
 
 
 /* =========================================================
@@ -554,7 +578,7 @@ button {
 
 .sgmb-summary-card {
   min-height: 86px;
-  background: rgba(255,255,255,.65);
+  background: rgba(255, 255, 255, .65);
   border: 1px solid var(--sgmb-border);
   border-radius: 9px;
   padding: 15px 20px;
@@ -574,10 +598,21 @@ button {
   font-size: 27px;
 }
 
-.sgmb-icon--green { background: var(--sgmb-green); }
-.sgmb-icon--orange { background: var(--sgmb-orange); }
-.sgmb-icon--red { background: var(--sgmb-red); }
-.sgmb-icon--brown { background: var(--sgmb-brown); }
+.sgmb-icon--green {
+  background: var(--sgmb-green);
+}
+
+.sgmb-icon--orange {
+  background: var(--sgmb-orange);
+}
+
+.sgmb-icon--red {
+  background: var(--sgmb-red);
+}
+
+.sgmb-icon--brown {
+  background: var(--sgmb-brown);
+}
 
 .sgmb-summary-card span {
   display: block;
@@ -601,7 +636,7 @@ button {
 
 .sgmb-tables-panel {
   width: 70%;
-  background: rgba(255,255,255,.55);
+  background: rgba(255, 255, 255, .55);
   border: 1px solid var(--sgmb-border);
   border-radius: 8px;
   padding: 15px 18px 28px;
@@ -617,7 +652,7 @@ button {
   margin-top: 8px;
 }
 
-.sgmb-sector + .sgmb-sector {
+.sgmb-sector+.sgmb-sector {
   margin-top: 36px;
 }
 
@@ -664,9 +699,17 @@ button {
   font-size: 26px;
 }
 
-.sgmb-table-card--available .sgmb-table-status { background: var(--sgmb-green); }
-.sgmb-table-card--occupied .sgmb-table-status { background: var(--sgmb-red); }
-.sgmb-table-card--reserved .sgmb-table-status { background: var(--sgmb-orange); }
+.sgmb-table-card--available .sgmb-table-status {
+  background: var(--sgmb-green);
+}
+
+.sgmb-table-card--occupied .sgmb-table-status {
+  background: var(--sgmb-red);
+}
+
+.sgmb-table-card--reserved .sgmb-table-status {
+  background: var(--sgmb-orange);
+}
 
 .sgmb-table-info {
   flex: 1;
@@ -688,9 +731,17 @@ button {
   white-space: nowrap;
 }
 
-.sgmb-status--green { color: var(--sgmb-green); }
-.sgmb-status--red { color: var(--sgmb-red); }
-.sgmb-status--orange { color: var(--sgmb-orange); }
+.sgmb-status--green {
+  color: var(--sgmb-green);
+}
+
+.sgmb-status--red {
+  color: var(--sgmb-red);
+}
+
+.sgmb-status--orange {
+  color: var(--sgmb-orange);
+}
 
 .sgmb-table-actions {
   display: flex;
@@ -757,7 +808,7 @@ button {
   align-items: start;
 }
 
-.sgmb-page-header--caja > div:first-child {
+.sgmb-page-header--caja>div:first-child {
   flex: 1;
 }
 
@@ -772,7 +823,7 @@ button {
   min-height: 85px;
   border: 1px solid var(--sgmb-border-light);
   border-radius: 8px;
-  background: rgba(255,255,255,.65);
+  background: rgba(255, 255, 255, .65);
   padding: 12px;
   display: flex;
   align-items: center;
@@ -815,7 +866,7 @@ button {
 }
 
 .sgmb-panel {
-  background: rgba(255,255,255,.65);
+  background: rgba(255, 255, 255, .65);
   border: 1px solid var(--sgmb-border-light);
   border-radius: 8px;
   padding: 14px;
@@ -1163,7 +1214,7 @@ button {
     display: none;
   }
 
-  .sgmb-payment-row > * {
+  .sgmb-payment-row>* {
     min-width: 0;
   }
 
