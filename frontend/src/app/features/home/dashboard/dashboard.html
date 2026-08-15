@@ -1,45 +1,84 @@
-<div class="sgmb-page">
+<div class="sgmb-dashboard">
 
-  <header class="sgmb-header"><span class="sgmb-header__brand">SGMB</span></header>
-  <main class="sgmb-dashboard">
+  <!-- Barra lateral -->
+  <aside class="sgmb-sidebar">
 
-    <div class="sgmb-container sgmb-dashboard__content">
-      <section class="sgmb-dashboard__welcome">
-        <h1>Bienvenido</h1>
-        <p>Sistema de Gestión de Mesas para Bares</p>
-      </section>
-      <section class="row g-3" aria-label="Navegación principal">
-        <div class="col-6 col-md-3">
-          <a class="sgmb-card sgmb-navigation-card" routerLink="/mesas">
-            <span class="sgmb-navigation-card__icon">▦</span>
-            <span class="sgmb-navigation-card__title">Mesas</span>
-          </a>
-        </div>
+    <div class="sgmb-sidebar__spacer"></div>
 
-        <div class="col-6 col-md-3">
-          <a class="sgmb-card sgmb-navigation-card" routerLink="/bar">
-            <span class="sgmb-navigation-card__icon">☷</span>
-            <span class="sgmb-navigation-card__title">Bar</span>
-          </a>
-        </div>
+    <div class="sgmb-sidebar__bottom">
+      <button class="sgmb-sidebar__item" type="button">
+        <span class="sgmb-sidebar__icon">?</span>
+        <span>Ayuda</span>
+      </button>
 
-        <div class="col-6 col-md-3">
-          <a class="sgmb-card sgmb-navigation-card" routerLink="/cocina">
-            <span class="sgmb-navigation-card__icon">▤</span>
-            <span class="sgmb-navigation-card__title">Cocina</span>
-          </a>
-        </div>
-
-        <div class="col-6 col-md-3">
-          <a class="sgmb-card sgmb-navigation-card" routerLink="/caja">
-            <span class="sgmb-navigation-card__icon">$</span>
-            <span class="sgmb-navigation-card__title">Caja</span>
-          </a>
-        </div>
-
-      </section>
+      <button class="sgmb-sidebar__item sgmb-sidebar__item--logout" type="button">
+        <span class="sgmb-sidebar__icon">→</span>
+        <span>Cerrar sesión</span>
+      </button>
     </div>
-    
+
+  </aside>
+
+  <!-- Contenido -->
+  <main class="sgmb-dashboard__main">
+
+    <section class="sgmb-welcome">
+
+      <div class="sgmb-welcome__illustration" aria-hidden="true">
+        <div class="sgmb-welcome__drawing">♧</div>
+      </div>
+
+      <h1>¡Bienvenido!</h1>
+      <p>Gestioná tu salón de forma simple y eficiente</p>
+
+    </section>
+
+    <section class="sgmb-dashboard__cards">
+
+      <article class="sgmb-dashboard-card sgmb-dashboard-card--mesas">
+        <div class="sgmb-dashboard-card__icon">♜</div>
+        <h2>Mesas</h2>
+        <p>Visualizá y gestioná<br />el estado de las mesas</p>
+        <button type="button" routerLink="/mesas">
+          Ir a Mesas
+          <span>›</span>
+        </button>
+      </article>
+
+      <article class="sgmb-dashboard-card sgmb-dashboard-card--cocina">
+        <div class="sgmb-dashboard-card__icon">♨</div>
+        <h2>Cocina</h2>
+        <p>Ver comandas y estados<br />de pedidos de cocina</p>
+        <button type="button" routerLink="/cocina">
+          Ir a Cocina
+          <span>›</span>
+        </button>
+      </article>
+
+      <article class="sgmb-dashboard-card sgmb-dashboard-card--barra">
+        <div class="sgmb-dashboard-card__icon">♨</div>
+        <h2>Barra</h2>
+        <p>Ver comandas y estados<br />de pedidos de barra</p>
+        <button type="button" routerLink="/bar">
+          Ir a Barra 
+          <span>›</span>
+        </button>
+      </article>
+
+      <article class="sgmb-dashboard-card sgmb-dashboard-card--caja">
+        <div class="sgmb-dashboard-card__icon">▣</div>
+        <h2>Caja</h2>
+        <p>Cobros, cierre de mesa<br />y cierre de caja</p>
+        <button type="button" routerLink="/caja">
+          Ir a Caja 
+          <span>›</span>
+        </button>
+      </article>
+
+    </section>
+
   </main>
 
 </div>
+
+
