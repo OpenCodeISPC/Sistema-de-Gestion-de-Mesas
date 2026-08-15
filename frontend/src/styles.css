@@ -66,95 +66,152 @@ button {
 
 .sgmb-navbar {
   width: 100%;
-  height: 98px;
+  height: 74px;
   background: var(--sgmb-brown);
   color: var(--sgmb-white);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.sgmb-navbar__inner {
-  height: 100%;
+.sgmb-navbar__container {
+  width: 100%;
   max-width: 1500px;
-  margin: auto;
-  padding: 0 45px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 40px;
+
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 40px;
 }
 
+/* ---------------------------------------------------------
+   LOGO
+   --------------------------------------------------------- */
+
 .sgmb-navbar__brand {
-  width: 95px;
-  height: 75px;
+  flex-shrink: 0;
+
+  color: var(--sgmb-white);
+  text-decoration: none;
+
+  font-family: Arial, sans-serif;
+  font-size: 23px;
+  font-weight: bold;
+
+  transition: opacity 0.2s ease;
+}
+
+.sgmb-navbar__brand:hover {
+  color: var(--sgmb-white);
+  opacity: 0.85;
+}
+
+
+/* ---------------------------------------------------------
+   LINKS PRINCIPALES
+   --------------------------------------------------------- */
+
+.sgmb-navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+
+  flex: 1;
+}
+
+.sgmb-navbar__link {
+  color: var(--sgmb-white);
+  text-decoration: none;
+
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+
+  transition: opacity 0.2s ease;
+}
+
+.sgmb-navbar__link:hover {
+  color: var(--sgmb-white);
+  opacity: 0.75;
+}
+
+
+/* ---------------------------------------------------------
+   USUARIO / CERRAR SESIÓN
+   --------------------------------------------------------- */
+
+.sgmb-navbar__user {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  margin-left: auto;
+}
+
+.sgmb-navbar__user-icon {
+  width: 32px;
+  height: 32px;
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   color: white;
-  text-decoration: none;
+  font-size: 10px;
 }
 
-.sgmb-navbar__brand-text {
-  font-family: Georgia, serif;
-  font-size: 27px;
-  letter-spacing: 2px;
-  border: 2px solid rgba(255,255,255,.8);
-  border-radius: 22px 22px 30px 30px;
-  padding: 15px 9px;
-  background: #fdfaf5;
-  color: #4b3925;
-}
-
-.sgmb-navbar__search {
-  width: min(580px, 48vw);
-  height: 50px;
-  background: white;
-  display: flex;
-  align-items: center;
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.sgmb-navbar__search-icon {
-  width: 50px;
-  height: 50px;
-  background: var(--sgmb-brown-dark);
-  color: white;
-  display: grid;
-  place-items: center;
-  font-size: 36px;
-}
-
-.sgmb-navbar__search input {
-  flex: 1;
-  border: 0;
-  outline: 0;
-  padding: 0 16px;
-  color: #555;
-  background: white;
-}
-
-.sgmb-navbar__actions {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-}
-
-.sgmb-navbar__user,
 .sgmb-navbar__logout {
+  padding: 8px 15px;
+
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 6px;
+
   background: transparent;
-  border: 0;
   color: white;
+
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
-.sgmb-navbar__user {
-  width: 58px;
-  height: 58px;
-  border: 1px solid white;
-  border-radius: 50%;
-  font-size: 27px;
+.sgmb-navbar__logout:hover {
+  background: white;
+  color: var(--sgmb-brown);
 }
 
-.sgmb-navbar__logout {
-  font-size: 42px;
+
+/* ---------------------------------------------------------
+   BOTÓN MENÚ MOBILE
+   --------------------------------------------------------- */
+
+.sgmb-navbar__toggle {
+  display: none;
+
+  width: 40px;
+  height: 40px;
+
+  padding: 7px;
+
+  border: 0;
+  background: transparent;
+}
+
+.sgmb-navbar__toggle span {
+  display: block;
+
+  width: 100%;
+  height: 2px;
+
+  margin: 5px 0;
+
+  background: white;
 }
 
 
@@ -163,15 +220,41 @@ button {
    ========================================================= */
 
 .sgmb-footer {
-  min-height: 65px;
+  width: 100%;
+  min-height: 70px;
+
   background: #f1e2cf;
   border-top: 1px solid var(--sgmb-border-light);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 38px;
+
   color: #81705b;
+
+  font-family: Arial, sans-serif;
 }
+
+
+/* ---------------------------------------------------------
+   CONTENEDOR
+   --------------------------------------------------------- */
+
+.sgmb-footer__container {
+  width: 100%;
+  max-width: 1500px;
+  min-height: 70px;
+
+  margin: 0 auto;
+  padding: 15px 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 30px;
+}
+
+
+/* ---------------------------------------------------------
+   MARCA
+   --------------------------------------------------------- */
 
 .sgmb-footer__brand {
   display: flex;
@@ -179,14 +262,64 @@ button {
   gap: 12px;
 }
 
-.sgmb-footer__icon {
-  font-size: 24px;
+.sgmb-footer__brand strong {
+  color: var(--sgmb-brown);
+  font-size: 18px;
 }
 
-.sgmb-footer__separator {
-  width: 1px;
-  height: 28px;
-  background: #cbbba7;
+.sgmb-footer__brand span {
+  font-size: 13px;
+  color: #81705b;
+}
+
+
+/* ---------------------------------------------------------
+   INFORMACIÓN
+   --------------------------------------------------------- */
+
+.sgmb-footer__info {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+
+  font-size: 13px;
+}
+
+
+/* ---------------------------------------------------------
+   COPYRIGHT
+   --------------------------------------------------------- */
+
+.sgmb-footer__copyright {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+
+/* ---------------------------------------------------------
+   FOOTER RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 768px) {
+
+  .sgmb-footer__container {
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 20px 15px;
+
+    text-align: center;
+    gap: 10px;
+  }
+
+  .sgmb-footer__brand {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .sgmb-footer__info {
+    gap: 15px;
+  }
 }
 
 
