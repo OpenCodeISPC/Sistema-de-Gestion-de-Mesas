@@ -1224,3 +1224,925 @@ button {
     text-align: center;
   }
 }
+
+/* =========================================================
+   11. SERVICIOS / COMANDAS
+   ========================================================= */
+
+/*
+ * Contenedor general de la pantalla de servicios.
+ * Mantiene el fondo beige utilizado por el resto del sistema.
+ */
+
+.sgmb-services {
+  min-height: calc(100vh - 98px);
+  background: var(--sgmb-bg);
+}
+
+
+/* ---------------------------------------------------------
+   NAVEGACIÓN SECUNDARIA
+   --------------------------------------------------------- */
+
+.sgmb-services-nav {
+  height: 70px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 65px;
+
+  background: #faf6f1;
+  border-bottom: 1px solid #b9aa9b;
+}
+
+
+.sgmb-services-nav__item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  color: var(--sgmb-brown);
+
+  text-decoration: none;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+
+  transition: .2s ease;
+}
+
+
+.sgmb-services-nav__item:hover {
+  color: var(--sgmb-brown-dark);
+}
+
+
+.sgmb-services-nav__item--active {
+  font-weight: bold;
+}
+
+
+.sgmb-services-nav__icon {
+  font-size: 22px;
+}
+
+
+/* ---------------------------------------------------------
+   CONTENIDO PRINCIPAL
+   --------------------------------------------------------- */
+
+.sgmb-services__content {
+  max-width: 1170px;
+  margin: 0 auto;
+
+  padding: 20px 0 40px;
+}
+
+
+/* ---------------------------------------------------------
+   ENCABEZADO
+   --------------------------------------------------------- */
+
+.sgmb-services__header {
+  display: flex;
+  align-items: center;
+
+  gap: 45px;
+
+  padding: 0 5px 28px;
+
+  border-bottom: 1px solid #c8baaa;
+}
+
+
+.sgmb-services__header h1 {
+  margin: 0;
+
+  color: #9a7d5c;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 36px;
+  font-weight: bold;
+}
+
+
+/* ---------------------------------------------------------
+   SELECTOR COCINA / BARRA
+   --------------------------------------------------------- */
+
+.sgmb-service-switch {
+  display: flex;
+
+  border: 1px solid #b9a38a;
+  border-radius: 25px;
+
+  overflow: hidden;
+
+  background: white;
+}
+
+
+.sgmb-service-switch__button {
+  min-width: 95px;
+
+  height: 45px;
+
+  border: 0;
+
+  padding: 0 22px;
+
+  background: white;
+
+  color: #9a7d5c;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+
+  cursor: pointer;
+}
+
+
+.sgmb-service-switch__button--active {
+  background: var(--sgmb-brown);
+
+  color: white;
+}
+
+
+/* ---------------------------------------------------------
+   TABLERO DE COMANDAS
+   --------------------------------------------------------- */
+
+.sgmb-orders-board {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 10px;
+
+  margin-top: 27px;
+}
+
+
+/* ---------------------------------------------------------
+   COLUMNAS
+   --------------------------------------------------------- */
+
+.sgmb-order-column {
+  min-height: 505px;
+
+  border: 1px solid #dfd2c4;
+
+  border-radius: 7px;
+
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, .45);
+}
+
+
+.sgmb-order-column__header {
+  height: 53px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+
+  padding: 0 30px;
+}
+
+
+.sgmb-order-column__header h2 {
+  margin: 0;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 18px;
+}
+
+
+.sgmb-order-column__icon {
+  font-size: 32px;
+}
+
+
+/* Estados de columnas */
+
+.sgmb-order-column--pending
+.sgmb-order-column__header {
+  background: #fbe4e1;
+  color: #6f5b52;
+}
+
+
+.sgmb-order-column--preparing
+.sgmb-order-column__header {
+  background: #ffe2ba;
+  color: #756051;
+}
+
+
+.sgmb-order-column--ready
+.sgmb-order-column__header {
+  background: #e5f4df;
+  color: #5d6856;
+}
+
+
+.sgmb-order-column--pending
+.sgmb-order-column__icon {
+  color: #f33434;
+}
+
+
+.sgmb-order-column--preparing
+.sgmb-order-column__icon {
+  color: #f28b18;
+}
+
+
+.sgmb-order-column--ready
+.sgmb-order-column__icon {
+  color: #39a447;
+}
+
+
+/* ---------------------------------------------------------
+   CUERPO DE COLUMNA
+   --------------------------------------------------------- */
+
+.sgmb-order-column__body {
+  padding: 21px 14px;
+}
+
+
+/* ---------------------------------------------------------
+   TARJETA DE PEDIDO
+   --------------------------------------------------------- */
+
+.sgmb-order-card {
+  background: #fffdfb;
+
+  border: 1px solid #ded2c6;
+
+  border-radius: 7px;
+
+  overflow: hidden;
+
+  margin-bottom: 13px;
+}
+
+
+.sgmb-order-card__main {
+  display: grid;
+
+  grid-template-columns: 125px 1fr;
+
+  min-height: 98px;
+}
+
+
+/* ---------------------------------------------------------
+   INFORMACIÓN DE MESA
+   --------------------------------------------------------- */
+
+.sgmb-order-card__table {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 10px;
+}
+
+
+.sgmb-order-card__icon {
+  width: 45px;
+  height: 45px;
+
+  flex-shrink: 0;
+
+  border-radius: 7px;
+
+  display: grid;
+  place-items: center;
+
+  color: white;
+
+  font-size: 28px;
+}
+
+
+.sgmb-order-card--pending
+.sgmb-order-card__icon {
+  background: var(--sgmb-red);
+}
+
+
+.sgmb-order-card--preparing
+.sgmb-order-card__icon {
+  background: var(--sgmb-orange);
+}
+
+
+.sgmb-order-card--ready
+.sgmb-order-card__icon {
+  background: var(--sgmb-green);
+}
+
+
+.sgmb-order-card__table span,
+.sgmb-order-card__table small {
+  display: block;
+
+  color: #756960;
+
+  font-size: 13px;
+}
+
+
+.sgmb-order-card__table strong {
+  display: block;
+
+  color: #69584d;
+
+  font-size: 19px;
+
+  line-height: 1.05;
+}
+
+
+/* ---------------------------------------------------------
+   DETALLE DEL PEDIDO
+   --------------------------------------------------------- */
+
+.sgmb-order-card__detail {
+  position: relative;
+
+  border-left: 1px solid #e5dcd3;
+
+  padding: 30px 10px 5px;
+}
+
+
+.sgmb-order-card__detail p {
+  margin: 0;
+
+  padding: 3px 0;
+
+  color: #877d75;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 12px;
+}
+
+
+.sgmb-order-card__time {
+  position: absolute;
+
+  top: 5px;
+  right: 9px;
+
+  padding: 4px 9px;
+
+  border-radius: 4px;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 10px;
+  font-weight: bold;
+}
+
+
+.sgmb-order-card--pending
+.sgmb-order-card__time {
+  background: #fde4df;
+  color: var(--sgmb-red);
+}
+
+
+.sgmb-order-card--preparing
+.sgmb-order-card__time {
+  background: #ffe7bd;
+  color: var(--sgmb-orange);
+}
+
+
+.sgmb-order-card--ready
+.sgmb-order-card__time {
+  background: #e1f3dc;
+  color: var(--sgmb-green);
+}
+
+
+/* ---------------------------------------------------------
+   COMENTARIOS
+   --------------------------------------------------------- */
+
+.sgmb-order-card__comment {
+  margin-top: 4px;
+
+  color: #8b817a;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 11px;
+}
+
+
+.sgmb-order-card__comment span {
+  margin-right: 7px;
+
+  font-size: 16px;
+}
+
+
+/* ---------------------------------------------------------
+   BOTONES DEL PEDIDO
+   --------------------------------------------------------- */
+
+.sgmb-order-card__actions {
+  display: flex;
+
+  gap: 12px;
+
+  padding: 0 11px 8px;
+}
+
+
+.sgmb-order-card__actions button {
+  flex: 1;
+
+  height: 17px;
+
+  border: 0;
+
+  border-radius: 4px;
+
+  color: white;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 13px;
+  font-weight: bold;
+}
+
+
+.sgmb-order-card--pending
+.sgmb-order-card__actions button {
+  background: #f33131;
+}
+
+
+.sgmb-order-card--preparing
+.sgmb-order-card__actions button {
+  background: #ef8717;
+}
+
+
+.sgmb-order-card--ready
+.sgmb-order-card__actions button {
+  background: #319c3d;
+}
+
+
+/* =========================================================
+   RESPONSIVE - SERVICIOS
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+  .sgmb-services__content {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .sgmb-services-nav {
+    gap: 25px;
+
+    overflow-x: auto;
+
+    justify-content: flex-start;
+
+    padding: 0 20px;
+  }
+
+  .sgmb-orders-board {
+    grid-template-columns: 1fr;
+  }
+
+  .sgmb-order-column {
+    min-height: auto;
+  }
+}
+
+
+@media (max-width: 768px) {
+
+  .sgmb-services__header {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 18px;
+  }
+
+  .sgmb-services__header h1 {
+    font-size: 30px;
+  }
+
+  .sgmb-services-nav {
+    height: 60px;
+  }
+
+  .sgmb-services-nav__item {
+    font-size: 14px;
+  }
+}
+
+/* =========================================================
+   12. AUTENTICACIÓN
+   Login / Registro / Recuperar contraseña
+   ========================================================= */
+
+/*
+ * Fondo general de las pantallas de autenticación.
+ *
+ * El diseño de Figma utiliza un fondo beige claro y
+ * formularios centrados horizontalmente.
+ */
+
+.sgmb-auth {
+  min-height: calc(100vh - 98px);
+
+  background: #ead8bd;
+
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* ---------------------------------------------------------
+   CONTENIDO
+   --------------------------------------------------------- */
+
+.sgmb-auth__content {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+
+  padding: 34px 30px 45px;
+}
+
+
+/* ---------------------------------------------------------
+   FORMULARIO PRINCIPAL
+   --------------------------------------------------------- */
+
+.sgmb-auth__form {
+  width: 100%;
+  max-width: 1120px;
+
+  text-align: center;
+}
+
+
+.sgmb-auth__form h1 {
+  margin: 0 0 25px;
+
+  color: #977654;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 25px;
+  font-weight: bold;
+}
+
+
+/* ---------------------------------------------------------
+   CAMPOS
+   --------------------------------------------------------- */
+
+.sgmb-auth__field {
+  width: 100%;
+
+  margin-bottom: 16px;
+}
+
+
+.sgmb-auth__field label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #ffffff;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 15px;
+  font-weight: bold;
+
+  letter-spacing: 1px;
+}
+
+
+.sgmb-auth__field input {
+  width: 100%;
+
+  height: 67px;
+
+  border: 1px solid #c8b7a2;
+
+  border-radius: 0;
+
+  background: #ffffff;
+
+  padding: 0 25px;
+
+  color: #555;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 17px;
+
+  text-align: center;
+
+  outline: none;
+}
+
+
+.sgmb-auth__field input::placeholder {
+  color: #c5c1bd;
+
+  opacity: 1;
+}
+
+
+.sgmb-auth__field input:focus {
+  border-color: var(--sgmb-brown);
+
+  box-shadow: 0 0 0 2px rgba(139, 111, 71, .12);
+}
+
+
+/* ---------------------------------------------------------
+   CONTRASEÑAS DEL REGISTRO
+   --------------------------------------------------------- */
+
+.sgmb-auth__password-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 45px;
+}
+
+
+/* ---------------------------------------------------------
+   ROLES
+   --------------------------------------------------------- */
+
+.sgmb-auth__roles {
+  margin-top: 10px;
+
+  margin-bottom: 25px;
+}
+
+
+.sgmb-auth__roles > label {
+  display: block;
+
+  margin-bottom: 22px;
+
+  color: #ffffff;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 15px;
+  font-weight: bold;
+
+  letter-spacing: 1px;
+}
+
+
+.sgmb-role-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 45px;
+}
+
+
+.sgmb-role-grid button {
+  height: 68px;
+
+  border: 1px solid #cbbba9;
+
+  border-radius: 0;
+
+  background: #ffffff;
+
+  color: #c9c4bf;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  cursor: pointer;
+
+  transition: .2s ease;
+}
+
+
+.sgmb-role-grid button:hover {
+  border-color: var(--sgmb-brown);
+
+  color: var(--sgmb-brown);
+}
+
+
+.sgmb-role-grid__item--active {
+  background: #a97f58 !important;
+
+  border-color: #a97f58 !important;
+
+  color: #ffffff !important;
+
+  font-weight: bold;
+}
+
+
+/* ---------------------------------------------------------
+   BOTÓN PRINCIPAL
+   --------------------------------------------------------- */
+
+.sgmb-auth__submit {
+  width: 100%;
+
+  height: 67px;
+
+  border: 0;
+
+  border-radius: 0;
+
+  background: #a97f58;
+
+  color: #ffffff;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 15px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  transition: .2s ease;
+}
+
+
+.sgmb-auth__submit:hover {
+  background: var(--sgmb-brown-dark);
+}
+
+
+/* ---------------------------------------------------------
+   LINKS INFERIORES
+   --------------------------------------------------------- */
+
+.sgmb-auth__footer {
+  margin: 17px 0 0;
+
+  color: #9a7958;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 14px;
+  font-weight: bold;
+}
+
+
+.sgmb-auth__footer a {
+  color: #765a38;
+
+  text-decoration: underline;
+}
+
+
+.sgmb-auth__footer a:hover {
+  color: #4e3922;
+}
+
+
+.sgmb-auth__forgot {
+  margin: 8px 0 0;
+
+  font-size: 13px;
+}
+
+
+.sgmb-auth__forgot a {
+  color: #876d52;
+
+  text-decoration: underline;
+}
+
+
+/* ---------------------------------------------------------
+   RECUPERACIÓN DE CONTRASEÑA
+   --------------------------------------------------------- */
+
+.sgmb-auth__form--forgot {
+  max-width: 850px;
+
+  padding-top: 35px;
+}
+
+
+.sgmb-auth__description {
+  max-width: 600px;
+
+  margin: 0 auto 30px;
+
+  color: #927b63;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 16px;
+
+  line-height: 1.5;
+}
+
+
+.sgmb-auth__form--forgot
+.sgmb-auth__submit {
+  margin-top: 15px;
+}
+
+
+/* =========================================================
+   RESPONSIVE - AUTENTICACIÓN
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .sgmb-auth__content {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .sgmb-role-grid {
+    gap: 15px;
+  }
+
+  .sgmb-auth__password-grid {
+    gap: 20px;
+  }
+}
+
+
+@media (max-width: 650px) {
+
+  .sgmb-auth {
+    min-height: calc(100vh - 75px);
+  }
+
+  .sgmb-auth__content {
+    padding: 30px 18px;
+  }
+
+  .sgmb-auth__form h1 {
+    font-size: 23px;
+  }
+
+  .sgmb-auth__password-grid {
+    grid-template-columns: 1fr;
+
+    gap: 0;
+  }
+
+  .sgmb-role-grid {
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+  }
+
+  .sgmb-role-grid button {
+    height: 58px;
+  }
+
+  .sgmb-auth__field input {
+    height: 58px;
+
+    font-size: 15px;
+  }
+
+  .sgmb-auth__submit {
+    height: 58px;
+  }
+}
