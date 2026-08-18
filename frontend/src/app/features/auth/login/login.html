@@ -1,1 +1,46 @@
-<p>login works!</p>
+<section class="sgmb-auth">
+  <main class="sgmb-auth__content">
+    <div class="sgmb-auth__form">
+      <h1>Iniciar Sesión</h1>
+
+      <div class="sgmb-auth__field">
+        <label for="username"> Ingrese su nombre de usuario </label>
+
+        <input id="username" type="text" placeholder="Ejemplo: Lucia07" />
+      </div>
+
+      <div class="sgmb-auth__field">
+        <label for="password"> Ingrese su contraseña </label>
+
+        <input id="password" type="password" placeholder="Ejemplo: Casa12" />
+      </div>
+
+      <div class="sgmb-auth__roles">
+        <label> Seleccione su rol de acceso: </label>
+
+        <div class="sgmb-role-grid">
+          <button type="button">Cocina</button>
+
+          <button type="button">Mozo</button>
+
+          <button type="button">Barra</button>
+
+          <button type="button" class="sgmb-role-grid__item--active">
+            Administrador
+          </button>
+        </div>
+      </div>
+
+      <button type="button" class="sgmb-auth__submit">Iniciar sesión</button>
+
+      <p class="sgmb-auth__footer">
+        ¿No tenes una cuenta?
+        <a href="#">Registrate</a>
+      </p>
+
+      <p class="sgmb-auth__forgot">
+        <a href="#"> ¿Olvidaste tu contraseña? </a>
+      </p>
+    </div>
+  </main>
+</section>
