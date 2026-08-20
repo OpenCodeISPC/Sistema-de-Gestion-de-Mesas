@@ -1,1 +1,153 @@
-<p>caja works!</p>
+<app-navbar></app-navbar>
+
+<nav class="sgmb-admin-nav">
+  <a class="sgmb-admin-nav__item sgmb-admin-nav__item--active">◉ <span>Panel</span></a>
+  <a class="sgmb-admin-nav__item">▦ <span>Mesas</span></a>
+  <a class="sgmb-admin-nav__item">▣ <span>Reservas</span></a>
+  <a class="sgmb-admin-nav__item">◇ <span>Productos</span></a>
+  <a class="sgmb-admin-nav__item">♙ <span>Usuarios</span></a>
+  <a class="sgmb-admin-nav__item">▥ <span>Reportes</span></a>
+  <a class="sgmb-admin-nav__item">♢ <span>Auditoría</span></a>
+</nav>
+
+<nav class="sgmb-cash-tabs">
+  <button class="sgmb-cash-tabs__item sgmb-cash-tabs__item--active">▱ <span>Cobros</span></button>
+  <button class="sgmb-cash-tabs__item">▣ <span>Cierre de caja</span></button>
+</nav>
+
+<main class="sgmb-page sgmb-caja">
+
+  <header class="sgmb-page-header sgmb-page-header--caja">
+    <div>
+      <h1>Gestión de cobros</h1>
+      <p>Administra los cobros pendientes y el estado de pagos.</p>
+    </div>
+
+    <section class="sgmb-cash-summary">
+
+      <article class="sgmb-cash-summary-card">
+        <div class="sgmb-cash-summary-card__icon sgmb-icon--red">▱</div>
+        <div><small>Pendientes de cobro</small><strong>6</strong></div>
+        <span class="sgmb-badge sgmb-badge--attention">Atención</span>
+      </article>
+
+      <article class="sgmb-cash-summary-card">
+        <div class="sgmb-cash-summary-card__icon sgmb-icon--brown">$</div>
+        <div><small>Cobros del turno</small><strong>$456.300</strong></div>
+        <span class="sgmb-badge sgmb-badge--success">+18.6% vs ayer</span>
+      </article>
+
+      <article class="sgmb-cash-summary-card">
+        <div class="sgmb-cash-summary-card__icon sgmb-icon--green">♜</div>
+        <div><small>Mesas liberadas</small><strong>12</strong></div>
+        <span class="sgmb-badge sgmb-badge--success">Hoy</span>
+      </article>
+
+    </section>
+  </header>
+
+  <section class="sgmb-cash-layout">
+
+    <article class="sgmb-panel sgmb-payment-list">
+      <h2>Mesas por cobrar</h2>
+
+      <div class="sgmb-payment-table">
+
+        <div class="sgmb-payment-row sgmb-payment-row--header">
+          <span>Mesa</span><span>Mozo</span><span>Estado pedido</span>
+          <span>Total</span><span>Estado pago</span><span>Acciones</span>
+        </div>
+
+        <div class="sgmb-payment-row sgmb-payment-row--selected">
+          <span>🟠 Mesa N° 5</span><span>Juan Pérez</span>
+          <span><b class="sgmb-state sgmb-state--ready">Listo</b></span>
+          <span>$108.000</span><span><b class="sgmb-state sgmb-state--pending">Pendiente</b></span>
+          <button class="sgmb-action-button sgmb-action-button--green">Cobrar ›</button>
+        </div>
+
+        <div class="sgmb-payment-row">
+          <span>🔴 Mesa N° 2</span><span>Maria López</span>
+          <span><b class="sgmb-state sgmb-state--preparing">En preparación</b></span>
+          <span>$65.500</span><span><b class="sgmb-state sgmb-state--pending">Pendiente</b></span>
+          <button class="sgmb-action-button sgmb-action-button--green">Cobrar ›</button>
+        </div>
+
+        <div class="sgmb-payment-row">
+          <span>🟠 Mesa N° 8</span><span>Carlos Gómez</span>
+          <span><b class="sgmb-state sgmb-state--ready">Listo</b></span>
+          <span>$78.300</span><span><b class="sgmb-state sgmb-state--pending">Pendiente</b></span>
+          <button class="sgmb-action-button sgmb-action-button--green">Cobrar ›</button>
+        </div>
+
+        <div class="sgmb-payment-row">
+          <span>🟢 Mesa N° 3</span><span>Ana Martínez</span>
+          <span><b class="sgmb-state sgmb-state--paid">Pagado</b></span>
+          <span>$52.700</span><span><b class="sgmb-state sgmb-state--paid">Pagado</b></span>
+          <button class="sgmb-action-button sgmb-action-button--detail">Ver detalle ›</button>
+        </div>
+
+        <div class="sgmb-payment-row">
+          <span>🟢 Mesa N° 11</span><span>Diego Ramírez</span>
+          <span><b class="sgmb-state sgmb-state--paid">Pagado</b></span>
+          <span>$120.000</span><span><b class="sgmb-state sgmb-state--paid">Pagado</b></span>
+          <button class="sgmb-action-button sgmb-action-button--detail">Ver detalle ›</button>
+        </div>
+
+        <div class="sgmb-payment-row">
+          <span>🔴 Mesa N6</span><span>Sofia Herrera</span>
+          <span><b class="sgmb-state sgmb-state--preparing">En preparación</b></span>
+          <span>$33.000</span><span><b class="sgmb-state sgmb-state--pending">Pendiente</b></span>
+          <button class="sgmb-action-button sgmb-action-button--green">Cobrar ›</button>
+        </div>
+
+      </div>
+
+      <footer class="sgmb-table-footer">
+        <strong>Mostrando 1 a 6 de 6 mesas</strong>
+        <div><button>‹</button><button class="active">1</button><button>›</button></div>
+      </footer>
+    </article>
+
+    <aside class="sgmb-panel sgmb-payment-detail">
+      <div class="sgmb-payment-detail__title">
+        <h2>Detalle de cobro</h2>
+        <span>Mesa N° 5</span>
+      </div>
+
+      <p>Estado pedido: <em>Listo</em></p>
+
+      <h3>Productos del pedido</h3>
+      <ul class="sgmb-products">
+        <li><span>2</span> Canelones de Mariscos <b>$80.000</b></li>
+        <li><span>3</span> Cerveza Artesanal IPA <b>$18.000</b></li>
+        <li><span>2</span> Coca Cola Regular <b>$10.000</b></li>
+      </ul>
+
+      <div class="sgmb-total-lines">
+        <p>Subtotal: <b>$108.000</b></p>
+        <p>Propina sugerida (10%): <b>$10.800</b></p>
+        <strong>Total a cobrar: <b>$118.800</b></strong>
+      </div>
+
+      <h3>Método de pago</h3>
+      <div class="sgmb-payment-methods">
+        <button class="active">Efectivo</button>
+        <button>Tarjeta</button>
+        <button>Transferencia</button>
+      </div>
+
+      <label class="sgmb-input-label">Importe recibido</label>
+      <div class="sgmb-money-input">
+        <span>$</span>
+        <input type="text" placeholder="0,00" />
+      </div>
+
+      <div class="sgmb-detail-actions">
+        <button class="sgmb-confirm-button">✓ &nbsp; Confirmar cobro</button>
+        <button class="sgmb-release-button">♜ &nbsp; Liberar mesa</button>
+      </div>
+    </aside>
+
+  </section>
+
+</main>
