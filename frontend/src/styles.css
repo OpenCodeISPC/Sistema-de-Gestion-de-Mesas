@@ -2606,3 +2606,703 @@ button {
 .sgmb-sector {
   margin-top: 0;
 }
+
+/* =========================================================
+   PRODUCTOS
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   BOTÓN AGREGAR
+   --------------------------------------------------------- */
+
+.sgmb-product-add-button {
+  margin-left: auto;
+
+  border: 0;
+  border-radius: 6px;
+
+  padding: 11px 20px;
+
+  background: var(--sgmb-brown);
+  color: white;
+
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background .2s ease;
+}
+
+.sgmb-product-add-button:hover {
+  background: var(--sgmb-brown-dark);
+}
+
+
+/* ---------------------------------------------------------
+   PANEL PRINCIPAL
+   --------------------------------------------------------- */
+
+.sgmb-product-panel {
+  width: 100%;
+
+  background: rgba(255, 255, 255, .65);
+
+  border: 1px solid var(--sgmb-border);
+
+  border-radius: 8px;
+
+  padding: 18px;
+
+  box-shadow: var(--sgmb-shadow);
+}
+
+
+/* ---------------------------------------------------------
+   BARRA DE HERRAMIENTAS
+   --------------------------------------------------------- */
+
+.sgmb-product-toolbar {
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  margin-bottom: 20px;
+}
+
+
+/* ---------------------------------------------------------
+   BUSCADOR
+   --------------------------------------------------------- */
+
+.sgmb-product-search {
+  flex: 1;
+
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+
+  border: 1px solid var(--sgmb-border);
+
+  border-radius: 6px;
+
+  background: white;
+}
+
+
+.sgmb-product-search__icon {
+  width: 45px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--sgmb-brown);
+
+  font-size: 24px;
+}
+
+
+.sgmb-product-search input {
+  flex: 1;
+
+  height: 100%;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+
+  padding: 0 12px;
+
+  color: var(--sgmb-black);
+
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+
+.sgmb-product-search input::placeholder {
+  color: #aaa;
+}
+
+
+/* ---------------------------------------------------------
+   FILTRO
+   --------------------------------------------------------- */
+
+.sgmb-product-filter {
+  width: 220px;
+
+  height: 44px;
+
+  border: 1px solid var(--sgmb-border);
+
+  border-radius: 6px;
+
+  background: white;
+
+  padding: 0 12px;
+
+  color: #76665b;
+
+  font-family: Arial, sans-serif;
+
+  outline: none;
+}
+
+
+/* ---------------------------------------------------------
+   CONTENEDOR DE TABLA
+   --------------------------------------------------------- */
+
+.sgmb-product-table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+
+  border: 1px solid var(--sgmb-border-light);
+
+  border-radius: 7px;
+}
+
+
+/* ---------------------------------------------------------
+   TABLA
+   --------------------------------------------------------- */
+
+.sgmb-product-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  background: #fffdfb;
+
+  font-family: Arial, sans-serif;
+}
+
+
+.sgmb-product-table thead {
+  background: #f1e3d0;
+}
+
+
+.sgmb-product-table th {
+  padding: 14px 12px;
+
+  border-bottom: 1px solid var(--sgmb-border);
+
+  color: var(--sgmb-brown-dark);
+
+  font-size: 13px;
+  font-weight: bold;
+
+  text-align: left;
+
+  white-space: nowrap;
+}
+
+
+.sgmb-product-table td {
+  padding: 13px 12px;
+
+  border-bottom: 1px solid var(--sgmb-border-light);
+
+  color: #71665d;
+
+  font-size: 13px;
+
+  vertical-align: middle;
+}
+
+
+.sgmb-product-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+
+.sgmb-product-table tbody tr:hover {
+  background: #faf5ef;
+}
+
+
+.sgmb-product-table td strong {
+  color: #5e5145;
+
+  font-size: 14px;
+}
+
+
+/* ---------------------------------------------------------
+   ESTADO DEL PRODUCTO
+   --------------------------------------------------------- */
+
+.sgmb-product-status {
+  display: inline-block;
+
+  padding: 5px 10px;
+
+  border-radius: 6px;
+
+  font-size: 11px;
+  font-weight: bold;
+
+  white-space: nowrap;
+}
+
+
+.sgmb-product-status--available {
+  background: var(--sgmb-green-soft);
+
+  color: var(--sgmb-green-dark);
+}
+
+
+.sgmb-product-status--unavailable {
+  background: var(--sgmb-red-soft);
+
+  color: var(--sgmb-red);
+}
+
+
+/* ---------------------------------------------------------
+   ACCIONES
+   --------------------------------------------------------- */
+
+.sgmb-product-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+}
+
+
+.sgmb-product-action {
+  width: 32px;
+  height: 32px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 5px;
+
+  font-size: 15px;
+
+  cursor: pointer;
+
+  transition:
+    background .2s ease,
+    color .2s ease;
+}
+
+
+/* Modificar */
+
+.sgmb-product-action--edit {
+  border: 1px solid #cdbdab;
+
+  background: white;
+
+  color: var(--sgmb-brown);
+}
+
+
+.sgmb-product-action--edit:hover {
+  background: var(--sgmb-brown);
+
+  color: white;
+}
+
+
+/* Eliminar */
+
+.sgmb-product-action--delete {
+  border: 1px solid #efc4bd;
+
+  background: white;
+
+  color: var(--sgmb-red);
+}
+
+
+.sgmb-product-action--delete:hover {
+  background: var(--sgmb-red);
+
+  color: white;
+}
+
+
+/* ---------------------------------------------------------
+   PIE DE TABLA
+   --------------------------------------------------------- */
+
+.sgmb-product-footer {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 16px 5px 2px;
+
+  color: #999;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 13px;
+}
+
+
+.sgmb-product-pagination {
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+}
+
+
+.sgmb-product-pagination button {
+  width: 32px;
+  height: 32px;
+
+  border: 1px solid #eadfd4;
+
+  border-radius: 5px;
+
+  background: white;
+
+  color: #9a8772;
+
+  cursor: pointer;
+}
+
+
+.sgmb-product-pagination button:hover {
+  border-color: var(--sgmb-brown);
+
+  color: var(--sgmb-brown);
+}
+
+
+.sgmb-product-pagination button.active {
+  border-color: var(--sgmb-brown);
+
+  background: var(--sgmb-brown);
+
+  color: white;
+}
+
+
+/* =========================================================
+   FORMULARIO DE PRODUCTO
+   ========================================================= */
+
+.sgmb-product-form-panel {
+  width: 100%;
+
+  margin-top: 25px;
+
+  background: rgba(255, 255, 255, .72);
+
+  border: 1px solid var(--sgmb-border);
+
+  border-radius: 8px;
+
+  padding: 20px;
+
+  box-shadow: var(--sgmb-shadow);
+}
+
+
+/* ---------------------------------------------------------
+   ENCABEZADO DEL FORMULARIO
+   --------------------------------------------------------- */
+
+.sgmb-product-form-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 22px;
+
+  padding-bottom: 14px;
+
+  border-bottom: 1px solid var(--sgmb-border-light);
+}
+
+
+.sgmb-product-form-header h2 {
+  margin: 0;
+
+  color: var(--sgmb-brown);
+
+  font-size: 23px;
+}
+
+
+.sgmb-product-form-header p {
+  margin: 5px 0 0;
+
+  color: #999;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 13px;
+}
+
+
+.sgmb-product-form-close {
+  width: 32px;
+  height: 32px;
+
+  border: 1px solid var(--sgmb-border);
+
+  border-radius: 5px;
+
+  background: white;
+
+  color: var(--sgmb-brown);
+
+  font-size: 22px;
+
+  cursor: pointer;
+}
+
+
+.sgmb-product-form-close:hover {
+  background: var(--sgmb-brown);
+
+  color: white;
+}
+
+
+/* ---------------------------------------------------------
+   FORMULARIO
+   --------------------------------------------------------- */
+
+.sgmb-product-form {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 18px 25px;
+}
+
+
+/* ---------------------------------------------------------
+   CAMPOS
+   --------------------------------------------------------- */
+
+.sgmb-product-field {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+
+.sgmb-product-field label {
+  color: #765a38;
+
+  font-size: 14px;
+  font-weight: bold;
+}
+
+
+.sgmb-product-field input,
+.sgmb-product-field textarea,
+.sgmb-product-field select {
+  width: 100%;
+
+  border: 1px solid #cdbdab;
+
+  border-radius: 5px;
+
+  background: white;
+
+  padding: 11px 12px;
+
+  color: #5e5145;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 14px;
+
+  outline: none;
+}
+
+
+.sgmb-product-field input,
+.sgmb-product-field select {
+  height: 44px;
+}
+
+
+.sgmb-product-field textarea {
+  resize: vertical;
+
+  min-height: 90px;
+}
+
+
+.sgmb-product-field input:focus,
+.sgmb-product-field textarea:focus,
+.sgmb-product-field select:focus {
+  border-color: var(--sgmb-brown);
+
+  box-shadow: 0 0 0 2px rgba(139, 111, 71, .10);
+}
+
+
+/* ---------------------------------------------------------
+   DESCRIPCIÓN OCUPA TODO EL ANCHO
+   --------------------------------------------------------- */
+
+.sgmb-product-field:nth-child(2) {
+  grid-column: 1 / -1;
+}
+
+
+/* ---------------------------------------------------------
+   BOTONES DEL FORMULARIO
+   --------------------------------------------------------- */
+
+.sgmb-product-form-actions {
+  grid-column: 1 / -1;
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  margin-top: 5px;
+
+  padding-top: 18px;
+
+  border-top: 1px solid var(--sgmb-border-light);
+}
+
+
+.sgmb-product-button {
+  min-width: 140px;
+
+  height: 43px;
+
+  border-radius: 5px;
+
+  padding: 0 18px;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+/* Cancelar */
+
+.sgmb-product-button--cancel {
+  border: 1px solid #cdbdab;
+
+  background: white;
+
+  color: #76665b;
+}
+
+
+.sgmb-product-button--cancel:hover {
+  background: #f4ece3;
+}
+
+
+/* Guardar */
+
+.sgmb-product-button--save {
+  border: 0;
+
+  background: var(--sgmb-green);
+
+  color: white;
+}
+
+
+.sgmb-product-button--save:hover {
+  background: var(--sgmb-green-dark);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .sgmb-product-toolbar {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .sgmb-product-filter {
+    width: 100%;
+  }
+
+  .sgmb-product-form {
+    grid-template-columns: 1fr;
+  }
+
+  .sgmb-product-field:nth-child(2) {
+    grid-column: auto;
+  }
+
+  .sgmb-product-form-actions {
+    grid-column: auto;
+  }
+}
+
+
+@media (max-width: 768px) {
+
+  .sgmb-page-header {
+    align-items: stretch;
+  }
+
+  .sgmb-product-add-button {
+    margin-left: 0;
+
+    width: 100%;
+  }
+
+  .sgmb-product-panel {
+    padding: 12px;
+  }
+
+  .sgmb-product-form-panel {
+    padding: 15px;
+  }
+
+  .sgmb-product-footer {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 12px;
+  }
+
+  .sgmb-product-form-actions {
+    flex-direction: column;
+  }
+
+  .sgmb-product-button {
+    width: 100%;
+  }
+}

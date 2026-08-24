@@ -7,8 +7,7 @@ import { Comandas } from './features/comandas/comandas';
 import { Dashboard } from './features/home/dashboard/dashboard';
 import { Mesas } from './features/mesas/mesas';
 import { Pedidos } from './features/mesas/pedidos/pedidos';
-
-
+import { Producto } from './features/producto/producto';
 
 
 export const routes: Routes = [
@@ -19,7 +18,8 @@ export const routes: Routes = [
   { path: 'comandas', component: Comandas },
   { path: 'dashboard', component: Dashboard },
   { path: 'mesas', component: Mesas },
-  { path: 'pedidos', component: Pedidos},
+  { path: 'pedidos', component: Pedidos },
+  { path: 'producto', component: Producto },
 
   //================FallBack===============================================
 
