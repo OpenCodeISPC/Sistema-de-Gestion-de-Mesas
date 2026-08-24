@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { Pedidos } from './pedidos/pedidos';
 
 @Component({
   selector: 'app-mesas',
-  imports: [],
+  imports: [Pedidos],
   templateUrl: './mesas.html',
   styleUrl: './mesas.css',
 })

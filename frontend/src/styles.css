@@ -635,7 +635,7 @@ button {
    ========================================================= */
 
 .sgmb-tables-panel {
-  width: 70%;
+  width: 100%;
   background: rgba(255, 255, 255, .55);
   border: 1px solid var(--sgmb-border);
   border-radius: 8px;
@@ -644,16 +644,8 @@ button {
 
 .sgmb-tables-panel h2 {
   color: var(--sgmb-brown);
-  margin: 0;
+  margin: 0 0 40px;
   font-size: 25px;
-}
-
-.sgmb-sector {
-  margin-top: 8px;
-}
-
-.sgmb-sector+.sgmb-sector {
-  margin-top: 36px;
 }
 
 .sgmb-sector h3 {
@@ -2145,4 +2137,472 @@ button {
   .sgmb-auth__submit {
     height: 58px;
   }
+}
+
+/* =========================================================
+   11. PEDIDO DE MESA
+   Componente independiente utilizado dentro de Administración
+   de Mesas.
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   PANEL PRINCIPAL
+   --------------------------------------------------------- */
+
+.sgmb-order-panel {
+  width: 100%;
+  background: rgba(255, 255, 255, .72);
+  border: 1px solid var(--sgmb-border-light);
+  border-radius: 8px;
+  padding: 14px;
+  box-shadow: var(--sgmb-shadow);
+}
+
+
+/* ---------------------------------------------------------
+   ENCABEZADO
+   --------------------------------------------------------- */
+
+.sgmb-order-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.sgmb-order-panel__header h2 {
+  margin: 0;
+  color: var(--sgmb-brown);
+  font-size: 23px;
+  font-weight: bold;
+}
+
+.sgmb-order-panel__close {
+  width: 30px;
+  height: 30px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid var(--sgmb-border);
+  border-radius: 5px;
+
+  background: white;
+  color: var(--sgmb-brown);
+
+  font-size: 21px;
+  line-height: 1;
+}
+
+
+/* =========================================================
+   CATEGORÍAS
+   ========================================================= */
+
+.sgmb-order-category {
+  margin-bottom: 16px;
+
+  border: 1px solid var(--sgmb-border-light);
+  border-radius: 8px;
+
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, .55);
+}
+
+
+/* ---------------------------------------------------------
+   ENCABEZADO DE CATEGORÍA
+   --------------------------------------------------------- */
+
+.sgmb-order-category__header {
+  width: 100%;
+  min-height: 52px;
+
+  padding: 0 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 0;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  font-weight: bold;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+
+/* Barra */
+
+.sgmb-order-category--bar
+.sgmb-order-category__header {
+  background: #fff1d4;
+  color: #765a38;
+}
+
+
+/* Cocina */
+
+.sgmb-order-category--kitchen
+.sgmb-order-category__header {
+  background: #e8f4df;
+  color: #765a38;
+}
+
+
+/* ---------------------------------------------------------
+   TÍTULO DE CATEGORÍA
+   --------------------------------------------------------- */
+
+.sgmb-order-category__title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sgmb-order-category__icon {
+  font-size: 25px;
+}
+
+.sgmb-order-category__arrow {
+  font-size: 25px;
+  line-height: 1;
+}
+
+
+/* ---------------------------------------------------------
+   CONTENIDO DE CATEGORÍA
+   --------------------------------------------------------- */
+
+.sgmb-order-category__content {
+  background: rgba(255, 255, 255, .72);
+}
+
+
+/* =========================================================
+   PRODUCTOS DEL PEDIDO
+   ========================================================= */
+
+.sgmb-order-item {
+  min-height: 62px;
+
+  padding: 8px 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #e7ddd3;
+
+  gap: 12px;
+}
+
+
+/* Información del producto */
+
+.sgmb-order-item__info {
+  min-width: 0;
+  flex: 1;
+}
+
+.sgmb-order-item__info strong {
+  display: block;
+
+  color: #5e5145;
+
+  font-size: 14px;
+  font-weight: bold;
+
+  line-height: 1.25;
+}
+
+.sgmb-order-item__info small {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #999;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   CONTROLES DE CANTIDAD
+   ========================================================= */
+
+.sgmb-order-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  flex-shrink: 0;
+}
+
+.sgmb-order-item__actions > button:not(.sgmb-order-item__delete) {
+  width: 29px;
+  height: 29px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid #d9cbbd;
+  border-radius: 5px;
+
+  background: white;
+  color: #76665b;
+
+  font-size: 18px;
+  line-height: 1;
+}
+
+.sgmb-order-item__actions > span {
+  min-width: 18px;
+
+  text-align: center;
+
+  color: #5e5145;
+
+  font-size: 15px;
+  font-weight: bold;
+}
+
+
+/* ---------------------------------------------------------
+   BOTÓN ELIMINAR
+   --------------------------------------------------------- */
+
+.sgmb-order-item__delete {
+  width: 28px;
+  height: 29px;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #777;
+
+  font-size: 16px;
+}
+
+
+/* =========================================================
+   AGREGAR PRODUCTO
+   ========================================================= */
+
+.sgmb-order-add {
+  margin: 10px 12px;
+
+  padding: 6px 10px;
+
+  border-radius: 5px;
+
+  background: white;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+
+/* Barra */
+
+.sgmb-order-add--bar {
+  border: 1px solid #e7b85e;
+  color: #a4762c;
+}
+
+
+/* Cocina */
+
+.sgmb-order-add--kitchen {
+  border: 1px solid #a6c795;
+  color: #4e8b42;
+}
+
+
+/* =========================================================
+   TOTAL
+   ========================================================= */
+
+.sgmb-order-total {
+  min-height: 65px;
+
+  margin-top: 10px;
+  padding: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-radius: 7px;
+
+  background: #f4ece3;
+
+  color: #765a38;
+}
+
+.sgmb-order-total span {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.sgmb-order-total strong {
+  font-size: 24px;
+}
+
+
+/* =========================================================
+   BOTONES FINALES
+   ========================================================= */
+
+.sgmb-order-actions {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 15px;
+
+  margin-top: 10px;
+}
+
+.sgmb-order-actions button {
+  min-height: 43px;
+
+  border: 0;
+  border-radius: 5px;
+
+  color: white;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 15px;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+
+/* Confirmar */
+
+.sgmb-order-actions__confirm {
+  background: var(--sgmb-green);
+}
+
+
+/* Cerrar mesa */
+
+.sgmb-order-actions__close {
+  background: var(--sgmb-red);
+}
+
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+.sgmb-order-panel button {
+  transition:
+    opacity .15s ease,
+    transform .15s ease,
+    background-color .15s ease;
+}
+
+.sgmb-order-panel button:hover {
+  opacity: .88;
+}
+
+.sgmb-order-item__actions button:active {
+  transform: scale(.94);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  .sgmb-order-panel {
+    padding: 10px;
+  }
+
+  .sgmb-order-panel__header h2 {
+    font-size: 20px;
+  }
+
+  .sgmb-order-category__header {
+    min-height: 56px;
+    padding: 0 13px;
+    font-size: 17px;
+  }
+
+  .sgmb-order-item {
+    padding: 10px 8px;
+  }
+
+  .sgmb-order-item__info strong {
+    font-size: 13px;
+  }
+
+  .sgmb-order-item__actions {
+    gap: 6px;
+  }
+
+  .sgmb-order-item__actions > button:not(.sgmb-order-item__delete) {
+    width: 34px;
+    height: 34px;
+  }
+
+  .sgmb-order-item__delete {
+    width: 30px;
+    height: 34px;
+  }
+
+  .sgmb-order-total strong {
+    font-size: 21px;
+  }
+
+  .sgmb-order-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .sgmb-order-actions button {
+    min-height: 48px;
+  }
+}
+
+.sgmb-tables-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 350px;
+  gap: 24px;
+  align-items: stretch;
+}
+
+/*Coloca mesas + pedidos al lada*/
+.sgmb-tables-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 350px;
+  gap: 24px;
+  align-items: stretch;
+}
+
+/*coloca salon principal y terraza uno debajo del otro*/
+.sgmb-sectors {
+  display: flex;
+  flex-direction: column;
+  gap: 45px;
+  min-width: 0;
+  align-items: center;
+}
+
+.sgmb-sector {
+  margin-top: 0;
 }

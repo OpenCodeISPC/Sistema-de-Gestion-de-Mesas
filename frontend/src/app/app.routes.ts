@@ -6,6 +6,7 @@ import { Caja } from './features/caja/caja';
 import { Comandas } from './features/comandas/comandas';
 import { Dashboard } from './features/home/dashboard/dashboard';
 import { Mesas } from './features/mesas/mesas';
+import { Pedidos } from './features/mesas/pedidos/pedidos';
 
 
 
@@ -18,6 +19,7 @@ export const routes: Routes = [
   { path: 'comandas', component: Comandas },
   { path: 'dashboard', component: Dashboard },
   { path: 'mesas', component: Mesas },
+  { path: 'pedidos', component: Pedidos},
 
   //================FallBack===============================================
 
