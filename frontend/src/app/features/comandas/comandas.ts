@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-comandas',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './comandas.html',
   styleUrl: './comandas.css',
 })
