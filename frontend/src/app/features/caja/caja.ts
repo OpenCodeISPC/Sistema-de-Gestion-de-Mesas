@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { Navbar } from "../../layouts/navbar/navbar";
 
 @Component({
   selector: 'app-caja',
-  imports: [],
+  imports: [Navbar],
   templateUrl: './caja.html',
   styleUrl: './caja.css',
 })
