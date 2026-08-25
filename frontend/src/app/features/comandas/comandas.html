@@ -1,1 +1,368 @@
-<p>comandas works!</p>
+<!-- =========================================================
+     SERVICIOS / COMANDAS
+     La lógica de alternancia Cocina / Barra se implementará
+     posteriormente con Angular.
+     ========================================================= -->
+
+<section class="sgmb-services">
+
+  <!-- Navegación secundaria -->
+  <nav class="sgmb-services-nav" aria-label="Administración">
+
+    <a href="#" class="sgmb-services-nav__item sgmb-services-nav__item--active">
+      <span class="sgmb-services-nav__icon">◉</span>
+      Panel
+    </a>
+
+    <a routerLink="/mesas" class="sgmb-services-nav__item">
+      <span class="sgmb-services-nav__icon">▦</span>
+      Mesas
+    </a>
+
+    <a href="#" class="sgmb-services-nav__item">
+      <span class="sgmb-services-nav__icon">▣</span>
+      Reservas
+    </a>
+
+    <a routerLink="/producto" class="sgmb-services-nav__item">
+      <span class="sgmb-services-nav__icon">◇</span>
+      Productos
+    </a>
+
+    <a href="#" class="sgmb-services-nav__item">
+      <span class="sgmb-services-nav__icon">♙</span>
+      Usuarios
+    </a>
+
+    <a href="#" class="sgmb-services-nav__item">
+      <span class="sgmb-services-nav__icon">▥</span>
+      Reportes
+    </a>
+
+    <a href="#" class="sgmb-services-nav__item">
+      <span class="sgmb-services-nav__icon">♢</span>
+      Auditoría
+    </a>
+
+  </nav>
+
+
+  <!-- Contenido principal -->
+  <main class="sgmb-services__content">
+
+    <!-- Encabezado -->
+    <header class="sgmb-services__header">
+
+      <h1>Comandas de servicio</h1>
+
+      <!-- Selector Cocina / Barra -->
+      <div class="sgmb-service-switch">
+
+        <button
+          type="button"
+          class="sgmb-service-switch__button sgmb-service-switch__button--active">
+          Cocina
+        </button>
+
+        <button
+          type="button"
+          class="sgmb-service-switch__button">
+          Barra
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         TABLEROS DE COMANDAS
+         ===================================================== -->
+
+    <section class="sgmb-orders-board">
+
+
+      <!-- ===================================================
+           PENDIENTES
+           =================================================== -->
+
+      <article class="sgmb-order-column sgmb-order-column--pending">
+
+        <header class="sgmb-order-column__header">
+
+          <div class="sgmb-order-column__icon">
+            ☷
+          </div>
+
+          <h2>Pendientes</h2>
+
+        </header>
+
+
+        <div class="sgmb-order-column__body">
+
+          <!-- Pedido -->
+          <article class="sgmb-order-card sgmb-order-card--pending">
+
+            <div class="sgmb-order-card__main">
+
+              <div class="sgmb-order-card__table">
+                <div class="sgmb-order-card__icon">
+                  ☷
+                </div>
+
+                <div>
+                  <span>Mesa</span>
+                  <strong>12</strong>
+                  <small>Pedido</small>
+                  <strong>24</strong>
+                </div>
+              </div>
+
+
+              <div class="sgmb-order-card__detail">
+
+                <div class="sgmb-order-card__time">
+                  12 min
+                </div>
+
+                <p>-Aceitunas Fritas</p>
+
+                <div class="sgmb-order-card__comment">
+                  <span>◯</span>
+                  -Solo aceitunas Negras
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="sgmb-order-card__actions">
+
+              <button type="button">
+                ›
+              </button>
+
+            </div>
+
+          </article>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- ===================================================
+           EN PREPARACIÓN
+           =================================================== -->
+
+      <article class="sgmb-order-column sgmb-order-column--preparing">
+
+        <header class="sgmb-order-column__header">
+
+          <div class="sgmb-order-column__icon">
+            ♨
+          </div>
+
+          <h2>Preparación</h2>
+
+        </header>
+
+
+        <div class="sgmb-order-column__body">
+
+          <!-- Pedido -->
+          <article class="sgmb-order-card sgmb-order-card--preparing">
+
+            <div class="sgmb-order-card__main">
+
+              <div class="sgmb-order-card__table">
+
+                <div class="sgmb-order-card__icon">
+                  ☷
+                </div>
+
+                <div>
+                  <span>Mesa</span>
+                  <strong>12</strong>
+                  <small>Pedido</small>
+                  <strong>24</strong>
+                </div>
+
+              </div>
+
+
+              <div class="sgmb-order-card__detail">
+
+                <div class="sgmb-order-card__time">
+                  12 min
+                </div>
+
+                <p>-Lomo al plato</p>
+                <p>-Papas bravas</p>
+                <p>-Ensalada rusa</p>
+
+              </div>
+
+            </div>
+
+
+            <div class="sgmb-order-card__actions">
+
+              <button type="button">
+                &lt;
+              </button>
+
+              <button type="button">
+                &gt;
+              </button>
+
+            </div>
+
+          </article>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- ===================================================
+           LISTOS
+           =================================================== -->
+
+      <article class="sgmb-order-column sgmb-order-column--ready">
+
+        <header class="sgmb-order-column__header">
+
+          <div class="sgmb-order-column__icon">
+            ♨
+          </div>
+
+          <h2>Listos</h2>
+
+        </header>
+
+
+        <div class="sgmb-order-column__body">
+
+
+          <!-- Pedido 1 -->
+          <article class="sgmb-order-card sgmb-order-card--ready">
+
+            <div class="sgmb-order-card__main">
+
+              <div class="sgmb-order-card__table">
+
+                <div class="sgmb-order-card__icon">
+                  ☷
+                </div>
+
+                <div>
+                  <span>Mesa</span>
+                  <strong>9</strong>
+                  <small>Pedido</small>
+                  <strong>24</strong>
+                </div>
+
+              </div>
+
+
+              <div class="sgmb-order-card__detail">
+
+                <div class="sgmb-order-card__time">
+                  12 min
+                </div>
+
+                <p>-Papas americanas</p>
+
+                <div class="sgmb-order-card__comment">
+                  <span>◯</span>
+                  -Sin cheddar
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="sgmb-order-card__actions">
+
+              <button type="button">
+                &lt;
+              </button>
+
+              <button type="button">
+                &gt;
+              </button>
+
+            </div>
+
+          </article>
+
+
+
+          <!-- Pedido 2 -->
+          <article class="sgmb-order-card sgmb-order-card--ready">
+
+            <div class="sgmb-order-card__main">
+
+              <div class="sgmb-order-card__table">
+
+                <div class="sgmb-order-card__icon">
+                  ☷
+                </div>
+
+                <div>
+                  <span>Mesa</span>
+                  <strong>3</strong>
+                  <small>Pedido</small>
+                  <strong>24</strong>
+                </div>
+
+              </div>
+
+
+              <div class="sgmb-order-card__detail">
+
+                <div class="sgmb-order-card__time">
+                  12 min
+                </div>
+
+                <p>-Milanesa de Pescado</p>
+
+                <div class="sgmb-order-card__comment">
+                  <span>◯</span>
+                  -Mucho Limón
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="sgmb-order-card__actions">
+
+              <button type="button">
+                &lt;
+              </button>
+
+              <button type="button">
+                &gt;
+              </button>
+
+            </div>
+
+          </article>
+
+        </div>
+
+      </article>
+
+    </section>
+
+  </main>
+
+</section>
