@@ -1,3 +1,18 @@
+
+
+/* =========================================================
+   BOOTSTRAP / BOOTSTRAP ICONS
+   Bootstrap 5.3.8 se usa para grid, forms, tables, buttons y utilidades.
+   Bootstrap Icons se importa desde npm.
+   ========================================================= */
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+/* Los estilos sgmb siguen definiendo la identidad visual del sistema.
+   Bootstrap aporta estructura y componentes; sgmb tiene prioridad visual. */
+.bi {
+  vertical-align: -.125em;
+}
+
 /* =========================================================
    01. VARIABLES / IDENTIDAD VISUAL
    ========================================================= */

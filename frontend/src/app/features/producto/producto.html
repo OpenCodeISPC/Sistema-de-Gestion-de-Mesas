@@ -11,7 +11,7 @@
       <p>Administración de productos del restaurante</p>
     </div>
 
-    <button type="button" class="sgmb-product-add-button">
+    <button type="button" class="sgmb-product-add-button btn">
       + Agregar producto
     </button>
 
@@ -28,20 +28,17 @@
          BUSCADOR
          =================================================== -->
 
-    <div class="sgmb-product-toolbar">
+    <div class="sgmb-product-toolbar row g-3 align-items-center">
 
-      <div class="sgmb-product-search">
+      <div class="sgmb-product-search input-group">
 
-        <span class="sgmb-product-search__icon">⌕</span>
+        <span class="sgmb-product-search__icon"><i class="bi bi-search" aria-hidden="true"></i></span>
 
-        <input
-          type="text"
-          placeholder="Buscar producto..."
-        >
+        <input type="text" placeholder="Buscar producto..." class="form-control">
 
       </div>
 
-      <select class="sgmb-product-filter">
+      <select class="sgmb-product-filter form-select">
 
         <option value="">Todas las categorías</option>
         <option value="cocina">Cocina</option>
@@ -58,7 +55,7 @@
 
     <div class="sgmb-product-table-wrapper">
 
-      <table class="sgmb-product-table">
+      <table class="sgmb-product-table table table-hover align-middle mb-0">
 
         <thead>
 
@@ -117,22 +114,16 @@
 
             <td>
 
-              <div class="sgmb-product-actions">
+              <div class="sgmb-product-actions btn btn-sm p-0">
 
-                <button
-                  type="button"
-                  class="sgmb-product-action sgmb-product-action--edit"
-                  title="Modificar"
-                >
+                <button type="button" class="sgmb-product-action sgmb-product-action--edit btn btn-sm p-0"
+                  title="Modificar">
                   ✎
                 </button>
 
-                <button
-                  type="button"
-                  class="sgmb-product-action sgmb-product-action--delete"
-                  title="Eliminar"
-                >
-                  🗑
+                <button type="button" class="sgmb-product-action sgmb-product-action--delete btn btn-sm p-0"
+                  title="Eliminar">
+                  <i class="bi bi-trash3" aria-hidden="true"></i>
                 </button>
 
               </div>
@@ -174,22 +165,16 @@
 
             <td>
 
-              <div class="sgmb-product-actions">
+              <div class="sgmb-product-actions btn btn-sm p-0">
 
-                <button
-                  type="button"
-                  class="sgmb-product-action sgmb-product-action--edit"
-                  title="Modificar"
-                >
+                <button type="button" class="sgmb-product-action sgmb-product-action--edit btn btn-sm p-0"
+                  title="Modificar">
                   ✎
                 </button>
 
-                <button
-                  type="button"
-                  class="sgmb-product-action sgmb-product-action--delete"
-                  title="Eliminar"
-                >
-                  🗑
+                <button type="button" class="sgmb-product-action sgmb-product-action--delete btn btn-sm p-0"
+                  title="Eliminar">
+                  <i class="bi bi-trash3" aria-hidden="true"></i>
                 </button>
 
               </div>
@@ -231,22 +216,16 @@
 
             <td>
 
-              <div class="sgmb-product-actions">
+              <div class="sgmb-product-actions btn btn-sm p-0">
 
-                <button
-                  type="button"
-                  class="sgmb-product-action sgmb-product-action--edit"
-                  title="Modificar"
-                >
+                <button type="button" class="sgmb-product-action sgmb-product-action--edit btn btn-sm p-0"
+                  title="Modificar">
                   ✎
                 </button>
 
-                <button
-                  type="button"
-                  class="sgmb-product-action sgmb-product-action--delete"
-                  title="Eliminar"
-                >
-                  🗑
+                <button type="button" class="sgmb-product-action sgmb-product-action--delete btn btn-sm p-0"
+                  title="Eliminar">
+                  <i class="bi bi-trash3" aria-hidden="true"></i>
                 </button>
 
               </div>
@@ -288,22 +267,16 @@
 
             <td>
 
-              <div class="sgmb-product-actions">
+              <div class="sgmb-product-actions btn btn-sm p-0">
 
-                <button
-                  type="button"
-                  class="sgmb-product-action sgmb-product-action--edit"
-                  title="Modificar"
-                >
+                <button type="button" class="sgmb-product-action sgmb-product-action--edit btn btn-sm p-0"
+                  title="Modificar">
                   ✎
                 </button>
 
-                <button
-                  type="button"
-                  class="sgmb-product-action sgmb-product-action--delete"
-                  title="Eliminar"
-                >
-                  🗑
+                <button type="button" class="sgmb-product-action sgmb-product-action--delete btn btn-sm p-0"
+                  title="Eliminar">
+                  <i class="bi bi-trash3" aria-hidden="true"></i>
                 </button>
 
               </div>
@@ -329,16 +302,13 @@
         Mostrando 4 productos
       </span>
 
-      <div class="sgmb-product-pagination">
+      <div class="sgmb-product-pagination btn-group">
 
         <button type="button">
-          ‹
+          <i class="bi bi-chevron-left" aria-hidden="true"></i>
         </button>
 
-        <button
-          type="button"
-          class="active"
-        >
+        <button type="button" class="active">
           1
         </button>
 
@@ -351,7 +321,7 @@
         </button>
 
         <button type="button">
-          ›
+          <i class="bi bi-chevron-right" aria-hidden="true"></i>
         </button>
 
       </div>
@@ -374,81 +344,63 @@
         <p>Completá los datos del nuevo producto</p>
       </div>
 
-      <button
-        type="button"
-        class="sgmb-product-form-close"
-        title="Cerrar"
-      >
-        ×
+      <button type="button" class="sgmb-product-form-close" title="Cerrar">
+        <i class="bi bi-x-lg" aria-hidden="true"></i>
       </button>
 
     </div>
 
 
-    <form class="sgmb-product-form">
+    <form class="sgmb-product-form row g-3">
 
       <!-- NOMBRE -->
 
-      <div class="sgmb-product-field">
+      <div class="sgmb-product-field col-12 col-md-6">
 
         <label for="nombre">
           Nombre
         </label>
 
-        <input
-          id="nombre"
-          type="text"
-          placeholder="Nombre del producto"
-        >
+        <input id="nombre" type="text" placeholder="Nombre del producto" class="form-control">
 
       </div>
 
 
       <!-- DESCRIPCIÓN -->
 
-      <div class="sgmb-product-field">
+      <div class="sgmb-product-field col-12 col-md-6">
 
         <label for="descripcion">
           Descripción
         </label>
 
-        <textarea
-          id="descripcion"
-          rows="3"
-          placeholder="Descripción del producto"
-        ></textarea>
+        <textarea id="descripcion" rows="3" placeholder="Descripción del producto" class="form-control"></textarea>
 
       </div>
 
 
       <!-- PRECIO -->
 
-      <div class="sgmb-product-field">
+      <div class="sgmb-product-field col-12 col-md-6">
 
         <label for="precio">
           Precio
         </label>
 
-        <input
-          id="precio"
-          type="number"
-          min="0"
-          step="0.01"
-          placeholder="0.00"
-        >
+        <input id="precio" type="number" min="0" step="0.01" placeholder="0.00" class="form-control">
 
       </div>
 
 
       <!-- CATEGORÍA -->
 
-      <div class="sgmb-product-field">
+      <div class="sgmb-product-field col-12 col-md-6">
 
         <label for="categoria">
           Categoría
         </label>
 
-        <select id="categoria">
+        <select id="categoria" class="form-select">
 
           <option value="">
             Seleccionar categoría
@@ -469,13 +421,13 @@
 
       <!-- DISPONIBILIDAD -->
 
-      <div class="sgmb-product-field">
+      <div class="sgmb-product-field col-12 col-md-6">
 
         <label for="disponibilidad">
           Disponibilidad
         </label>
 
-        <select id="disponibilidad">
+        <select id="disponibilidad" class="form-select">
 
           <option value="true">
             Disponible
@@ -492,19 +444,13 @@
 
       <!-- BOTONES -->
 
-      <div class="sgmb-product-form-actions">
+      <div class="sgmb-product-form-actions col-12">
 
-        <button
-          type="button"
-          class="sgmb-product-button sgmb-product-button--cancel"
-        >
+        <button type="button" class="sgmb-product-button sgmb-product-button--cancel btn btn-outline-secondary">
           Cancelar
         </button>
 
-        <button
-          type="submit"
-          class="sgmb-product-button sgmb-product-button--save"
-        >
+        <button type="submit" class="sgmb-product-button sgmb-product-button--save btn btn-success">
           Guardar producto
         </button>
 
