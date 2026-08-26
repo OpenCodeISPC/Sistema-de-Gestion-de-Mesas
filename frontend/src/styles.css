@@ -1,5 +1,3 @@
-
-
 /* =========================================================
    BOOTSTRAP / BOOTSTRAP ICONS
    Bootstrap 5.3.8 se usa para grid, forms, tables, buttons y utilidades.
@@ -581,160 +579,475 @@ button {
 
 
 /* =========================================================
-   07. RESUMEN DE MESAS
+   07. MESAS
    ========================================================= */
 
-.sgmb-summary {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 38px;
-  margin-bottom: 25px;
+/* ---------------------------------------------------------
+   CONTENEDOR PRINCIPAL
+   --------------------------------------------------------- */
+
+.sgmb-mesas {
+  width: 100%;
 }
 
-.sgmb-summary-card {
-  min-height: 86px;
-  background: rgba(255, 255, 255, .65);
-  border: 1px solid var(--sgmb-border);
-  border-radius: 9px;
-  padding: 15px 20px;
+
+/* ---------------------------------------------------------
+   PESTAÑAS
+   --------------------------------------------------------- */
+
+.sgmb-tabs {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 0;
+
+  border: 1px solid var(--sgmb-border);
+  border-radius: 6px;
+
+  overflow: hidden;
+
+  background: white;
 }
 
-.sgmb-summary-card__icon,
-.sgmb-cash-summary-card__icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  color: white;
-  font-size: 27px;
-}
+.sgmb-tab {
+  border: 0;
+  background: white;
 
-.sgmb-icon--green {
-  background: var(--sgmb-green);
-}
-
-.sgmb-icon--orange {
-  background: var(--sgmb-orange);
-}
-
-.sgmb-icon--red {
-  background: var(--sgmb-red);
-}
-
-.sgmb-icon--brown {
-  background: var(--sgmb-brown);
-}
-
-.sgmb-summary-card span {
-  display: block;
-  font-size: 17px;
-}
-
-.sgmb-summary-card strong {
-  display: block;
-  font-size: 31px;
-  line-height: 1;
-}
-
-.sgmb-summary-card small {
   color: var(--sgmb-brown);
+
+  padding: 9px 25px;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 15px;
+
+  cursor: pointer;
+
+  transition:
+    background-color .15s ease,
+    color .15s ease;
+}
+
+.sgmb-tab:hover {
+  background: #f4ece3;
+}
+
+.sgmb-tab--active {
+  background: var(--sgmb-brown);
+  color: white;
+}
+
+.sgmb-tab--active:hover {
+  background: var(--sgmb-brown-dark);
 }
 
 
 /* =========================================================
-   08. PANEL DE MESAS
+   RESUMEN
+   ========================================================= */
+
+.sgmb-summary {
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 38px;
+
+  margin-bottom: 25px;
+}
+
+
+/* ---------------------------------------------------------
+   TARJETA DE RESUMEN
+   --------------------------------------------------------- */
+
+.sgmb-summary-card {
+  min-height: 90px;
+
+  padding: 16px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  background: rgba(255, 255, 255, .7);
+
+  border: 1px solid var(--sgmb-border);
+
+  border-radius: 8px;
+
+  box-shadow: var(--sgmb-shadow);
+
+  box-sizing: border-box;
+}
+
+
+/* ---------------------------------------------------------
+   ICONO
+   --------------------------------------------------------- */
+
+.sgmb-summary-card__icon {
+  width: 50px;
+  height: 50px;
+
+  flex-shrink: 0;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 8px;
+
+  font-size: 23px;
+}
+
+
+/* Verde */
+
+.sgmb-icon--green {
+  background: #e5f2e0;
+  color: var(--sgmb-green);
+}
+
+
+/* Naranja */
+
+.sgmb-icon--orange {
+  background: #fff0d8;
+  color: var(--sgmb-orange);
+}
+
+
+/* Rojo */
+
+.sgmb-icon--red {
+  background: #f9e1df;
+  color: var(--sgmb-red);
+}
+
+
+/* ---------------------------------------------------------
+   TEXTO DEL RESUMEN
+   --------------------------------------------------------- */
+
+.sgmb-summary-card>div:last-child {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.sgmb-summary-card span {
+  color: #765a38;
+
+  font-size: 14px;
+}
+
+.sgmb-summary-card strong {
+  margin-top: 2px;
+
+  color: var(--sgmb-brown);
+
+  font-size: 27px;
+
+  line-height: 1.1;
+}
+
+.sgmb-summary-card small {
+  margin-top: 2px;
+
+  color: #8b8177;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   PANEL DE MESAS
    ========================================================= */
 
 .sgmb-tables-panel {
   width: 100%;
-  background: rgba(255, 255, 255, .55);
-  border: 1px solid var(--sgmb-border);
-  border-radius: 8px;
+
   padding: 15px 18px 28px;
+
+  background: rgba(255, 255, 255, .55);
+
+  border: 1px solid var(--sgmb-border);
+
+  border-radius: 8px;
+
+  box-sizing: border-box;
 }
+
+
+/* ---------------------------------------------------------
+   TÍTULO
+   --------------------------------------------------------- */
 
 .sgmb-tables-panel h2 {
-  color: var(--sgmb-brown);
   margin: 0 0 40px;
+
+  color: var(--sgmb-brown);
+
   font-size: 25px;
+
+  line-height: 1.2;
 }
 
+
+/* =========================================================
+   LAYOUT MESAS + PEDIDOS
+   ========================================================= */
+
+.sgmb-tables-layout {
+  width: 100%;
+
+  display: grid;
+
+  /*
+   * Primera columna:
+   * mesas y sectores
+   *
+   * Segunda columna:
+   * pedidos
+   */
+  grid-template-columns: minmax(0, 1fr) 350px;
+
+  gap: 24px;
+
+  align-items: stretch;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   COMPONENTE PEDIDOS
+   ========================================================= */
+
+/*
+ * Angular genera:
+ *
+ * <app-pedidos>
+ *   <aside class="sgmb-order-panel">
+ *   ...
+ *
+ * Por eso también necesitamos controlar
+ * el host del componente.
+ */
+
+.sgmb-tables-layout>app-pedidos {
+  display: block;
+
+  min-width: 0;
+
+  height: 100%;
+}
+
+
+/* =========================================================
+   SECTORES
+   ========================================================= */
+
+.sgmb-sectors {
+  min-width: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: stretch;
+
+  gap: 45px;
+}
+
+
+/* ---------------------------------------------------------
+   SECTOR
+   --------------------------------------------------------- */
+
+.sgmb-sector {
+  width: 100%;
+
+  margin: 0;
+
+  min-width: 0;
+}
+
+
+/* ---------------------------------------------------------
+   TÍTULO DEL SECTOR
+   --------------------------------------------------------- */
+
 .sgmb-sector h3 {
-  color: var(--sgmb-brown);
-  font-size: 17px;
-  font-weight: 400;
   margin: 0 0 10px;
+
+  color: var(--sgmb-brown);
+
+  font-size: 17px;
+
+  font-weight: 400;
+
+  line-height: 1.2;
 }
 
 .sgmb-sector h3 span {
   display: inline-block;
+
   width: 11px;
   height: 11px;
+
+  margin-right: 6px;
+
   background: var(--sgmb-brown);
+
   border-radius: 50%;
 }
 
+
+/* =========================================================
+   GRILLA DE MESAS
+   ========================================================= */
+
 .sgmb-table-grid {
+  width: 100%;
+
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
   gap: 10px 12px;
+
+  min-width: 0;
 }
 
+
+/* =========================================================
+   TARJETA DE MESA
+   ========================================================= */
+
 .sgmb-table-card {
+  min-width: 0;
+
   min-height: 75px;
-  border: 1px solid var(--sgmb-border);
-  border-radius: 9px;
-  background: #fffdfb;
+
   padding: 10px 12px;
+
   display: flex;
+
   align-items: center;
+
   gap: 9px;
+
+  box-sizing: border-box;
+
+  border: 1px solid var(--sgmb-border);
+
+  border-radius: 9px;
+
+  background: #fffdfb;
+
+  transition:
+    box-shadow .15s ease,
+    transform .15s ease;
 }
+
+.sgmb-table-card:hover {
+  box-shadow: var(--sgmb-shadow);
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   ESTADO DE LA MESA
+   ========================================================= */
 
 .sgmb-table-status {
   width: 44px;
   height: 44px;
+
   flex-shrink: 0;
-  border-radius: 7px;
+
   display: grid;
   place-items: center;
+
+  border-radius: 7px;
+
   color: white;
-  font-size: 26px;
+
+  font-size: 20px;
 }
+
+
+/* Disponible */
 
 .sgmb-table-card--available .sgmb-table-status {
   background: var(--sgmb-green);
 }
 
+
+/* Ocupada */
+
 .sgmb-table-card--occupied .sgmb-table-status {
   background: var(--sgmb-red);
 }
+
+
+/* Reservada */
 
 .sgmb-table-card--reserved .sgmb-table-status {
   background: var(--sgmb-orange);
 }
 
+
+/* =========================================================
+   INFORMACIÓN DE LA MESA
+   ========================================================= */
+
 .sgmb-table-info {
   flex: 1;
+
   min-width: 0;
 }
 
 .sgmb-table-info strong {
   display: block;
+
+  overflow: hidden;
+
+  color: #4f453d;
+
   font-size: 20px;
+
+  line-height: 1.15;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
 }
 
 .sgmb-table-info small {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #8b8177;
+
   font-size: 12px;
 }
 
+
+/* =========================================================
+   ESTADO TEXTO
+   ========================================================= */
+
 .sgmb-status {
+  flex-shrink: 0;
+
   font-size: 11px;
+
   font-weight: bold;
+
   white-space: nowrap;
 }
 
@@ -750,17 +1063,205 @@ button {
   color: var(--sgmb-orange);
 }
 
+
+/* =========================================================
+   ACCIONES DE LA MESA
+   ========================================================= */
+
 .sgmb-table-actions {
+  flex-shrink: 0;
+
   display: flex;
+
+  align-items: center;
+
   gap: 5px;
 }
 
 .sgmb-table-actions button {
   width: 28px;
   height: 28px;
+
+  padding: 0;
+
+  display: grid;
+  place-items: center;
+
   background: white;
+
+  color: var(--sgmb-brown);
+
   border: 1px solid #b9aa9b;
+
   border-radius: 5px;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  transition:
+    background-color .15s ease,
+    color .15s ease,
+    transform .15s ease;
+}
+
+.sgmb-table-actions button:hover {
+  background: var(--sgmb-brown);
+
+  color: white;
+}
+
+.sgmb-table-actions button:active {
+  transform: scale(.94);
+}
+
+/* =========================================================
+   RESPONSIVE - MESAS
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   Pantallas medianas
+   --------------------------------------------------------- */
+
+@media (max-width: 1200px) {
+
+  .sgmb-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .sgmb-tables-layout {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 18px;
+  }
+
+  .sgmb-table-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   Tablet
+   --------------------------------------------------------- */
+
+@media (max-width: 992px) {
+
+  /*
+   * MESAS + PEDIDOS siguen lado a lado.
+   */
+  .sgmb-tables-layout {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 15px;
+  }
+
+  .sgmb-tables-layout>app-pedidos {
+    height: 100%;
+    min-width: 0;
+  }
+
+  .sgmb-sectors {
+    gap: 35px;
+  }
+
+  .sgmb-table-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   Mobile
+   --------------------------------------------------------- */
+
+@media (max-width: 768px) {
+
+  /*
+   * En celular ya no hay espacio suficiente
+   * para mantener las dos columnas.
+   */
+  .sgmb-tables-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .sgmb-tables-layout>app-pedidos {
+    height: auto;
+  }
+
+  .sgmb-summary {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .sgmb-tabs {
+    width: 100%;
+  }
+
+  .sgmb-tab {
+    flex: 1;
+    padding: 9px 15px;
+  }
+
+  .sgmb-tables-panel {
+    padding: 14px;
+  }
+
+  .sgmb-tables-panel h2 {
+    margin-bottom: 25px;
+    font-size: 22px;
+  }
+
+  .sgmb-table-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sgmb-table-card {
+    min-height: 70px;
+  }
+
+  .sgmb-table-info strong {
+    font-size: 17px;
+  }
+
+  .sgmb-status {
+    font-size: 10px;
+  }
+
+  .sgmb-table-actions button {
+    width: 30px;
+    height: 30px;
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   Mobile pequeño
+   --------------------------------------------------------- */
+
+@media (max-width: 480px) {
+
+  .sgmb-table-card {
+    padding: 9px;
+  }
+
+  .sgmb-table-status {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .sgmb-table-info strong {
+    font-size: 16px;
+  }
+
+  .sgmb-status {
+    display: none;
+  }
+
 }
 
 
@@ -1439,41 +1940,35 @@ button {
 
 /* Estados de columnas */
 
-.sgmb-order-column--pending
-.sgmb-order-column__header {
+.sgmb-order-column--pending .sgmb-order-column__header {
   background: #fbe4e1;
   color: #6f5b52;
 }
 
 
-.sgmb-order-column--preparing
-.sgmb-order-column__header {
+.sgmb-order-column--preparing .sgmb-order-column__header {
   background: #ffe2ba;
   color: #756051;
 }
 
 
-.sgmb-order-column--ready
-.sgmb-order-column__header {
+.sgmb-order-column--ready .sgmb-order-column__header {
   background: #e5f4df;
   color: #5d6856;
 }
 
 
-.sgmb-order-column--pending
-.sgmb-order-column__icon {
+.sgmb-order-column--pending .sgmb-order-column__icon {
   color: #f33434;
 }
 
 
-.sgmb-order-column--preparing
-.sgmb-order-column__icon {
+.sgmb-order-column--preparing .sgmb-order-column__icon {
   color: #f28b18;
 }
 
 
-.sgmb-order-column--ready
-.sgmb-order-column__icon {
+.sgmb-order-column--ready .sgmb-order-column__icon {
   color: #39a447;
 }
 
@@ -1545,20 +2040,17 @@ button {
 }
 
 
-.sgmb-order-card--pending
-.sgmb-order-card__icon {
+.sgmb-order-card--pending .sgmb-order-card__icon {
   background: var(--sgmb-red);
 }
 
 
-.sgmb-order-card--preparing
-.sgmb-order-card__icon {
+.sgmb-order-card--preparing .sgmb-order-card__icon {
   background: var(--sgmb-orange);
 }
 
 
-.sgmb-order-card--ready
-.sgmb-order-card__icon {
+.sgmb-order-card--ready .sgmb-order-card__icon {
   background: var(--sgmb-green);
 }
 
@@ -1627,22 +2119,19 @@ button {
 }
 
 
-.sgmb-order-card--pending
-.sgmb-order-card__time {
+.sgmb-order-card--pending .sgmb-order-card__time {
   background: #fde4df;
   color: var(--sgmb-red);
 }
 
 
-.sgmb-order-card--preparing
-.sgmb-order-card__time {
+.sgmb-order-card--preparing .sgmb-order-card__time {
   background: #ffe7bd;
   color: var(--sgmb-orange);
 }
 
 
-.sgmb-order-card--ready
-.sgmb-order-card__time {
+.sgmb-order-card--ready .sgmb-order-card__time {
   background: #e1f3dc;
   color: var(--sgmb-green);
 }
@@ -1701,20 +2190,17 @@ button {
 }
 
 
-.sgmb-order-card--pending
-.sgmb-order-card__actions button {
+.sgmb-order-card--pending .sgmb-order-card__actions button {
   background: #f33131;
 }
 
 
-.sgmb-order-card--preparing
-.sgmb-order-card__actions button {
+.sgmb-order-card--preparing .sgmb-order-card__actions button {
   background: #ef8717;
 }
 
 
-.sgmb-order-card--ready
-.sgmb-order-card__actions button {
+.sgmb-order-card--ready .sgmb-order-card__actions button {
   background: #319c3d;
 }
 
@@ -1923,7 +2409,7 @@ button {
 }
 
 
-.sgmb-auth__roles > label {
+.sgmb-auth__roles>label {
   display: block;
 
   margin-bottom: 22px;
@@ -2086,8 +2572,7 @@ button {
 }
 
 
-.sgmb-auth__form--forgot
-.sgmb-auth__submit {
+.sgmb-auth__form--forgot .sgmb-auth__submit {
   margin-top: 15px;
 }
 
@@ -2255,8 +2740,7 @@ button {
 
 /* Barra */
 
-.sgmb-order-category--bar
-.sgmb-order-category__header {
+.sgmb-order-category--bar .sgmb-order-category__header {
   background: #fff1d4;
   color: #765a38;
 }
@@ -2264,8 +2748,7 @@ button {
 
 /* Cocina */
 
-.sgmb-order-category--kitchen
-.sgmb-order-category__header {
+.sgmb-order-category--kitchen .sgmb-order-category__header {
   background: #e8f4df;
   color: #765a38;
 }
@@ -2360,7 +2843,7 @@ button {
   flex-shrink: 0;
 }
 
-.sgmb-order-item__actions > button:not(.sgmb-order-item__delete) {
+.sgmb-order-item__actions>button:not(.sgmb-order-item__delete) {
   width: 29px;
   height: 29px;
 
@@ -2377,7 +2860,7 @@ button {
   line-height: 1;
 }
 
-.sgmb-order-item__actions > span {
+.sgmb-order-item__actions>span {
   min-width: 18px;
 
   text-align: center;
@@ -2571,7 +3054,7 @@ button {
     gap: 6px;
   }
 
-  .sgmb-order-item__actions > button:not(.sgmb-order-item__delete) {
+  .sgmb-order-item__actions>button:not(.sgmb-order-item__delete) {
     width: 34px;
     height: 34px;
   }
@@ -2592,30 +3075,6 @@ button {
   .sgmb-order-actions button {
     min-height: 48px;
   }
-}
-
-.sgmb-tables-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 350px;
-  gap: 24px;
-  align-items: stretch;
-}
-
-/*Coloca mesas + pedidos al lada*/
-.sgmb-tables-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 350px;
-  gap: 24px;
-  align-items: stretch;
-}
-
-/*coloca salon principal y terraza uno debajo del otro*/
-.sgmb-sectors {
-  display: flex;
-  flex-direction: column;
-  gap: 45px;
-  min-width: 0;
-  align-items: center;
 }
 
 .sgmb-sector {
