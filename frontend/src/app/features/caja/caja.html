@@ -1,16 +1,21 @@
 <nav class="sgmb-admin-nav">
-  <a class="sgmb-admin-nav__item sgmb-admin-nav__item--active">◉ <span>Panel</span></a>
-  <a routerLink="/mesas" class="sgmb-admin-nav__item">▦ <span>Mesas</span></a>
-  <a class="sgmb-admin-nav__item">▣ <span>Reservas</span></a>
-  <a routerLink="/producto" class="sgmb-admin-nav__item">◇ <span>Productos</span></a>
-  <a class="sgmb-admin-nav__item">♙ <span>Usuarios</span></a>
-  <a class="sgmb-admin-nav__item">▥ <span>Reportes</span></a>
-  <a class="sgmb-admin-nav__item">♢ <span>Auditoría</span></a>
+  <a class="sgmb-admin-nav__item sgmb-admin-nav__item--active"><i class="bi bi-speedometer2" aria-hidden="true"></i>
+    <span>Panel</span></a>
+  <a routerLink="/mesas" class="sgmb-admin-nav__item"><i class="bi bi-grid-3x3-gap" aria-hidden="true"></i>
+    <span>Mesas</span></a>
+  <a class="sgmb-admin-nav__item"><i class="bi bi-cash-stack" aria-hidden="true"></i> <span>Reservas</span></a>
+  <a routerLink="/producto" class="sgmb-admin-nav__item"><i class="bi bi-box-seam" aria-hidden="true"></i>
+    <span>Productos</span></a>
+  <a class="sgmb-admin-nav__item"><i class="bi bi-people" aria-hidden="true"></i> <span>Usuarios</span></a>
+  <a class="sgmb-admin-nav__item"><i class="bi bi-bar-chart" aria-hidden="true"></i> <span>Reportes</span></a>
+  <a class="sgmb-admin-nav__item"><i class="bi bi-shield-check" aria-hidden="true"></i> <span>Auditoría</span></a>
 </nav>
 
 <nav class="sgmb-cash-tabs">
-  <button class="sgmb-cash-tabs__item sgmb-cash-tabs__item--active">▱ <span>Cobros</span></button>
-  <button class="sgmb-cash-tabs__item">▣ <span>Cierre de caja</span></button>
+  <button class="sgmb-cash-tabs__item sgmb-cash-tabs__item--active btn"><i class="bi bi-cash-coin"
+      aria-hidden="true"></i> <span>Cobros</span></button>
+  <button class="sgmb-cash-tabs__item btn"><i class="bi bi-cash-stack" aria-hidden="true"></i> <span>Cierre de
+      caja</span></button>
 </nav>
 
 <main class="sgmb-page sgmb-caja">
@@ -24,7 +29,8 @@
     <section class="sgmb-cash-summary">
 
       <article class="sgmb-cash-summary-card">
-        <div class="sgmb-cash-summary-card__icon sgmb-icon--red">▱</div>
+        <div class="sgmb-cash-summary-card__icon sgmb-icon--red"><i class="bi bi-cash-coin" aria-hidden="true"></i>
+        </div>
         <div><small>Pendientes de cobro</small><strong>6</strong></div>
         <span class="sgmb-badge sgmb-badge--attention">Atención</span>
       </article>
@@ -36,7 +42,8 @@
       </article>
 
       <article class="sgmb-cash-summary-card">
-        <div class="sgmb-cash-summary-card__icon sgmb-icon--green">♜</div>
+        <div class="sgmb-cash-summary-card__icon sgmb-icon--green"><i class="bi bi-grid-3x3-gap-fill"
+            aria-hidden="true"></i></div>
         <div><small>Mesas liberadas</small><strong>12</strong></div>
         <span class="sgmb-badge sgmb-badge--success">Hoy</span>
       </article>
@@ -60,49 +67,56 @@
           <span>🟠 Mesa N° 5</span><span>Juan Pérez</span>
           <span><b class="sgmb-state sgmb-state--ready">Listo</b></span>
           <span>$108.000</span><span><b class="sgmb-state sgmb-state--pending">Pendiente</b></span>
-          <button class="sgmb-action-button sgmb-action-button--green">Cobrar ›</button>
+          <button class="sgmb-action-button sgmb-action-button--green btn btn-sm">Cobrar <i class="bi bi-chevron-right"
+              aria-hidden="true"></i></button>
         </div>
 
         <div class="sgmb-payment-row">
           <span>🔴 Mesa N° 2</span><span>Maria López</span>
           <span><b class="sgmb-state sgmb-state--preparing">En preparación</b></span>
           <span>$65.500</span><span><b class="sgmb-state sgmb-state--pending">Pendiente</b></span>
-          <button class="sgmb-action-button sgmb-action-button--green">Cobrar ›</button>
+          <button class="sgmb-action-button sgmb-action-button--green btn btn-sm">Cobrar <i class="bi bi-chevron-right"
+              aria-hidden="true"></i></button>
         </div>
 
         <div class="sgmb-payment-row">
           <span>🟠 Mesa N° 8</span><span>Carlos Gómez</span>
           <span><b class="sgmb-state sgmb-state--ready">Listo</b></span>
           <span>$78.300</span><span><b class="sgmb-state sgmb-state--pending">Pendiente</b></span>
-          <button class="sgmb-action-button sgmb-action-button--green">Cobrar ›</button>
+          <button class="sgmb-action-button sgmb-action-button--green btn btn-sm">Cobrar <i class="bi bi-chevron-right"
+              aria-hidden="true"></i></button>
         </div>
 
         <div class="sgmb-payment-row">
           <span>🟢 Mesa N° 3</span><span>Ana Martínez</span>
           <span><b class="sgmb-state sgmb-state--paid">Pagado</b></span>
           <span>$52.700</span><span><b class="sgmb-state sgmb-state--paid">Pagado</b></span>
-          <button class="sgmb-action-button sgmb-action-button--detail">Ver detalle ›</button>
+          <button class="sgmb-action-button sgmb-action-button--detail btn btn-sm">Ver detalle <i
+              class="bi bi-chevron-right" aria-hidden="true"></i></button>
         </div>
 
         <div class="sgmb-payment-row">
           <span>🟢 Mesa N° 11</span><span>Diego Ramírez</span>
           <span><b class="sgmb-state sgmb-state--paid">Pagado</b></span>
           <span>$120.000</span><span><b class="sgmb-state sgmb-state--paid">Pagado</b></span>
-          <button class="sgmb-action-button sgmb-action-button--detail">Ver detalle ›</button>
+          <button class="sgmb-action-button sgmb-action-button--detail btn btn-sm">Ver detalle <i
+              class="bi bi-chevron-right" aria-hidden="true"></i></button>
         </div>
 
         <div class="sgmb-payment-row">
           <span>🔴 Mesa N6</span><span>Sofia Herrera</span>
           <span><b class="sgmb-state sgmb-state--preparing">En preparación</b></span>
           <span>$33.000</span><span><b class="sgmb-state sgmb-state--pending">Pendiente</b></span>
-          <button class="sgmb-action-button sgmb-action-button--green">Cobrar ›</button>
+          <button class="sgmb-action-button sgmb-action-button--green btn btn-sm">Cobrar <i class="bi bi-chevron-right"
+              aria-hidden="true"></i></button>
         </div>
 
       </div>
 
-      <footer class="sgmb-table-footer">
+      <footer class="sgmb-table-footer btn">
         <strong>Mostrando 1 a 6 de 6 mesas</strong>
-        <div><button>‹</button><button class="active">1</button><button>›</button></div>
+        <div><button><i class="bi bi-chevron-left" aria-hidden="true"></i></button><button
+            class="active">1</button><button><i class="bi bi-chevron-right" aria-hidden="true"></i></button></div>
       </footer>
     </article>
 
@@ -137,12 +151,14 @@
       <label class="sgmb-input-label">Importe recibido</label>
       <div class="sgmb-money-input">
         <span>$</span>
-        <input type="text" placeholder="0,00" />
+        <input type="text" placeholder="0,00" class="form-control">
       </div>
 
       <div class="sgmb-detail-actions">
-        <button class="sgmb-confirm-button">✓ &nbsp; Confirmar cobro</button>
-        <button class="sgmb-release-button">♜ &nbsp; Liberar mesa</button>
+        <button class="sgmb-confirm-button btn btn-success"><i class="bi bi-check-lg" aria-hidden="true"></i> &nbsp;
+          Confirmar cobro</button>
+        <button class="sgmb-release-button btn btn-outline-secondary"><i class="bi bi-grid-3x3-gap-fill"
+            aria-hidden="true"></i> &nbsp; Liberar mesa</button>
       </div>
     </aside>
 
