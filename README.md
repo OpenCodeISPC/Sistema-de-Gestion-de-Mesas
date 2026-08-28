@@ -47,7 +47,7 @@ Bares y restaurantes pequeños o medianos, enfocándose en el mozo como el usuar
 ### Frontend
 * **Framework:** Angular 
 * **Lenguajes:** HTML semántico, CSS, TypeScript
-* **Librerías de Diseño:** Bootstrap y Tailwind CSS
+* **Librería de Diseño:** Bootstrap
 * **Enfoque UX:** Interfaz adaptativa optimizada para tablets y celulares, con actualización por eventos.
 
 ### Backend y API
