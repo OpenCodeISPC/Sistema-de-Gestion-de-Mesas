@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { RouterLink } from "@angular/router";
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-dashboard',
   imports: [RouterLink],
-  templateUrl: './login.html',
-  styleUrl: './login.css',
+  templateUrl: './dashboard.html',
+  styleUrl: './dashboard.css',
 })
-export class Login {
+export class Dashboard {
 
 }

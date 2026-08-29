@@ -1,1 +1,685 @@
-<p>mesas works!</p>
+<main class="sgmb-page sgmb-mesas">
+
+  <header class="sgmb-page-header">
+
+    <div>
+      <h1>Administración de mesas</h1>
+      <p>Gestiona las mesas del restaurante y sus reservas.</p>
+    </div>
+
+    <div class="sgmb-tabs">
+
+      <button
+        type="button"
+        class="sgmb-tab sgmb-tab--active">
+        Mesas
+      </button>
+
+      <button
+        type="button"
+        class="sgmb-tab">
+        Reservas
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <section class="sgmb-summary">
+
+    <!-- Total de mesas -->
+    <article class="sgmb-summary-card">
+
+      <div class="sgmb-summary-card__icon sgmb-icon--green">
+        <i class="bi bi-grid-3x3-gap-fill" aria-hidden="true"></i>
+      </div>
+
+      <div>
+        <span>Total de mesas</span>
+        <strong>15</strong>
+        <small>Activas</small>
+      </div>
+
+    </article>
+
+
+    <!-- Activas -->
+    <article class="sgmb-summary-card">
+
+      <div class="sgmb-summary-card__icon sgmb-icon--green">
+        <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+      </div>
+
+      <div>
+        <span>Activas</span>
+        <strong>9</strong>
+      </div>
+
+    </article>
+
+
+    <!-- Reservadas -->
+    <article class="sgmb-summary-card">
+
+      <div class="sgmb-summary-card__icon sgmb-icon--orange">
+        <i class="bi bi-calendar-check-fill" aria-hidden="true"></i>
+      </div>
+
+      <div>
+        <span>Reservadas</span>
+        <strong>2</strong>
+      </div>
+
+    </article>
+
+
+    <!-- Ocupadas -->
+    <article class="sgmb-summary-card">
+
+      <div class="sgmb-summary-card__icon sgmb-icon--red">
+        <i class="bi bi-x-circle-fill" aria-hidden="true"></i>
+      </div>
+
+      <div>
+        <span>Ocupadas</span>
+        <strong>4</strong>
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- =====================================================
+       PANEL PRINCIPAL
+       MESAS + PEDIDOS
+       ===================================================== -->
+
+  <section class="sgmb-tables-panel">
+
+    <h2>Mesas por sector</h2>
+
+    <div class="sgmb-tables-layout">
+
+      <!-- =================================================
+           SECTORES
+           ================================================= -->
+
+      <div class="sgmb-sectors">
+
+
+        <!-- =================================================
+             SALÓN PRINCIPAL
+             ================================================= -->
+
+        <div class="sgmb-sector">
+
+          <h3>
+            <span></span>
+            Salón principal
+          </h3>
+
+          <div class="sgmb-table-grid">
+
+
+            <!-- Mesa 01 -->
+            <article class="sgmb-table-card sgmb-table-card--occupied">
+
+              <div class="sgmb-table-status">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+              </div>
+
+              <div class="sgmb-table-info">
+                <strong>Mesa 01</strong>
+                <small>Capacidad: 4</small>
+              </div>
+
+              <span class="sgmb-status sgmb-status--red">
+                Ocupada
+              </span>
+
+              <div class="sgmb-table-actions">
+
+                <button
+                  type="button"
+                  aria-label="Editar mesa 01">
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Más opciones mesa 01">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <!-- Mesa 02 -->
+            <article class="sgmb-table-card sgmb-table-card--available">
+
+              <div class="sgmb-table-status">
+                <i class="bi bi-check-lg" aria-hidden="true"></i>
+              </div>
+
+              <div class="sgmb-table-info">
+                <strong>Mesa 02</strong>
+                <small>Capacidad: 4</small>
+              </div>
+
+              <span class="sgmb-status sgmb-status--green">
+                Disponible
+              </span>
+
+              <div class="sgmb-table-actions">
+
+                <button
+                  type="button"
+                  aria-label="Editar mesa 02">
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Más opciones mesa 02">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <!-- Mesa 03 -->
+            <article class="sgmb-table-card sgmb-table-card--reserved">
+
+              <div class="sgmb-table-status">
+                <i class="bi bi-calendar-event" aria-hidden="true"></i>
+              </div>
+
+              <div class="sgmb-table-info">
+                <strong>Mesa 03</strong>
+                <small>Capacidad: 6</small>
+              </div>
+
+              <span class="sgmb-status sgmb-status--orange">
+                Reservada
+              </span>
+
+              <div class="sgmb-table-actions">
+
+                <button
+                  type="button"
+                  aria-label="Editar mesa 03">
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Más opciones mesa 03">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <!-- Mesa 04 -->
+            <article class="sgmb-table-card sgmb-table-card--available">
+
+              <div class="sgmb-table-status">
+                <i class="bi bi-check-lg" aria-hidden="true"></i>
+              </div>
+
+              <div class="sgmb-table-info">
+                <strong>Mesa 04</strong>
+                <small>Capacidad: 4</small>
+              </div>
+
+              <span class="sgmb-status sgmb-status--green">
+                Disponible
+              </span>
+
+              <div class="sgmb-table-actions">
+
+                <button
+                  type="button"
+                  aria-label="Editar mesa 04">
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Más opciones mesa 04">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <!-- Mesa 05 -->
+            <article class="sgmb-table-card sgmb-table-card--occupied">
+
+              <div class="sgmb-table-status">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+              </div>
+
+              <div class="sgmb-table-info">
+                <strong>Mesa 05</strong>
+                <small>Capacidad: 4</small>
+              </div>
+
+              <span class="sgmb-status sgmb-status--red">
+                Ocupada
+              </span>
+
+              <div class="sgmb-table-actions">
+
+                <button
+                  type="button"
+                  aria-label="Editar mesa 05">
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Más opciones mesa 05">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <!-- Mesa 06 -->
+            <article class="sgmb-table-card sgmb-table-card--available">
+
+              <div class="sgmb-table-status">
+                <i class="bi bi-check-lg" aria-hidden="true"></i>
+              </div>
+
+              <div class="sgmb-table-info">
+                <strong>Mesa 06</strong>
+                <small>Capacidad: 2</small>
+              </div>
+
+              <span class="sgmb-status sgmb-status--green">
+                Disponible
+              </span>
+
+              <div class="sgmb-table-actions">
+
+                <button
+                  type="button"
+                  aria-label="Editar mesa 06">
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Más opciones mesa 06">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <!-- Mesa 07 -->
+            <article class="sgmb-table-card sgmb-table-card--available">
+
+              <div class="sgmb-table-status">
+                <i class="bi bi-check-lg" aria-hidden="true"></i>
+              </div>
+
+              <div class="sgmb-table-info">
+                <strong>Mesa 07</strong>
+                <small>Capacidad: 4</small>
+              </div>
+
+              <span class="sgmb-status sgmb-status--green">
+                Disponible
+              </span>
+
+              <div class="sgmb-table-actions">
+
+                <button
+                  type="button"
+                  aria-label="Editar mesa 07">
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Más opciones mesa 07">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <!-- Mesa 08 -->
+            <article class="sgmb-table-card sgmb-table-card--reserved">
+
+              <div class="sgmb-table-status">
+                <i class="bi bi-calendar-event" aria-hidden="true"></i>
+              </div>
+
+              <div class="sgmb-table-info">
+                <strong>Mesa 08</strong>
+                <small>Capacidad: 6</small>
+              </div>
+
+              <span class="sgmb-status sgmb-status--orange">
+                Reservada
+              </span>
+
+              <div class="sgmb-table-actions">
+
+                <button
+                  type="button"
+                  aria-label="Editar mesa 08">
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Más opciones mesa 08">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <!-- Mesa 09 -->
+            <article class="sgmb-table-card sgmb-table-card--occupied">
+
+              <div class="sgmb-table-status">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+              </div>
+
+              <div class="sgmb-table-info">
+                <strong>Mesa 09</strong>
+                <small>Capacidad: 4</small>
+              </div>
+
+              <span class="sgmb-status sgmb-status--red">
+                Ocupada
+              </span>
+
+              <div class="sgmb-table-actions">
+
+                <button
+                  type="button"
+                  aria-label="Editar mesa 09">
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Más opciones mesa 09">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </article>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             TERRAZA
+             ================================================= -->
+
+        <div class="sgmb-sector">
+
+          <h3>
+            <span></span>
+            Terraza
+          </h3>
+
+          <div class="sgmb-table-grid">
+
+
+            <!-- Mesa 10 -->
+            <article class="sgmb-table-card sgmb-table-card--available">
+
+              <div class="sgmb-table-status">
+                <i class="bi bi-check-lg" aria-hidden="true"></i>
+              </div>
+
+              <div class="sgmb-table-info">
+                <strong>Mesa 10</strong>
+                <small>Capacidad: 4</small>
+              </div>
+
+              <span class="sgmb-status sgmb-status--green">
+                Disponible
+              </span>
+
+              <div class="sgmb-table-actions">
+
+                <button
+                  type="button"
+                  aria-label="Editar mesa 10">
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Más opciones mesa 10">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <!-- Mesa 11 -->
+            <article class="sgmb-table-card sgmb-table-card--occupied">
+
+              <div class="sgmb-table-status">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+              </div>
+
+              <div class="sgmb-table-info">
+                <strong>Mesa 11</strong>
+                <small>Capacidad: 4</small>
+              </div>
+
+              <span class="sgmb-status sgmb-status--red">
+                Ocupada
+              </span>
+
+              <div class="sgmb-table-actions">
+
+                <button
+                  type="button"
+                  aria-label="Editar mesa 11">
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Más opciones mesa 11">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <!-- Mesa 12 -->
+            <article class="sgmb-table-card sgmb-table-card--available">
+
+              <div class="sgmb-table-status">
+                <i class="bi bi-check-lg" aria-hidden="true"></i>
+              </div>
+
+              <div class="sgmb-table-info">
+                <strong>Mesa 12</strong>
+                <small>Capacidad: 2</small>
+              </div>
+
+              <span class="sgmb-status sgmb-status--green">
+                Disponible
+              </span>
+
+              <div class="sgmb-table-actions">
+
+                <button
+                  type="button"
+                  aria-label="Editar mesa 12">
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Más opciones mesa 12">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <!-- Mesa 13 -->
+            <article class="sgmb-table-card sgmb-table-card--reserved">
+
+              <div class="sgmb-table-status">
+                <i class="bi bi-calendar-event" aria-hidden="true"></i>
+              </div>
+
+              <div class="sgmb-table-info">
+                <strong>Mesa 13</strong>
+                <small>Capacidad: 6</small>
+              </div>
+
+              <span class="sgmb-status sgmb-status--orange">
+                Reservada
+              </span>
+
+              <div class="sgmb-table-actions">
+
+                <button
+                  type="button"
+                  aria-label="Editar mesa 13">
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Más opciones mesa 13">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <!-- Mesa 14 -->
+            <article class="sgmb-table-card sgmb-table-card--available">
+
+              <div class="sgmb-table-status">
+                <i class="bi bi-check-lg" aria-hidden="true"></i>
+              </div>
+
+              <div class="sgmb-table-info">
+                <strong>Mesa 14</strong>
+                <small>Capacidad: 4</small>
+              </div>
+
+              <span class="sgmb-status sgmb-status--green">
+                Disponible
+              </span>
+
+              <div class="sgmb-table-actions">
+
+                <button
+                  type="button"
+                  aria-label="Editar mesa 14">
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Más opciones mesa 14">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <!-- Mesa 15 -->
+            <article class="sgmb-table-card sgmb-table-card--available">
+
+              <div class="sgmb-table-status">
+                <i class="bi bi-check-lg" aria-hidden="true"></i>
+              </div>
+
+              <div class="sgmb-table-info">
+                <strong>Mesa 15</strong>
+                <small>Capacidad: 4</small>
+              </div>
+
+              <span class="sgmb-status sgmb-status--green">
+                Disponible
+              </span>
+
+              <div class="sgmb-table-actions">
+
+                <button
+                  type="button"
+                  aria-label="Editar mesa 15">
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Más opciones mesa 15">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </article>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           COMPONENTE PEDIDOS
+           ================================================= -->
+
+      <app-pedidos></app-pedidos>
+
+    </div>
+
+  </section>
+
+</main>

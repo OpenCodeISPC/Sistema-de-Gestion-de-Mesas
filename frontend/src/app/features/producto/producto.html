@@ -1,0 +1,463 @@
+<section class="sgmb-page">
+
+  <!-- =====================================================
+       ENCABEZADO
+       ===================================================== -->
+
+  <div class="sgmb-page-header">
+
+    <div>
+      <h1>Productos</h1>
+      <p>Administración de productos del restaurante</p>
+    </div>
+
+    <button type="button" class="sgmb-product-add-button btn">
+      + Agregar producto
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       PANEL PRINCIPAL
+       ===================================================== -->
+
+  <section class="sgmb-product-panel">
+
+    <!-- ===================================================
+         BUSCADOR
+         =================================================== -->
+
+    <div class="sgmb-product-toolbar row g-3 align-items-center">
+
+      <div class="sgmb-product-search input-group">
+
+        <span class="sgmb-product-search__icon"><i class="bi bi-search" aria-hidden="true"></i></span>
+
+        <input type="text" placeholder="Buscar producto..." class="form-control">
+
+      </div>
+
+      <select class="sgmb-product-filter form-select">
+
+        <option value="">Todas las categorías</option>
+        <option value="cocina">Cocina</option>
+        <option value="barra">Barra</option>
+
+      </select>
+
+    </div>
+
+
+    <!-- ===================================================
+         TABLA DE PRODUCTOS
+         =================================================== -->
+
+    <div class="sgmb-product-table-wrapper">
+
+      <table class="sgmb-product-table table table-hover align-middle mb-0">
+
+        <thead>
+
+          <tr>
+
+            <th>ID</th>
+
+            <th>Producto</th>
+
+            <th>Descripción</th>
+
+            <th>Precio</th>
+
+            <th>Categoría</th>
+
+            <th>Disponibilidad</th>
+
+            <th>Acciones</th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          <!-- PRODUCTO 1 -->
+
+          <tr>
+
+            <td>1</td>
+
+            <td>
+              <strong>Hamburguesa completa</strong>
+            </td>
+
+            <td>
+              Hamburguesa con papas fritas
+            </td>
+
+            <td>
+              $8.500
+            </td>
+
+            <td>
+              Cocina
+            </td>
+
+            <td>
+
+              <span class="sgmb-product-status sgmb-product-status--available">
+                Disponible
+              </span>
+
+            </td>
+
+            <td>
+
+              <div class="sgmb-product-actions">
+
+                <button type="button" class="sgmb-product-action sgmb-product-action--edit btn btn-sm p-0"
+                  title="Modificar">
+                  ✎
+                </button>
+
+                <button type="button" class="sgmb-product-action sgmb-product-action--delete btn btn-sm p-0"
+                  title="Eliminar">
+                  <i class="bi bi-trash3" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+
+          <!-- PRODUCTO 2 -->
+
+          <tr>
+
+            <td>2</td>
+
+            <td>
+              <strong>Pizza especial</strong>
+            </td>
+
+            <td>
+              Pizza con jamón, queso y morrones
+            </td>
+
+            <td>
+              $12.000
+            </td>
+
+            <td>
+              Cocina
+            </td>
+
+            <td>
+
+              <span class="sgmb-product-status sgmb-product-status--available">
+                Disponible
+              </span>
+
+            </td>
+
+            <td>
+
+              <div class="sgmb-product-actions">
+
+                <button type="button" class="sgmb-product-action sgmb-product-action--edit btn btn-sm p-0"
+                  title="Modificar">
+                  ✎
+                </button>
+
+                <button type="button" class="sgmb-product-action sgmb-product-action--delete btn btn-sm p-0"
+                  title="Eliminar">
+                  <i class="bi bi-trash3" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+
+          <!-- PRODUCTO 3 -->
+
+          <tr>
+
+            <td>3</td>
+
+            <td>
+              <strong>Gaseosa</strong>
+            </td>
+
+            <td>
+              Gaseosa de 500 ml
+            </td>
+
+            <td>
+              $2.500
+            </td>
+
+            <td>
+              Barra
+            </td>
+
+            <td>
+
+              <span class="sgmb-product-status sgmb-product-status--unavailable">
+                No disponible
+              </span>
+
+            </td>
+
+            <td>
+
+              <div class="sgmb-product-actions">
+
+                <button type="button" class="sgmb-product-action sgmb-product-action--edit btn btn-sm p-0"
+                  title="Modificar">
+                  ✎
+                </button>
+
+                <button type="button" class="sgmb-product-action sgmb-product-action--delete btn btn-sm p-0"
+                  title="Eliminar">
+                  <i class="bi bi-trash3" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+
+          <!-- PRODUCTO 4 -->
+
+          <tr>
+
+            <td>4</td>
+
+            <td>
+              <strong>Ensalada César</strong>
+            </td>
+
+            <td>
+              Ensalada con pollo, queso y aderezo César
+            </td>
+
+            <td>
+              $7.500
+            </td>
+
+            <td>
+              Cocina
+            </td>
+
+            <td>
+
+              <span class="sgmb-product-status sgmb-product-status--available">
+                Disponible
+              </span>
+
+            </td>
+
+            <td>
+
+              <div class="sgmb-product-actions">
+
+                <button type="button" class="sgmb-product-action sgmb-product-action--edit btn btn-sm p-0"
+                  title="Modificar">
+                  ✎
+                </button>
+
+                <button type="button" class="sgmb-product-action sgmb-product-action--delete btn btn-sm p-0"
+                  title="Eliminar">
+                  <i class="bi bi-trash3" aria-hidden="true"></i>
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <!-- ===================================================
+         PIE DE TABLA
+         =================================================== -->
+
+    <div class="sgmb-product-footer">
+
+      <span>
+        Mostrando 4 productos
+      </span>
+
+      <div class="sgmb-product-pagination btn-group">
+
+        <button type="button">
+          <i class="bi bi-chevron-left" aria-hidden="true"></i>
+        </button>
+
+        <button type="button" class="active">
+          1
+        </button>
+
+        <button type="button">
+          2
+        </button>
+
+        <button type="button">
+          3
+        </button>
+
+        <button type="button">
+          <i class="bi bi-chevron-right" aria-hidden="true"></i>
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       FORMULARIO CRUD
+       ===================================================== -->
+
+  <section class="sgmb-product-form-panel">
+
+    <div class="sgmb-product-form-header">
+
+      <div>
+        <h2>Agregar producto</h2>
+        <p>Completá los datos del nuevo producto</p>
+      </div>
+
+      <button type="button" class="sgmb-product-form-close" title="Cerrar">
+        <i class="bi bi-x-lg" aria-hidden="true"></i>
+      </button>
+
+    </div>
+
+
+    <form class="sgmb-product-form">
+
+      <!-- NOMBRE -->
+
+      <div class="sgmb-product-field">
+
+        <label for="nombre">
+          Nombre
+        </label>
+
+        <input id="nombre" type="text" placeholder="Nombre del producto" class="form-control">
+
+      </div>
+
+
+      <!-- DESCRIPCIÓN -->
+
+      <div class="sgmb-product-field">
+
+        <label for="descripcion">
+          Descripción
+        </label>
+
+        <textarea id="descripcion" rows="3" placeholder="Descripción del producto" class="form-control"></textarea>
+
+      </div>
+
+
+      <!-- PRECIO -->
+
+      <div class="sgmb-product-field">
+
+        <label for="precio">
+          Precio
+        </label>
+
+        <input id="precio" type="number" min="0" step="0.01" placeholder="0.00" class="form-control">
+
+      </div>
+
+
+      <!-- CATEGORÍA -->
+
+      <div class="sgmb-product-field">
+
+        <label for="categoria">
+          Categoría
+        </label>
+
+        <select id="categoria" class="form-select">
+
+          <option value="">
+            Seleccionar categoría
+          </option>
+
+          <option value="cocina">
+            Cocina
+          </option>
+
+          <option value="barra">
+            Barra
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- DISPONIBILIDAD -->
+
+      <div class="sgmb-product-field">
+
+        <label for="disponibilidad">
+          Disponibilidad
+        </label>
+
+        <select id="disponibilidad" class="form-select">
+
+          <option value="true">
+            Disponible
+          </option>
+
+          <option value="false">
+            No disponible
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- BOTONES -->
+
+      <div class="sgmb-product-form-actions">
+
+        <button type="button" class="sgmb-product-button sgmb-product-button--cancel btn btn-outline-secondary">
+          Cancelar
+        </button>
+
+        <button type="submit" class="sgmb-product-button sgmb-product-button--save btn btn-success">
+          Guardar producto
+        </button>
+
+      </div>
+
+    </form>
+
+  </section>
+
+</section>

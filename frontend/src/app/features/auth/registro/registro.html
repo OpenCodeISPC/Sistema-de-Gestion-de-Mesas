@@ -1,0 +1,56 @@
+<section class="sgmb-auth">
+  <main class="sgmb-auth__content container py-5">
+    <div class="sgmb-auth__form sgmb-auth__form--register card shadow-sm p-4 mx-auto">
+      <h1>Crear Cuenta</h1>
+
+      <div class="sgmb-auth__field mb-3">
+        <label for="fullname"> Ingrese su nombre completo </label>
+
+        <input id="fullname" type="text" placeholder="Ej: Juan Lopez"  class="form-control">
+      </div>
+
+      <div class="sgmb-auth__field mb-3">
+        <label for="email"> Ingrese su gmail </label>
+
+        <input id="email" type="email" placeholder="Ej: juan_lopez@gmail.com" class="form-control">
+      </div>
+
+      <div class="sgmb-auth__password-grid">
+        <div class="sgmb-auth__field mb-3">
+          <label for="register-password"> Ingrese su contraseña </label>
+
+          <input id="register-password" type="password" placeholder="Ej: ingrese la contraseña" class="form-control">
+        </div>
+
+        <div class="sgmb-auth__field mb-3">
+          <label for="confirm-password"> Confirme su contraseña </label>
+
+          <input id="confirm-password" type="password" placeholder="repita la contraseña" class="form-control">
+        </div>
+      </div>
+
+      <div class="sgmb-auth__roles">
+        <label> Seleccione su rol de acceso: </label>
+
+        <div class="sgmb-role-grid">
+          <button type="button">Cocina</button>
+
+          <button type="button">Mozo</button>
+
+          <button type="button">Barra</button>
+
+          <button type="button" class="sgmb-role-grid__item--active">
+            Administrador
+          </button>
+        </div>
+      </div>
+
+      <button type="button" class="sgmb-auth__submit btn btn-primary w-100">Registrarse</button>
+
+      <p class="sgmb-auth__footer">
+        ¿Ya tenés una cuenta<i class="bi bi-question-circle" aria-hidden="true"></i>
+        <a href="#">Iniciar sesión</a>
+      </p>
+    </div>
+  </main>
+</section>

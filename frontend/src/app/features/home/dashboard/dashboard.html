@@ -1,0 +1,82 @@
+<div class="sgmb-dashboard">
+
+  <!-- Barra lateral -->
+  <aside class="sgmb-sidebar">
+
+    <div class="sgmb-sidebar__spacer"></div>
+
+    <div class="sgmb-sidebar__bottom">
+      <button class="sgmb-sidebar__item btn btn-link" type="button">
+        <span class="sgmb-sidebar__icon"><i class="bi bi-question-circle" aria-hidden="true"></i></span>
+        <span>Ayuda</span>
+      </button>
+
+      <button class="sgmb-sidebar__item sgmb-sidebar__item--logout btn btn-link" type="button">
+        <span class="sgmb-sidebar__icon"><i class="bi bi-box-arrow-right" aria-hidden="true"></i></span>
+        <span>Cerrar sesión</span>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- Contenido -->
+  <main class="sgmb-dashboard__main">
+
+    <section class="sgmb-welcome">
+
+      <div class="sgmb-welcome__illustration" aria-hidden="true">
+        <div class="sgmb-welcome__drawing"><i class="bi bi-stars" aria-hidden="true"></i></div>
+      </div>
+
+      <h1>¡Bienvenido!</h1>
+      <p>Gestioná tu salón de forma simple y eficiente</p>
+
+    </section>
+
+    <section class="sgmb-dashboard__cards row g-4">
+
+      <article class="sgmb-dashboard-card sgmb-dashboard-card--mesas card">
+        <div class="sgmb-dashboard-card__icon card"><i class="bi bi-grid-3x3-gap-fill" aria-hidden="true"></i></div>
+        <h2>Mesas</h2>
+        <p>Visualizá y gestioná<br />el estado de las mesas</p>
+        <button type="button" routerLink="/mesas">
+          Ir a Mesas
+          <span><i class="bi bi-chevron-right" aria-hidden="true"></i></span>
+        </button>
+      </article>
+
+      <article class="sgmb-dashboard-card sgmb-dashboard-card--cocina card">
+        <div class="sgmb-dashboard-card__icon card"><i class="bi bi-fire" aria-hidden="true"></i></div>
+        <h2>Cocina</h2>
+        <p>Ver comandas y estados<br />de pedidos de cocina</p>
+        <button type="button" routerLink="/comandas">
+          Ir a Cocina
+          <span><i class="bi bi-chevron-right" aria-hidden="true"></i></span>
+        </button>
+      </article>
+
+      <article class="sgmb-dashboard-card sgmb-dashboard-card--barra card">
+        <div class="sgmb-dashboard-card__icon card"><i class="bi bi-fire" aria-hidden="true"></i></div>
+        <h2>Barra</h2>
+        <p>Ver comandas y estados<br />de pedidos de barra</p>
+        <button type="button" routerLink="/comandas">
+          Ir a Barra
+          <span><i class="bi bi-chevron-right" aria-hidden="true"></i></span>
+        </button>
+      </article>
+
+      <article class="sgmb-dashboard-card sgmb-dashboard-card--caja card">
+        <div class="sgmb-dashboard-card__icon card"><i class="bi bi-cash-stack" aria-hidden="true"></i></div>
+        <h2>Caja</h2>
+        <p>Cobros, cierre de mesa<br />y cierre de caja</p>
+        <button type="button" routerLink="/caja">
+          Ir a Caja
+          <span><i class="bi bi-chevron-right" aria-hidden="true"></i></span>
+        </button>
+      </article>
+
+    </section>
+
+  </main>
+
+</div>
