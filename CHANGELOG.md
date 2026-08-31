@@ -42,3 +42,9 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+### [0.2.0] - 2026-08-31
+
+### Added
+
+- Se agrega docker-compose.yml y documentacion para poder ejecutar el proyecto con Docker
+
