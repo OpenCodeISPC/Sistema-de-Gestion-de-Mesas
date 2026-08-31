@@ -47,7 +47,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     
     rol = models.CharField(
         max_length=20,
-        choices=ROLES
+        choices=ROLES, default="MOZO"
     )
     
     is_active = models.BooleanField(default=True)
