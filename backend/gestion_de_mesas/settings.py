@@ -1,19 +1,27 @@
+import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Construye rutas dentro del proyecto de esta manera: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Carga variables desde .env.desarrollo
+ENV_FILE = os.path.join(BASE_DIR, '.env.desarrollo')
+if os.path.exists(ENV_FILE):
+    load_dotenv(ENV_FILE)
+else:
+    #si no existe, cae por defecto en el .env estandar
+    load_dotenv(os.path.join(BASE_DIR, '.env'))    
 
 # Configuración de desarrollo de inicio rápido: no apta para producción.
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # ADVERTENCIA DE SEGURIDAD: ¡mantenga en secreto la clave secreta utilizada en producción!
-SECRET_KEY = 'django-insecure-iy^e2l3-3eo+c447^q$r#gstynr1gkl5z#dzod8$^1+l6f!^pf'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key')
 
 # ADVERTENCIA DE SEGURIDAD: ¡no ejecute con la depuración activada en producción!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -26,6 +34,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    
+    #libreria de terceros para conectar con angular
+    'corsheaders',
+    
+    # Mis aplicaciones locales
     'productos',
     'mesas',
     'pedidos',
@@ -36,6 +49,7 @@ AUTH_USER_MODEL = "usuarios.Usuario"
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -70,10 +84,22 @@ WSGI_APPLICATION = 'gestion_de_mesas.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', 'sgmb_db'),
+        'USER': os.getenv('DB_USER', 'sgmb_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', '1234'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5434'),
     }
 }
+
+# Configuración MongoDB
+MONGO_URI = os.getenv('MONGO_URI', 'mongodb://sgmb_user:1234@localhost:27018/sgmb_mongo_db?authSource=admin')
+MONGO_DB_NAME = os.getenv('MONGO_DB_NAME', 'sgmb_mongo_db')
+
+
+# Permitir peticiones HTTP desde el frontend de Angular
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:4200').split(',')
 
 # =====================================
 # REST FRAMEWORK - AUTENTICACIONES
