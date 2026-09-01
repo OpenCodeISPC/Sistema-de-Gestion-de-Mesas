@@ -1,4 +1,8 @@
-requirements:
-actualizar o crear ==> pip freeze > requirements.txt
-instalar todo ==> pip install -r requirements.txt
+| Situación                                         | Comando                           |
+| ------------------------------------------------- | --------------------------------- |
+| Crear `requirements.txt`                          | `pip freeze > requirements.txt`   |
+| Agregar una librería                              | `pip install nombre-libreria`     |
+| Actualizar `requirements.txt` después de instalar | `pip freeze > requirements.txt`   |
+| Instalar todo desde `requirements.txt`            | `pip install -r requirements.txt` |
+
 --------------------------------------------------------
