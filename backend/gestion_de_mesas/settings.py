@@ -134,13 +134,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
+# **Dejar estos parametros para que guarde bien los datos en la bd
 
-LANGUAGE_CODE = 'en-ar'
-
-TIME_ZONE = 'America/Argentina/Buenos_Aires'
-
+LANGUAGE_CODE = "en-us"
+#controla la hora que ves al trabajar desde Django (conversión de salida/entrada).
+TIME_ZONE = "America/Argentina/Buenos_Aires"
 USE_I18N = True
-
+#controla cómo se guarda físicamente en la base (siempre UTC, sea cual sea el TIME_ZONE).
 USE_TZ = True
 
 
