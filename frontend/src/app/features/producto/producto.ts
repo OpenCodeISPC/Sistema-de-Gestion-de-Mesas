@@ -29,6 +29,10 @@ export class Producto implements OnInit {
   modoEdicion = signal<boolean>(false)
   productoEditarId = signal<number | null>(null)
 
+  // signal de paginacion
+  paginaActual = signal<number>(1)
+  itemsPorPagina = signal<number>(5)
+
   //formulario reactivo
   productoForm: FormGroup = this.fb.group({
     nombre: ['', [Validators.required, Validators.maxLength(150)]],
@@ -45,11 +49,21 @@ export class Producto implements OnInit {
     const cat = this.categoriaFiltro().toLowerCase().trim();
 
     return this.productos().filter(p => {
-      const coincideNombre = p.nombre.toLowerCase().includes(termino) ||
-        (p.descripcion && p.descripcion.toLowerCase().includes(termino));
-      const coincideCategoria = cat === '' || p.categoria.toLowerCase() === cat;
+      const nombre = p.nombre.toLowerCase();
+      const descripcion = (p.descripcion || '').toLowerCase();
+      const categoria = p.categoria.toLowerCase();
 
-      return coincideNombre && coincideCategoria;
+      //1. coincidencia por texto (busca Nombre, descrip... o categoria)
+      const coincideTexto =
+      termino === '' ||
+      nombre.includes(termino) ||
+      descripcion.includes(termino) ||
+      categoria.includes(termino);
+
+      // 2. coincidencia por el selector de categoria
+      const coincideCategoria = cat === '' || categoria === cat;
+
+      return coincideTexto && coincideCategoria;
     })
   })
 
@@ -164,13 +178,38 @@ export class Producto implements OnInit {
   //eventos de inputs de busqueda
   onBusquedaChange(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.busqueda.set(input.value)
+    this.busqueda.set(input.value);
+    this.paginaActual.set(1); //resetear pagina
   }
 
   onCategoriaChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
     this.categoriaFiltro.set(select.value)
+    this.paginaActual.set(1);
   }
 
+  //total paginas calculadas dinamicamente
+  totalPaginas = computed(() => {
+    return Math.ceil(this.productosFiltrados().length / this.itemsPorPagina()) || 1;
+  })
+
+  //array con los numeros de pagina 1,2,3,4
+  paginasArray = computed(() => {
+    return Array.from({ length: this.totalPaginas() }, (_, i) => i + 1);
+  })
+
+  //lista final recortada solo con los items de la pagina visible
+  productosPaginados = computed(() => {
+    const inicio = (this.paginaActual() - 1) * this.itemsPorPagina();
+    const fin = inicio + this.itemsPorPagina();
+    return this.productosFiltrados().slice(inicio, fin);
+  })
+
+  //metodo de navegacion
+  cambiarPagina(pagina: number): void {
+    if (pagina >= 1 && pagina <= this.totalPaginas()) {
+      this.paginaActual.set(pagina)
+    }
+  }
 
 }
