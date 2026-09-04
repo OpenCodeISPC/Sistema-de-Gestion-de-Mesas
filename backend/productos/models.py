@@ -2,7 +2,6 @@ from django.db import models
 
 
 class Producto(models.Model):
-
     id_producto = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=150)
     descripcion = models.TextField(blank=True, null=True)
@@ -10,7 +9,8 @@ class Producto(models.Model):
     stock = models.IntegerField(default=0)
     categoria = models.CharField(max_length=100)
     disponibilidad = models.BooleanField(default=True)
-    
+
+    # Django gestiona estos campos automáticamente en UTC
     creado_en = models.DateTimeField(auto_now_add=True)
     actualizado_en = models.DateTimeField(auto_now=True)
 
