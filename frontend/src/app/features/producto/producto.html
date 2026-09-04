@@ -41,7 +41,7 @@
       </div>
 
       <select class="sgmb-product-filter form-select" [value]="categoriaFiltro()"
-       (change)="onBusquedaChange($event)">
+       (change)="onCategoriaChange($event)">
         <option value="">Todas las categorías</option>
         <option value="cocina">Cocina</option>
         <option value="barra">Barra</option>
@@ -78,7 +78,7 @@
         </thead>
 
         <tbody>
-          @for (prod of productosFiltrados(); track prod.id_producto) {
+          @for (prod of productosPaginados(); track prod.id_producto) {
           <tr>
             <td>{{ prod.id_producto}}</td>
             <td><strong>{{prod.nombre}}</strong> </td>
@@ -125,32 +125,41 @@
     <div class="sgmb-product-footer">
 
       <span>
-        Mostrando {{productosFiltrados().length}} productos
+        Mostrando {{productosPaginados().length}} de {{ productosFiltrados().length}} productos
       </span>
 
-      <!-- <div class="sgmb-product-pagination btn-group">
+      @if (totalPaginas() > 1) {
+      <div class="sgmb-product-pagination btn-group">
+      
+        <!--Boton anterio-->
+        <button type="button"
+         class="btn btn-outline-secondary"
+         [disabled]="paginaActual() === 1"
+         (click)="cambiarPagina(paginaActual() - 1)">
 
-        <button type="button">
           <i class="bi bi-chevron-left" aria-hidden="true"></i>
         </button>
-
-        <button type="button" class="active">
-          1
+      
+        <!--pagina numerica-->
+       @for (pag of paginasArray(); track pag) {
+        <button type="button"
+        class="btn"
+        [class.btn-primary]="paginaActual() === pag"
+        [class.btn-outline-secondary]="paginaActual() !== pag"
+        (click)="cambiarPagina(pag)">
+          {{pag}}
         </button>
-
-        <button type="button">
-          2
-        </button>
-
-        <button type="button">
-          3
-        </button>
-
-        <button type="button">
+       }
+       <!--boton siguiente-->
+        <button type="button"
+        class="btn btn-outline-secondary"
+        [disabled]="paginaActual() === totalPaginas()"
+        (click)="cambiarPagina(paginaActual() + 1)">
           <i class="bi bi-chevron-right" aria-hidden="true"></i>
         </button>
-
-      </div> -->
+      
+      </div>
+      }
 
     </div>
 

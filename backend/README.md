@@ -10,6 +10,7 @@
 | --------------------------------- | --------------- |
 | `docker compose up -d`            | Levantar        |
 | `docker compose down`             | Apagar          |
+| `docker ps`                       | Status          |   
 
 
 | Comando: verificacion migraciones                  |Sirve                                                               |
