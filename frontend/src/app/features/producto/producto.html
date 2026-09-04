@@ -11,7 +11,8 @@
       <p>Administración de productos del restaurante</p>
     </div>
 
-    <button type="button" class="sgmb-product-add-button btn">
+    <button type="button" class="sgmb-product-add-button btn"
+     (click)="abrirFormularioCrear()">
       + Agregar producto
     </button>
 
@@ -34,26 +35,30 @@
 
         <span class="sgmb-product-search__icon"><i class="bi bi-search" aria-hidden="true"></i></span>
 
-        <input type="text" placeholder="Buscar producto..." class="form-control">
+        <input type="text" placeholder="Buscar producto..." class="form-control"
+         [value]="busqueda()" (input)="onBusquedaChange($event)">
 
       </div>
 
-      <select class="sgmb-product-filter form-select">
-
+      <select class="sgmb-product-filter form-select" [value]="categoriaFiltro()"
+       (change)="onBusquedaChange($event)">
         <option value="">Todas las categorías</option>
         <option value="cocina">Cocina</option>
         <option value="barra">Barra</option>
-
       </select>
 
     </div>
-
 
     <!-- ===================================================
          TABLA DE PRODUCTOS
          =================================================== -->
 
     <div class="sgmb-product-table-wrapper">
+      @if (cargando()){
+      <div class="p-4 text-center">Cargando productos..</div>
+      } @else if (errorMensaje()) {
+      <div class="alert alert-danger m-3">{{errorMensaje()}}</div>
+      } @else {
 
       <table class="sgmb-product-table table table-hover align-middle mb-0">
 
@@ -62,233 +67,54 @@
           <tr>
 
             <th>ID</th>
-
             <th>Producto</th>
-
             <th>Descripción</th>
-
             <th>Precio</th>
-
             <th>Categoría</th>
-
             <th>Disponibilidad</th>
-
             <th>Acciones</th>
 
           </tr>
-
         </thead>
 
-
         <tbody>
-
-          <!-- PRODUCTO 1 -->
-
+          @for (prod of productosFiltrados(); track prod.id_producto) {
           <tr>
-
-            <td>1</td>
-
+            <td>{{ prod.id_producto}}</td>
+            <td><strong>{{prod.nombre}}</strong> </td>
+            <td>{{prod.descripcion || 'Sin descripcion'}}</td>
+            <td>{{prod.precio}}</td>
+            <td>{{prod.categoria}}</td>
             <td>
-              <strong>Hamburguesa completa</strong>
-            </td>
-
-            <td>
-              Hamburguesa con papas fritas
-            </td>
-
-            <td>
-              $8.500
-            </td>
-
-            <td>
-              Cocina
-            </td>
-
-            <td>
-
-              <span class="sgmb-product-status sgmb-product-status--available">
-                Disponible
+              <span class="sgmb-product-status"
+                [ngClass]="prod.disponibilidad ? 'sgmb-product-status--available' : 'sgmb-product-status--unavailable'">
+                {{ prod.disponibilidad ? 'Disponible' : 'No disponible' }}
               </span>
-
             </td>
-
             <td>
 
               <div class="sgmb-product-actions">
-
                 <button type="button" class="sgmb-product-action sgmb-product-action--edit btn btn-sm p-0"
-                  title="Modificar">
+                  title="Modificar" (click)="abrirFormularioEditar(prod)">
                   ✎
                 </button>
 
                 <button type="button" class="sgmb-product-action sgmb-product-action--delete btn btn-sm p-0"
-                  title="Eliminar">
+                  title="Eliminar" (click)="eliminarProducto(prod.id_producto)">
                   <i class="bi bi-trash3" aria-hidden="true"></i>
                 </button>
-
               </div>
-
             </td>
-
           </tr>
-
-
-          <!-- PRODUCTO 2 -->
-
+          } @empty {
           <tr>
-
-            <td>2</td>
-
-            <td>
-              <strong>Pizza especial</strong>
-            </td>
-
-            <td>
-              Pizza con jamón, queso y morrones
-            </td>
-
-            <td>
-              $12.000
-            </td>
-
-            <td>
-              Cocina
-            </td>
-
-            <td>
-
-              <span class="sgmb-product-status sgmb-product-status--available">
-                Disponible
-              </span>
-
-            </td>
-
-            <td>
-
-              <div class="sgmb-product-actions">
-
-                <button type="button" class="sgmb-product-action sgmb-product-action--edit btn btn-sm p-0"
-                  title="Modificar">
-                  ✎
-                </button>
-
-                <button type="button" class="sgmb-product-action sgmb-product-action--delete btn btn-sm p-0"
-                  title="Eliminar">
-                  <i class="bi bi-trash3" aria-hidden="true"></i>
-                </button>
-
-              </div>
-
-            </td>
-
+            <td colspan="7" class="text-center py-4">No se encontraron productos</td>
           </tr>
-
-
-          <!-- PRODUCTO 3 -->
-
-          <tr>
-
-            <td>3</td>
-
-            <td>
-              <strong>Gaseosa</strong>
-            </td>
-
-            <td>
-              Gaseosa de 500 ml
-            </td>
-
-            <td>
-              $2.500
-            </td>
-
-            <td>
-              Barra
-            </td>
-
-            <td>
-
-              <span class="sgmb-product-status sgmb-product-status--unavailable">
-                No disponible
-              </span>
-
-            </td>
-
-            <td>
-
-              <div class="sgmb-product-actions">
-
-                <button type="button" class="sgmb-product-action sgmb-product-action--edit btn btn-sm p-0"
-                  title="Modificar">
-                  ✎
-                </button>
-
-                <button type="button" class="sgmb-product-action sgmb-product-action--delete btn btn-sm p-0"
-                  title="Eliminar">
-                  <i class="bi bi-trash3" aria-hidden="true"></i>
-                </button>
-
-              </div>
-
-            </td>
-
-          </tr>
-
-
-          <!-- PRODUCTO 4 -->
-
-          <tr>
-
-            <td>4</td>
-
-            <td>
-              <strong>Ensalada César</strong>
-            </td>
-
-            <td>
-              Ensalada con pollo, queso y aderezo César
-            </td>
-
-            <td>
-              $7.500
-            </td>
-
-            <td>
-              Cocina
-            </td>
-
-            <td>
-
-              <span class="sgmb-product-status sgmb-product-status--available">
-                Disponible
-              </span>
-
-            </td>
-
-            <td>
-
-              <div class="sgmb-product-actions">
-
-                <button type="button" class="sgmb-product-action sgmb-product-action--edit btn btn-sm p-0"
-                  title="Modificar">
-                  ✎
-                </button>
-
-                <button type="button" class="sgmb-product-action sgmb-product-action--delete btn btn-sm p-0"
-                  title="Eliminar">
-                  <i class="bi bi-trash3" aria-hidden="true"></i>
-                </button>
-
-              </div>
-
-            </td>
-
-          </tr>
-
+          }
         </tbody>
 
       </table>
-
+      }
     </div>
 
 
@@ -299,10 +125,10 @@
     <div class="sgmb-product-footer">
 
       <span>
-        Mostrando 4 productos
+        Mostrando {{productosFiltrados().length}} productos
       </span>
 
-      <div class="sgmb-product-pagination btn-group">
+      <!-- <div class="sgmb-product-pagination btn-group">
 
         <button type="button">
           <i class="bi bi-chevron-left" aria-hidden="true"></i>
@@ -324,7 +150,7 @@
           <i class="bi bi-chevron-right" aria-hidden="true"></i>
         </button>
 
-      </div>
+      </div> -->
 
     </div>
 
@@ -334,143 +160,147 @@
   <!-- =====================================================
        FORMULARIO CRUD
        ===================================================== -->
-
+  @if (mostrarFormulario()) {
   <section class="sgmb-product-form-panel">
-
+  
     <div class="sgmb-product-form-header">
-
+  
       <div>
-        <h2>Agregar producto</h2>
-        <p>Completá los datos del nuevo producto</p>
+        <h2>{{ modoEdicion() ? 'Editar producto' : 'Agregar producto'}}</h2>
+        <p>{{ modoEdicion() ? 'Modifica los datos del producto' : 'Completá los datos del nuevo producto'}}</p>
       </div>
-
-      <button type="button" class="sgmb-product-form-close" title="Cerrar">
+  
+      <button type="button" class="sgmb-product-form-close" title="Cerrar"
+       (click)="cerrarFormulario()">
         <i class="bi bi-x-lg" aria-hidden="true"></i>
       </button>
-
+  
     </div>
-
-
-    <form class="sgmb-product-form">
-
-      <!-- NOMBRE -->
-
-      <div class="sgmb-product-field">
-
-        <label for="nombre">
-          Nombre
-        </label>
-
-        <input id="nombre" type="text" placeholder="Nombre del producto" class="form-control">
-
-      </div>
-
-
+  
+  
+    <form [formGroup]="productoForm" (ngSubmit)="guardarProducto()" class="sgmb-product-form">
+  
+        <!-- NOMBRE -->
+        <div class="sgmb-product-field">
+        
+          <label for="nombre">
+            Nombre
+          </label>
+        
+          <input id="nombre" type="text" formControlName="nombre" placeholder="Nombre del producto"
+           class="form-control">
+        
+        </div>
+  
+  
       <!-- DESCRIPCIÓN -->
-
       <div class="sgmb-product-field">
-
+  
         <label for="descripcion">
           Descripción
         </label>
-
-        <textarea id="descripcion" rows="3" placeholder="Descripción del producto" class="form-control"></textarea>
-
+  
+        <textarea id="descripcion" rows="3" formControlName="descripcion" placeholder="Descripción del producto"
+         class="form-control"></textarea>
+  
       </div>
-
-
+  
+  
       <!-- PRECIO -->
-
       <div class="sgmb-product-field">
-
+  
         <label for="precio">
-          Precio
+          Precio Unitario
         </label>
-
-        <input id="precio" type="number" min="0" step="0.01" placeholder="0.00" class="form-control">
-
+  
+        <input id="precio" type="number" min="0" step="0.01" formControlName="precio"
+         placeholder="0.00" class="form-control">
+  
       </div>
-
-
+  
+  
       <!-- CATEGORÍA -->
-
       <div class="sgmb-product-field">
-
+  
         <label for="categoria">
           Categoría
         </label>
-
-        <select id="categoria" class="form-select">
-
+  
+        <select id="categoria" formControlName="categoria" class="form-select">
+  
           <option value="">
             Seleccionar categoría
           </option>
-
+  
           <option value="cocina">
             Cocina
           </option>
-
+  
           <option value="barra">
             Barra
           </option>
-
+  
         </select>
-
+  
       </div>
-
-
+  
+  
       <!-- DISPONIBILIDAD -->
-
+  
       <div class="sgmb-product-field">
-
+  
         <label for="disponibilidad">
           Disponibilidad
         </label>
-
-        <select id="disponibilidad" class="form-select">
-
+  
+        <select id="disponibilidad" formControlName="disponibilidad" class="form-select">
+  
           <option value="true">
             Disponible
           </option>
-
+  
           <option value="false">
             No disponible
           </option>
-
+  
         </select>
-
+  
       </div>
-
-
+  
+  
       <!--Cantidad-->
-
+  
       <div class="sgmb-product-field">
-
+  
         <label for="cantidad">
-          Cantidad
+          Cantidad (Stock)
         </label>
-
-        <input id="cantidad" type="number" min="0" placeholder="Ingrese cantidad" class="form-control">
-
+  
+        <input id="cantidad" type="number" min="0" formControlName="stock"
+         placeholder="Ingrese cantidad" class="form-control">
+  
       </div>
-
-
+  
+  
       <!-- BOTONES -->
-
+  
       <div class="sgmb-product-form-actions">
-
-        <button type="button" class="sgmb-product-button sgmb-product-button--cancel btn btn-outline-secondary">
+  
+        <button type="button" class="sgmb-product-button sgmb-product-button--cancel btn btn-outline-secondary"
+        (click)="cerrarFormulario()">
           Cancelar
         </button>
-
-        <button type="submit" class="sgmb-product-button sgmb-product-button--save btn btn-success">
-          Guardar producto
+  
+        <button type="submit" class="sgmb-product-button sgmb-product-button--save btn btn-success"
+        [disabled]="productoForm.invalid">
+          {{ modoEdicion() ? 'Actualizar producto' : 'Guardar producto'}}
         </button>
-
+  
       </div>
-
+  
     </form>
-
+  
   </section>
+  }
 
 </section>
