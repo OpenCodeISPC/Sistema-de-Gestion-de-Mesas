@@ -24,3 +24,22 @@
 python manage.py runserver 0.0.0.0:8000
 ### Arrancar angular: cd fronend
 ng serve -o
+
+
+================================Sobre WebSocket===============================================
+### Todas las apps que necesiten tiempo real tendrán su propio routing.py, consumers.py y signals.py.
+### Uso de AsyncWebsocketConsumer: La lógica para unirse a un grupo (group_add), desconectarse (group_discard) y reenviar eventos (send).
+### Disparo automático: Las señales post_save / post_delete para emitir eventos cuando la BD cambia.
+
+|Componente            | App pedidos       | App mesas        | App cocina
+|`URL (routing.py)`    |`r'^ws/pedidos/$'` |`r'^ws/mesas/$'`  |`r'^ws/cocina/$'`
+|`Consumer Class`      |`PedidoConsumer`   |`MesaConsumer`    |`CocinaConsumer`
+|`Grupo de Redis`      |`'pedidos_group'`  |`'mesas_group'`   |`'cocina_group'`
+|`Modelo en Signal`    |`sender=Pedido`    |`sender=Mesa `    |`sender=Comanda`
+|`Tipos de Eventos`    |`PEDIDO_CREADO`    |`MESA_OCUPADA`    |`PLATILLO_LISTO`
+
+### Resumen: 
+- El nombre del grupo en Redis (para no mezclar tráfico de salas).
+- La ruta en routing.py.
+- El modelo y serializer que usa la señal (signals.py).
+=================================================================================================
