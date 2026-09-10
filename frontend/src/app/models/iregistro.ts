@@ -1,4 +1,5 @@
 export type RolUser= 'ADMIN' | 'MOZO'| 'CAJERO' | 'COCINA';
+export type OauthProvider = 'google';
 
 //1.MODELO BASE / LECTURA (GET o Respuesta del Backend)
 export interface IUser{
@@ -13,7 +14,7 @@ export interface IUser{
 }
 
 // 2. DTO PARA REGISTRO (POST)
-// Hereda los campos necesarios de IUsuario y agrega las contraseñas
+// Opcion A: Registro mediante email y contraseña
 export interface IRegistroRequest{  
     nombre: string;
     apellido: string;
@@ -21,7 +22,19 @@ export interface IRegistroRequest{
     rol: RolUser;
     password: string;
 }
+// Opción B: Registro mediante OAuth (Google)
+export interface IOauthRegistroRequest{
+    provider: OauthProvider;
+    token:string;
+    rol?: RolUser;
+}
+
+export type RegistroPayload = IRegistroRequest | IOauthRegistroRequest;
 
 // 3. RESPUESTA DEL REGISTRO
 // Si el backend devuelve el usuario creado, reutilizá IUsuario:
-export type IRegistroResponse = IUser;
+export interface IRegistroResponse {
+    user: IUser;
+    access?:string;
+    refresh?: string;
+}
