@@ -11,7 +11,6 @@ services:
       - "5434:5432"
     volumes:
       - datos_postgres_sgmb:/var/lib/postgresql/data
-      
 
   mongo_nuevo_proyecto:
     image: mongo:7
@@ -24,7 +23,6 @@ services:
       - "27018:27017"
     volumes:
       - datos_mongo_sgmb:/data/db
-     
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -51,6 +49,14 @@ services:
       - "8081:8081"
     depends_on:
       - mongo_nuevo_proyecto
+
+  # --- REDIS PARA DJANGO CHANNELS / WEBSOCKETS ---
+  redis:
+    image: redis:alpine
+    container_name: sgmb_redis
+    restart: always
+    ports:
+      - "6379:6379"
 
 volumes:
   datos_postgres_sgmb:
