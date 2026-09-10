@@ -31,12 +31,12 @@ ng serve -o
 ### Uso de AsyncWebsocketConsumer: La lógica para unirse a un grupo (group_add), desconectarse (group_discard) y reenviar eventos (send).
 ### Disparo automático: Las señales post_save / post_delete para emitir eventos cuando la BD cambia.
 
-|Componente            | App pedidos       | App mesas        | App cocina
-|`URL (routing.py)`    |`r'^ws/pedidos/$'` |`r'^ws/mesas/$'`  |`r'^ws/cocina/$'`
-|`Consumer Class`      |`PedidoConsumer`   |`MesaConsumer`    |`CocinaConsumer`
-|`Grupo de Redis`      |`'pedidos_group'`  |`'mesas_group'`   |`'cocina_group'`
-|`Modelo en Signal`    |`sender=Pedido`    |`sender=Mesa `    |`sender=Comanda`
-|`Tipos de Eventos`    |`PEDIDO_CREADO`    |`MESA_OCUPADA`    |`PLATILLO_LISTO`
+|Componente            | App pedidos       | App mesas        | Etc....
+|`URL (routing.py)`    |`r'^ws/pedidos/$'` |`r'^ws/mesas/$'`  |
+|`Consumer Class`      |`PedidoConsumer`   |`MesaConsumer`    |
+|`Grupo de Redis`      |`'pedidos_group'`  |`'mesas_group'`   |
+|`Modelo en Signal`    |`sender=Pedido`    |`sender=Mesa `    |
+|`Tipos de Eventos`    |`PEDIDO_CREADO`    |`MESA_OCUPADA`    |
 
 ### Resumen: 
 - El nombre del grupo en Redis (para no mezclar tráfico de salas).
