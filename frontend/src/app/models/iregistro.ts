@@ -21,6 +21,7 @@ export interface IRegistroRequest{
     email: string;
     rol: RolUser;
     password: string;
+    
 }
 // Opción B: Registro mediante OAuth (Google)
 export interface IOauthRegistroRequest{
