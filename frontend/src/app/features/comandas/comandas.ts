@@ -59,4 +59,30 @@ export class Comandas implements OnInit {
       }
     });
   }
+
+  // Método para el switch del Header (Cocina / Barra)
+  cambiarSector(sector: SectorComanda): void {
+    this.sectorActivo.set(sector);
+  }
+
+  // Métodos para mover las tarjetas entre columnas
+  avanzarEstado(comanda: IComanda): void {
+    let nuevoEstado: EstadoComanda;
+
+    if (comanda.estado === 'PENDIENTE') nuevoEstado = 'PREPARACION';
+    else if (comanda.estado === 'PREPARACION') nuevoEstado = 'LISTO';
+    else return;
+
+    this.actualizarEstado(comanda, nuevoEstado);
+  }
+
+  retrocederEstado(comanda: IComanda): void {
+    let nuevoEstado: EstadoComanda;
+
+    if (comanda.estado === 'LISTO') nuevoEstado = 'PREPARACION';
+    else if (comanda.estado === 'PREPARACION') nuevoEstado = 'PENDIENTE';
+    else return;
+
+    this.actualizarEstado(comanda, nuevoEstado);
+  }
   }
