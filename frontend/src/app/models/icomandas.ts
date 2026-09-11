@@ -1,3 +1,5 @@
+
+
 // Definimos los estados para que coincidan con las tres columnas de tu HTML
 export type EstadoComanda = 'PENDIENTE' | 'PREPARACION' | 'LISTO';
 
@@ -7,8 +9,8 @@ export type SectorComanda = 'COCINA' | 'BARRA';
 // Interfaz para cada plato o ítem dentro de un pedido
 export interface IDetalleComanda {
   id_detalle?: number;
-  producto_nombre: string; // Ej: "Lomo al plato", "Papas bravas"
-  comentario?: string;     // Ej: "-Solo aceitunas Negras", "-Sin cheddar"
+  producto_nombre: string; 
+  comentario?: string;     
 }
 
 // Interfaz principal de la comanda

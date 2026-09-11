@@ -8,7 +8,7 @@ import { IComanda, ICrearComandaDTO, IActualizarComandaDTO } from '../models/ico
 })
 export class ComandaService {
 
-  // Ajusta el endpoint según la ruta exacta de tu backend Django/Python
+  // ruta exacta de tu backend Django/Python
   private apiUrl = 'http://localhost:8000/api/comandas/';
 
   private http = inject(HttpClient);
