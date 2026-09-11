@@ -1,64 +1,69 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
-import { IMesa, ICrearMesaDTO, IActualizarMesaDTO, IPatchMesaDTO } from '../models/imesa';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+import {
+  IMesa,
+  ICrearMesaDTO,
+  IActualizarMesaDTO,
+  IPatchMesaDTO,
+  EstadoMesa
+} from '../models/imesa';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MesaService {
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = 'http://localhost:8000/api/mesas/';
 
-  private apiUrl = 'http://localhost:8000/api/mesas/';
+  /**
+   * Obtiene la lista de mesas con la opción de filtrar por estado
+   * @param estado Estado opcional ('LIBRE' | 'OCUPADA' | 'RESERVADA' | 'CERRADA')
+   */
+  getMesas(estado?: EstadoMesa): Observable<IMesa[]> {
+    let params = new HttpParams();
 
-  private http = inject(HttpClient);
+    if (estado) {
+      params = params.set('estado', estado);
+    }
 
-  // retorna lista completa
-  getMesas(): Observable<IMesa[]> {
-    return this.http.get<IMesa[]>(this.apiUrl).pipe(
-      catchError((err: HttpErrorResponse) => {
-        console.error("No se listaron las mesas", err);
-        return throwError(() => new Error('No se tiene acceso a la BD'));
-      })
-    );
+    return this.http.get<IMesa[]>(this.apiUrl, { params });
   }
 
-  // obtener una sola mesa por Id
-  getMesaPorId(id: number): Observable<IMesa> {
-    return this.http.get<IMesa>(`${this.apiUrl}${id}/`).pipe(
-      catchError((err: HttpErrorResponse) => {
-        console.error(`Error al obtener la mesa con ID ${id}`, err);
-        return throwError(() => err);
-      })
-    );
+  /**
+   * Obtiene el detalle de una mesa por su ID
+   */
+  getMesaById(id: number): Observable<IMesa> {
+    return this.http.get<IMesa>(`${this.apiUrl}${id}/`);
   }
 
-  // recibo el dto de creacion sin id ni fechas
-  crearMesa(dto: ICrearMesaDTO): Observable<IMesa> {
-    return this.http.post<IMesa>(this.apiUrl, dto).pipe(
-      catchError((err: HttpErrorResponse) => {
-        console.log('No se registro la MESA', err);
-        return throwError(() => err);
-      })
-    );
+  /**
+   * Crea una nueva mesa
+   */
+  crearMesa(mesa: ICrearMesaDTO): Observable<IMesa> {
+    return this.http.post<IMesa>(this.apiUrl, mesa);
   }
 
-  // actualizo mediante DTO
-  actualizarMesa(id: number, dto: IActualizarMesaDTO): Observable<IMesa> {
-    return this.http.patch<IMesa>(`${this.apiUrl}${id}/`, dto).pipe(
-      catchError((err: HttpErrorResponse) => {
-        console.error("Error durante la actualizacion", err);
-        return throwError(() => err);
-      })
-    );
+  /**
+   * Actualización completa de una mesa (PUT)
+   */
+  actualizarMesa(id: number, mesa: IActualizarMesaDTO): Observable<IMesa> {
+    return this.http.put<IMesa>(`${this.apiUrl}${id}/`, mesa);
   }
 
-  deleteMesa(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}${id}/`).pipe(
-      catchError((err: HttpErrorResponse) => {
-        console.log("No se puede eliminar la mesa", err);
-        return throwError(() => err);
-      })
-    );
+  /**
+   * Actualización parcial o cambio de estado de una mesa (PATCH)
+   * Útil para cuando un mozo abre/cierra una mesa o cambia su estado a OCUPADA
+   */
+  actualizarEstadoOParcial(id: number, cambios: IPatchMesaDTO): Observable<IMesa> {
+    return this.http.patch<IMesa>(`${this.apiUrl}${id}/`, cambios);
   }
 
+  /**
+   * Elimina una mesa por ID
+   */
+  eliminarMesa(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}${id}/`);
+  }
 }
