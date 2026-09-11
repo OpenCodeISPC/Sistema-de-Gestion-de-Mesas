@@ -28,6 +28,7 @@ ng serve -o
 
 ================================Sobre WebSocket===============================================
 ### Todas las apps que necesiten tiempo real tendrán su propio routing.py, consumers.py y signals.py.
+### "Nosotros usamos solo un websockt(pedidos)quien alimienta a los otras apps"
 ### Uso de AsyncWebsocketConsumer: La lógica para unirse a un grupo (group_add), desconectarse (group_discard) y reenviar eventos (send).
 ### Disparo automático: Las señales post_save / post_delete para emitir eventos cuando la BD cambia.
 
