@@ -85,4 +85,29 @@ export class Comandas implements OnInit {
 
     this.actualizarEstado(comanda, nuevoEstado);
   }
+
+  // Lógica interna para actualizar el estado en el backend y luego en la signal
+  private actualizarEstado(comanda: IComanda, nuevoEstado: EstadoComanda): void {
+    if (!comanda.id_comanda) return;
+
+    // Actualización optimista
+    this.comandas.update(lista => 
+      lista.map(c => c.id_comanda === comanda.id_comanda ? { ...c, estado: nuevoEstado } : c)
+    );
+
+    // Llamada al backend
+    this.comandaService.actualizarEstado(comanda.id_comanda, { estado: nuevoEstado }).subscribe({
+      next: () => {
+        
+      },
+      error: (err) => {
+        console.error('Error al cambiar el estado de la comanda', err);
+        
+        this.comandas.update(lista => 
+          lista.map(c => c.id_comanda === comanda.id_comanda ? { ...c, estado: comanda.estado } : c)
+        );
+        this.errorMensaje.set('Hubo un error al mover la comanda');
+      }
+    });
   }
+}
