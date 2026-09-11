@@ -4,27 +4,81 @@ services:
     container_name: sgmb_postgres
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-sgmb_db}
     ports:
       - "5434:5432"
     volumes:
       - datos_postgres_sgmb:/var/lib/postgresql/data
-      
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-sgmb_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   mongo_nuevo_proyecto:
     image: mongo:7
     container_name: sgmb_mongo
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-adminpassword}
     ports:
       - "27018:27017"
     volumes:
       - datos_mongo_sgmb:/data/db
-     
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sgmb_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-*}
+      - DB_NAME=${POSTGRES_DB:-sgmb_db}
+      - DB_USER=${POSTGRES_USER:-postgres}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - DB_HOST=postgres_nuevo_proyecto
+      - DB_PORT=5432
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
+      - MONGO_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME:-admin}:${MONGO_INITDB_ROOT_PASSWORD:-adminpassword}@mongo_nuevo_proyecto:27017/sgmb_mongo_db?authSource=admin
+    depends_on:
+      postgres_nuevo_proyecto:
+        condition: service_healthy
+      mongo_nuevo_proyecto:
+        condition: service_healthy
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sgmb_frontend
+    restart: always
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.angular
+    depends_on:
+      - backend
+    command: npx ng serve --host 0.0.0.0 --port 4200 --poll=2000
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -43,8 +97,8 @@ services:
     container_name: sgmb_mongo_express
     restart: always
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-adminpassword}
       ME_CONFIG_MONGODB_SERVER: mongo_nuevo_proyecto
       ME_CONFIG_BASICAUTH: "false"
     ports:
