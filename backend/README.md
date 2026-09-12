@@ -6,12 +6,15 @@
 | Instalar todo desde `requirements.txt`            | `pip install -r requirements.txt` |
 
 🐳 COMANDOS DOCKER
-| Comando                           | Sirve para      |
-| --------------------------------- | --------------- |
-| `docker compose up -d`            | Levantar        |
-| `docker compose down`             | Apagar          |
-| `docker ps`                       | Status          |   
-
+| Comando                            | Sirve para      |
+| ---------------------------------  | --------------- |
+| `docker compose up -d`             | Levantar        |
+| `docker compose down`              | Apagar          |
+| `docker ps`                        | Status          | 
+| `docker logs -f sgmb_backend`      | Logs
+| `docker exec -it sgmb_backend bash`|
+| Despues de agregar nvas librerias en requirements.tx o package.json |
+| `docker compose up -d --build`                      | 
 
 | Comando: verificacion migraciones                  |Sirve                                                               |
 | ---------------------------------------------------|--------------------------------------------------------------------|

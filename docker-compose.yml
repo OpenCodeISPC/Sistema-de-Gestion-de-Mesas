@@ -34,6 +34,14 @@ services:
       timeout: 5s
       retries: 5
 
+  # --- REDIS PARA DJANGO CHANNELS / WEBSOCKETS ---
+  redis:
+    image: redis:alpine
+    container_name: sgmb_redis
+    restart: always
+    ports:
+      - "6379:6379"
+
   backend:
     build:
       context: ./backend
@@ -45,23 +53,14 @@ services:
     volumes:
       - ./backend:/app
     env_file:
-      - .env
-    environment:
-      - SECRET_KEY=${SECRET_KEY}
-      - DEBUG=${DEBUG}
-      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-*}
-      - DB_NAME=${POSTGRES_DB:-sgmb_db}
-      - DB_USER=${POSTGRES_USER:-postgres}
-      - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - DB_HOST=postgres_nuevo_proyecto
-      - DB_PORT=5432
-      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
-      - MONGO_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME:-admin}:${MONGO_INITDB_ROOT_PASSWORD:-adminpassword}@mongo_nuevo_proyecto:27017/sgmb_mongo_db?authSource=admin
+      - ./backend/.env.desarrollo
     depends_on:
       postgres_nuevo_proyecto:
         condition: service_healthy
       mongo_nuevo_proyecto:
         condition: service_healthy
+      redis:
+        condition: service_started
     command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
 
   frontend:
@@ -79,32 +78,6 @@ services:
     depends_on:
       - backend
     command: npx ng serve --host 0.0.0.0 --port 4200 --poll=2000
-
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: sgmb_pgadmin
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "5050:80"
-    depends_on:
-      - postgres_nuevo_proyecto
-
-  mongo_express:
-    image: mongo-express:latest
-    container_name: sgmb_mongo_express
-    restart: always
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-adminpassword}
-      ME_CONFIG_MONGODB_SERVER: mongo_nuevo_proyecto
-      ME_CONFIG_BASICAUTH: "false"
-    ports:
-      - "8081:8081"
-    depends_on:
-      - mongo_nuevo_proyecto
 
 volumes:
   datos_postgres_sgmb:
