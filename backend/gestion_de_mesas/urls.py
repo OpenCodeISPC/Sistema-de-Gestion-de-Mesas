@@ -14,6 +14,7 @@ urlpatterns = [
     path("api/", include('pedidos.urls')),
     path('api/', include('mesas.urls')),
     path('api/productos/', include('productos.urls')),
+    path('api/', include('comandas.urls')),
     
     # JWT
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
