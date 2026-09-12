@@ -1,6 +1,6 @@
 """
 Se reutiliza el mismo canal WebSocket, de pedidos
-Tu WebsocketService recibe el evento 'MESA_CAMBIO_ESTADO'
+WebsocketService recibe el evento 'MESA_CAMBIO_ESTADO'
 y cualquier componente (ej. Mapa de Mesas o Caja) reacciona automáticamente.
 No requieres tocar ni consumers.py ni routing.py.
 """
