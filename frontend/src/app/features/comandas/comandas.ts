@@ -1,12 +1,113 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from "@angular/router";
+import { ComandaService } from '../../services/comandas.service'; 
+import { IComanda, EstadoComanda, SectorComanda } from '../../models/icomandas';
 
 @Component({
   selector: 'app-comandas',
-  imports: [RouterLink],
+  standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './comandas.html',
   styleUrl: './comandas.css',
 })
-export class Comandas {
+export class Comandas implements OnInit {
+  private comandaService = inject(ComandaService);
 
+  // Signal inicializado vacío para recibir datos del backend
+  comandas = signal<IComanda[]>([]);
+  cargando = signal<boolean>(false);
+  errorMensaje = signal<string | null>(null);
+
+  // Signal para el filtro de los botones superiores (Cocina / Barra)
+  sectorActivo = signal<SectorComanda>('COCINA');
+
+  // 1. Computed Signal: Filtra las comandas solo por el sector activo
+  comandasPorSector = computed(() => {
+    return this.comandas().filter(c => c.sector === this.sectorActivo());
+  });
+
+  // 2. Computed Signals: Dividen las comandas del sector activo en las 3 columnas
+  comandasPendientes = computed(() => {
+    return this.comandasPorSector().filter(c => c.estado === 'PENDIENTE');
+  });
+
+  comandasEnPreparacion = computed(() => {
+    return this.comandasPorSector().filter(c => c.estado === 'PREPARACION');
+  });
+
+  comandasListas = computed(() => {
+    return this.comandasPorSector().filter(c => c.estado === 'LISTO');
+  });
+
+  ngOnInit(): void {
+    this.cargarComandas();
+  }
+
+  cargarComandas(): void {
+    this.cargando.set(true);
+    this.errorMensaje.set(null);
+
+    this.comandaService.getComandas().subscribe({
+      next: (data) => {
+        this.comandas.set(data);
+        this.cargando.set(false);
+      },
+      error: () => {
+        this.errorMensaje.set('No se pudieron cargar las comandas');
+        this.cargando.set(false);
+      }
+    });
+  }
+
+  // Método para el switch del Header (Cocina / Barra)
+  cambiarSector(sector: SectorComanda): void {
+    this.sectorActivo.set(sector);
+  }
+
+  // Métodos para mover las tarjetas entre columnas
+  avanzarEstado(comanda: IComanda): void {
+    let nuevoEstado: EstadoComanda;
+
+    if (comanda.estado === 'PENDIENTE') nuevoEstado = 'PREPARACION';
+    else if (comanda.estado === 'PREPARACION') nuevoEstado = 'LISTO';
+    else return;
+
+    this.actualizarEstado(comanda, nuevoEstado);
+  }
+
+  retrocederEstado(comanda: IComanda): void {
+    let nuevoEstado: EstadoComanda;
+
+    if (comanda.estado === 'LISTO') nuevoEstado = 'PREPARACION';
+    else if (comanda.estado === 'PREPARACION') nuevoEstado = 'PENDIENTE';
+    else return;
+
+    this.actualizarEstado(comanda, nuevoEstado);
+  }
+
+  // Lógica interna para actualizar el estado en el backend y luego en la signal
+  private actualizarEstado(comanda: IComanda, nuevoEstado: EstadoComanda): void {
+    if (!comanda.id_comanda) return;
+
+    // Actualización optimista
+    this.comandas.update(lista => 
+      lista.map(c => c.id_comanda === comanda.id_comanda ? { ...c, estado: nuevoEstado } : c)
+    );
+
+    // Llamada al backend
+    this.comandaService.actualizarEstado(comanda.id_comanda, { estado: nuevoEstado }).subscribe({
+      next: () => {
+        
+      },
+      error: (err) => {
+        console.error('Error al cambiar el estado de la comanda', err);
+        
+        this.comandas.update(lista => 
+          lista.map(c => c.id_comanda === comanda.id_comanda ? { ...c, estado: comanda.estado } : c)
+        );
+        this.errorMensaje.set('Hubo un error al mover la comanda');
+      }
+    });
+  }
 }

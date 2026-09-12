@@ -48,4 +48,5 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 - Se agrega docker-compose.yml y documentacion para poder ejecutar el proyecto con Docker
 - Se actualiza el model de producto, se agrega el campo stock
-
+- Se crea las vistas y serializer de producto
+- Se crea los servicios, interface y ts(funcionalidades de angular)
