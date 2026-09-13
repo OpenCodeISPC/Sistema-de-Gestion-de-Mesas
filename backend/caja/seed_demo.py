@@ -8,6 +8,14 @@ Re-ejecutable: si la mesa ya tiene un pedido pendiente de cobro, no lo duplica.
 
 Uso (desde la raíz del repo):
     docker exec -i sgmb_backend python manage.py shell < backend/caja/seed_demo.py
+Para volver a probar si ya cerraste todas las mesas poder correr:
+
+a)  docker exec sgmb_backend python manage.py shell -c "exec(open('/app/caja/seed_demo.py').read())"
+Sirve para hacer una re-carga rapida(los contadores "Cobros del turno" y "Mesas liberadas" siguen acumulando los pagos anteriores)
+
+b)  docker exec sgmb_backend python manage.py shell -c "from caja.models import Pago; from pedidos.models import Pedido; Pago.objects.all().delete(); Pedido.objects.filter(estado='CERRADO').delete()"
+    docker exec sgmb_backend python manage.py shell -c "exec(open('/app/caja/seed_demo.py').read())"
+Este resetea los cobros para volver al punto de partida (borra pagos y pedidos cerrados, y después re-sembrás)
 """
 
 from decimal import Decimal
