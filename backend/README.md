@@ -12,7 +12,7 @@
 | `docker compose down`              | Apagar          |
 | `docker ps`                        | Status          | 
 | `docker logs -f sgmb_backend`      | Logs
-| `docker exec -it sgmb_backend bash`|
+| `docker exec -it sgmb_backend bash`| Consola
 | Despues de agregar nvas librerias en requirements.tx o package.json |
 | `docker compose up -d --build`                      | 
 
@@ -27,6 +27,10 @@
 python manage.py runserver 0.0.0.0:8000
 ### Arrancar angular: cd fronend
 ng serve -o
+
+###  Frontend (Angular): http://localhost:4200
+
+###  Backend API (Django): http://localhost:8000/admin/
 
 
 ================================Sobre WebSocket===============================================

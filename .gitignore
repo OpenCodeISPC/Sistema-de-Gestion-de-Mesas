@@ -55,3 +55,4 @@ backend/static/frontend/*
 .idea/
 .DS_Store
 Thumbs.db
+backend/README2.md
