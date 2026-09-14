@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'mesas',
     'pedidos',
     'comandas',
+    'caja',
     'usuarios',
 ]
 
