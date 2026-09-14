@@ -40,10 +40,12 @@ INSTALLED_APPS = [
     "corsheaders",
     "channels",
     # Mis aplicaciones locales
-    "productos",
-    "mesas",
-    "pedidos",
-    "usuarios",
+    'productos',
+    'mesas',
+    'pedidos',
+    'comandas',
+    'caja',
+    'usuarios',
 ]
 
 # Configuración del servidor ASGI

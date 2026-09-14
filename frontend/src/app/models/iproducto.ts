@@ -4,6 +4,10 @@ descripcion?: string | null; Opcional o null porque en Django tiene blank=True, 
 precio: number; Django DecimalField se serializa como number o string en JSON, lo ideal es number en TS
 creado_en?: string; Fechas enviadas por Django como strings en formato ISO (YYYY-MM-DDTHH:mm:ssZ) */
 
+
+//Exporto Categoria para poder trabajar con pedidos
+export type CategoriaProducto = 'cocina' | 'barra' | string;
+
 //INTERFAZ PRINCIPAL - Respuesta de la API
 export interface IProducto {
     id_producto?: number;
@@ -11,7 +15,7 @@ export interface IProducto {
     descripcion?: string | null;
     precio: number;
     stock: number;
-    categoria: string;
+    categoria: CategoriaProducto;// Texto directo : "cocina" o "barra"
     disponibilidad: boolean;
     creado_en?: string;
     actualizado_en?: string;

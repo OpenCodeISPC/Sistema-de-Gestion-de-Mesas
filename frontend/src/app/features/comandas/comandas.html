@@ -1,6 +1,5 @@
 <section class="sgmb-services">
 
-  <!-- Navegación secundaria -->
   <nav class="sgmb-services-nav" aria-label="Administración">
 
     <a href="#" class="sgmb-services-nav__item sgmb-services-nav__item--active">
@@ -52,11 +51,19 @@
       <!-- Selector Cocina / Barra -->
       <div class="sgmb-service-switch">
 
-        <button type="button" class="sgmb-service-switch__button sgmb-service-switch__button--active btn">
+        <button 
+          type="button" 
+          class="sgmb-service-switch__button btn"
+          [class.sgmb-service-switch__button--active]="sectorActivo() === 'COCINA'"
+          (click)="cambiarSector('COCINA')">
           Cocina
         </button>
 
-        <button type="button" class="sgmb-service-switch__button btn">
+        <button 
+          type="button" 
+          class="sgmb-service-switch__button btn"
+          [class.sgmb-service-switch__button--active]="sectorActivo() === 'BARRA'"
+          (click)="cambiarSector('BARRA')">
           Barra
         </button>
 
@@ -73,8 +80,8 @@
 
 
       <!-- ===================================================
-           PENDIENTES
-           =================================================== -->
+            PENDIENTES
+            =================================================== -->
 
       <article class="sgmb-order-column sgmb-order-column--pending">
 
@@ -91,52 +98,62 @@
 
         <div class="sgmb-order-column__body">
 
-          <!-- Pedido -->
-          <article class="sgmb-order-card sgmb-order-card--pending">
+          @for (comanda of comandasPendientes(); track comanda.id_comanda || $index) {
+            <!-- Pedido -->
+            <article class="sgmb-order-card sgmb-order-card--pending">
 
-            <div class="sgmb-order-card__main">
+              <div class="sgmb-order-card__main">
 
-              <div class="sgmb-order-card__table">
-                <div class="sgmb-order-card__icon">
-                  <i class="bi bi-list" aria-hidden="true"></i>
+                <div class="sgmb-order-card__table">
+                  <div class="sgmb-order-card__icon">
+                    <i class="bi bi-list" aria-hidden="true"></i>
+                  </div>
+
+                  <div>
+                    <span>Mesa</span>
+                    <strong>{{ comanda.numero_mesa }}</strong>
+                    <small>Pedido</small>
+                    <strong>{{ comanda.numero_pedido }}</strong>
+                  </div>
                 </div>
 
-                <div>
-                  <span>Mesa</span>
-                  <strong>12</strong>
-                  <small>Pedido</small>
-                  <strong>24</strong>
+
+                <div class="sgmb-order-card__detail">
+
+                  @if (comanda.tiempo_espera) {
+                    <div class="sgmb-order-card__time">
+                      {{ comanda.tiempo_espera }}
+                    </div>
+                  }
+
+                  @for (detalle of comanda.detalles; track detalle.id_detalle || $index) {
+                    <p>-{{ detalle.producto_nombre }}</p>
+
+                    @if (detalle.comentario) {
+                      <div class="sgmb-order-card__comment">
+                        <span>◯</span>
+                        {{ detalle.comentario }}
+                      </div>
+                    }
+                  }
+
                 </div>
+
               </div>
 
 
-              <div class="sgmb-order-card__detail">
+              <div class="sgmb-order-card__actions">
 
-                <div class="sgmb-order-card__time">
-                  12 min
-                </div>
-
-                <p>-Aceitunas Fritas</p>
-
-                <div class="sgmb-order-card__comment">
-                  <span>◯</span>
-                  -Solo aceitunas Negras
-                </div>
+                <button type="button" (click)="avanzarEstado(comanda)">
+                  <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                </button>
 
               </div>
 
-            </div>
-
-
-            <div class="sgmb-order-card__actions">
-
-              <button type="button">
-                <i class="bi bi-chevron-right" aria-hidden="true"></i>
-              </button>
-
-            </div>
-
-          </article>
+            </article>
+          } @empty {
+            <p class="text-muted p-3">No hay comandas pendientes</p>
+          }
 
         </div>
 
@@ -145,8 +162,8 @@
 
 
       <!-- ===================================================
-           EN PREPARACIÓN
-           =================================================== -->
+            EN PREPARACIÓN
+            =================================================== -->
 
       <article class="sgmb-order-column sgmb-order-column--preparing">
 
@@ -163,55 +180,68 @@
 
         <div class="sgmb-order-column__body">
 
-          <!-- Pedido -->
-          <article class="sgmb-order-card sgmb-order-card--preparing">
+          @for (comanda of comandasEnPreparacion(); track comanda.id_comanda || $index) {
+            <!-- Pedido -->
+            <article class="sgmb-order-card sgmb-order-card--preparing">
 
-            <div class="sgmb-order-card__main">
+              <div class="sgmb-order-card__main">
 
-              <div class="sgmb-order-card__table">
+                <div class="sgmb-order-card__table">
 
-                <div class="sgmb-order-card__icon">
-                  <i class="bi bi-list" aria-hidden="true"></i>
+                  <div class="sgmb-order-card__icon">
+                    <i class="bi bi-list" aria-hidden="true"></i>
+                  </div>
+
+                  <div>
+                    <span>Mesa</span>
+                    <strong>{{ comanda.numero_mesa }}</strong>
+                    <small>Pedido</small>
+                    <strong>{{ comanda.numero_pedido }}</strong>
+                  </div>
+
                 </div>
 
-                <div>
-                  <span>Mesa</span>
-                  <strong>12</strong>
-                  <small>Pedido</small>
-                  <strong>24</strong>
+
+                <div class="sgmb-order-card__detail">
+
+                  @if (comanda.tiempo_espera) {
+                    <div class="sgmb-order-card__time">
+                      {{ comanda.tiempo_espera }}
+                    </div>
+                  }
+
+                  @for (detalle of comanda.detalles; track detalle.id_detalle || $index) {
+                    <p>-{{ detalle.producto_nombre }}</p>
+
+                    @if (detalle.comentario) {
+                      <div class="sgmb-order-card__comment">
+                        <span>◯</span>
+                        {{ detalle.comentario }}
+                      </div>
+                    }
+                  }
+
                 </div>
 
               </div>
 
 
-              <div class="sgmb-order-card__detail">
+              <div class="sgmb-order-card__actions">
 
-                <div class="sgmb-order-card__time">
-                  12 min
-                </div>
+                <button type="button" (click)="retrocederEstado(comanda)">
+                  &lt;
+                </button>
 
-                <p>-Lomo al plato</p>
-                <p>-Papas bravas</p>
-                <p>-Ensalada rusa</p>
+                <button type="button" (click)="avanzarEstado(comanda)">
+                  &gt;
+                </button>
 
               </div>
 
-            </div>
-
-
-            <div class="sgmb-order-card__actions">
-
-              <button type="button">
-                &lt;
-              </button>
-
-              <button type="button">
-                &gt;
-              </button>
-
-            </div>
-
-          </article>
+            </article>
+          } @empty {
+            <p class="text-muted p-3">No hay comandas en preparación</p>
+          }
 
         </div>
 
@@ -220,8 +250,8 @@
 
 
       <!-- ===================================================
-           LISTOS
-           =================================================== -->
+            LISTOS
+            =================================================== -->
 
       <article class="sgmb-order-column sgmb-order-column--ready">
 
@@ -238,114 +268,68 @@
 
         <div class="sgmb-order-column__body">
 
+          @for (comanda of comandasListas(); track comanda.id_comanda || $index) {
+            <!-- Pedido -->
+            <article class="sgmb-order-card sgmb-order-card--ready">
 
-          <!-- Pedido 1 -->
-          <article class="sgmb-order-card sgmb-order-card--ready">
+              <div class="sgmb-order-card__main">
 
-            <div class="sgmb-order-card__main">
+                <div class="sgmb-order-card__table">
 
-              <div class="sgmb-order-card__table">
+                  <div class="sgmb-order-card__icon">
+                    <i class="bi bi-list" aria-hidden="true"></i>
+                  </div>
 
-                <div class="sgmb-order-card__icon">
-                  <i class="bi bi-list" aria-hidden="true"></i>
+                  <div>
+                    <span>Mesa</span>
+                    <strong>{{ comanda.numero_mesa }}</strong>
+                    <small>Pedido</small>
+                    <strong>{{ comanda.numero_pedido }}</strong>
+                  </div>
+
                 </div>
 
-                <div>
-                  <span>Mesa</span>
-                  <strong>9</strong>
-                  <small>Pedido</small>
-                  <strong>24</strong>
-                </div>
 
-              </div>
+                <div class="sgmb-order-card__detail">
 
+                  @if (comanda.tiempo_espera) {
+                    <div class="sgmb-order-card__time">
+                      {{ comanda.tiempo_espera }}
+                    </div>
+                  }
 
-              <div class="sgmb-order-card__detail">
+                  @for (detalle of comanda.detalles; track detalle.id_detalle || $index) {
+                    <p>-{{ detalle.producto_nombre }}</p>
 
-                <div class="sgmb-order-card__time">
-                  12 min
-                </div>
+                    @if (detalle.comentario) {
+                      <div class="sgmb-order-card__comment">
+                        <span>◯</span>
+                        {{ detalle.comentario }}
+                      </div>
+                    }
+                  }
 
-                <p>-Papas americanas</p>
-
-                <div class="sgmb-order-card__comment">
-                  <span>◯</span>
-                  -Sin cheddar
-                </div>
-
-              </div>
-
-            </div>
-
-
-            <div class="sgmb-order-card__actions">
-
-              <button type="button">
-                &lt;
-              </button>
-
-              <button type="button">
-                &gt;
-              </button>
-
-            </div>
-
-          </article>
-
-
-
-          <!-- Pedido 2 -->
-          <article class="sgmb-order-card sgmb-order-card--ready">
-
-            <div class="sgmb-order-card__main">
-
-              <div class="sgmb-order-card__table">
-
-                <div class="sgmb-order-card__icon">
-                  <i class="bi bi-list" aria-hidden="true"></i>
-                </div>
-
-                <div>
-                  <span>Mesa</span>
-                  <strong>3</strong>
-                  <small>Pedido</small>
-                  <strong>24</strong>
                 </div>
 
               </div>
 
 
-              <div class="sgmb-order-card__detail">
+              <div class="sgmb-order-card__actions">
 
-                <div class="sgmb-order-card__time">
-                  12 min
-                </div>
+                <button type="button" (click)="retrocederEstado(comanda)">
+                  &lt;
+                </button>
 
-                <p>-Milanesa de Pescado</p>
-
-                <div class="sgmb-order-card__comment">
-                  <span>◯</span>
-                  -Mucho Limón
-                </div>
+                <button type="button" (click)="avanzarEstado(comanda)">
+                  &gt;
+                </button>
 
               </div>
 
-            </div>
-
-
-            <div class="sgmb-order-card__actions">
-
-              <button type="button">
-                &lt;
-              </button>
-
-              <button type="button">
-                &gt;
-              </button>
-
-            </div>
-
-          </article>
+            </article>
+          } @empty {
+            <p class="text-muted p-3">No hay comandas listas</p>
+          }
 
         </div>
 
