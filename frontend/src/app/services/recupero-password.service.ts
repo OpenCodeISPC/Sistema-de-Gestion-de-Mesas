@@ -6,15 +6,16 @@ import {IRecuperoPassword, IRecuperoPasswordResponse, IRecuperoPasswordConfirm, 
 @Injectable({
     providedIn: 'root',
 })
+
 export class RecuperoPasswordService {
     private readonly http = inject(HttpClient);
     private readonly apiUrl = 'http://localhost:8000/api/auth/recupero-password/'; //url de django
 
     solicitarRecuperoPassword(data:IRecuperoPassword): Observable<IRecuperoPasswordResponse> {
-        return this.http.post<IRecuperoPasswordResponse>(this.apiUrl, data);
+        return this.http.post<IRecuperoPasswordResponse>(`${this.apiUrl}password-reset/`, data);
     }
 
     restablecerPassword(data:IRecuperoPasswordConfirm): Observable<IRecuperoPasswordConfirmResponse> {
-        return this.http.post<IRecuperoPasswordConfirmResponse>(this.apiUrl + 'confirmar/', data);
+        return this.http.post<IRecuperoPasswordConfirmResponse>(`${this.apiUrl}password-reset-confirm/`, data);
     }
 }
