@@ -70,7 +70,7 @@ class RegistroView(APIView):
 
 
 # 3. Google OAuth 2.0 (Nombre unificado con urls.py)
-class GoogleAuthView(APIView):
+class GoogleOauthView(APIView):
     """
     Endpoint para autenticación y registro federado mediante Google OAuth 2.0.
     Verifica el ID Token y genera credenciales JWT propias de la aplicación.
@@ -82,7 +82,7 @@ class GoogleAuthView(APIView):
         serializer.is_valid(raise_exception=True)
 
         google_info = serializer.validated_data["token"]
-        rol_elegido = serializer.validated_data.get("rol", Usuario.Rol.MOZO)
+        rol_elegido = serializer.validated_data.get("rol", "MOZO")
         email = google_info.get("email")
 
         with transaction.atomic():

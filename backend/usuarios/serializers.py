@@ -26,6 +26,10 @@ class RegistroSerializer(serializers.ModelSerializer):
         required=True, 
         validators=[validate_password]
     )
+    rol = serializers.ChoiceField(
+        choices=Usuario.ROLES, 
+        required=True, 
+    )
 
     class Meta:
         model = Usuario
@@ -48,7 +52,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class GoogleOAuthSerializer(serializers.Serializer):
     token = serializers.CharField(write_only=True, required=True)
     rol = serializers.ChoiceField(
-        choices=Usuario.Rol.choices, 
+        choices=Usuario.ROLES, 
         required=False, 
     )
 
