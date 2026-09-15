@@ -50,7 +50,6 @@ class GoogleOAuthSerializer(serializers.Serializer):
     rol = serializers.ChoiceField(
         choices=Usuario.Rol.choices, 
         required=False, 
-        default=Usuario.Rol.MOZO
     )
 
     def validate_token(self, value):
