@@ -1,13 +1,13 @@
-import { Component,OnInit, OnChanges, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { RecuperoPasswordService } from '../../../services/recupero-password.service';
-import { IRecuperoPassword, IRecuperoPasswordResponse } from '../../../models/irecupero-password';
-
 
 @Component({
   selector: 'app-recupero-password',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './recupero-password.html',
   styleUrl: './recupero-password.css',
 })
@@ -51,14 +51,18 @@ export class RecuperoPassword implements OnInit {
   solicitar(): void {
     if (this.emailForm.invalid) return;
 
+    const email = String(this.emailForm.get('email')?.value || '').trim();
+    this.mensajeExito = '';
+    this.mensajeError = '';
+
     this.recuperoPasswordService.solicitarRecuperoPassword(this.emailForm.value).subscribe({
       next: (res) => {
-        this.mensajeExito = res.message || 'Correo de recuperación enviado con éxito.';
-        this.mensajeError = '';
+        this.mensajeExito = res.message
+          ? `${res.message} Se envió a ${email}.`
+          : `Se envió el correo de recuperación a ${email}.`;
       },
       error: (err) => {
-        this.mensajeError = 'Ocurrió un error al procesar la solicitud.';
-        this.mensajeExito = '';
+        this.mensajeError = err?.error?.detail || err?.error?.message || 'Ocurrió un error al procesar la solicitud.';
       }
     });
   }
@@ -66,6 +70,9 @@ export class RecuperoPassword implements OnInit {
   // Paso 2: Enviar la nueva contraseña usando el uid y el token
   restablecer(): void {
     if (this.confirmForm.invalid) return;
+
+    this.mensajeExito = '';
+    this.mensajeError = '';
 
     const payload = {
       uid: this.uid,
@@ -76,11 +83,10 @@ export class RecuperoPassword implements OnInit {
     this.recuperoPasswordService.restablecerPassword(payload).subscribe({
       next: (res) => {
         this.mensajeExito = res.message || 'Contraseña restablecida con éxito.';
-        setTimeout(() => this.router.navigate(['/']), 2000); // Redirige al login tras 2 segundos
+        setTimeout(() => this.router.navigate(['/']), 2000);
       },
       error: (err) => {
-        this.mensajeError = err.error?.token || err.error?.uid || 'El enlace es inválido o expiró.';
-        this.mensajeExito = '';
+        this.mensajeError = err?.error?.detail || err?.error?.token || err?.error?.uid || 'El enlace es inválido o expiró.';
       }
     });
   }
