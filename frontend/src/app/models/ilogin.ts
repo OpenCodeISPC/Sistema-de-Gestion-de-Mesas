@@ -9,8 +9,8 @@ export interface ILoginRequest {
 }
 
 export interface IOauthRequest{
-    provider: OauthProvider;
-    token:string;
+    token: string;
+    rol?: 'ADMIN' | 'MOZO' | 'CAJERO' | 'COCINA';
 }
 
 export type LoginPayload = ILoginRequest | IOauthRequest;
