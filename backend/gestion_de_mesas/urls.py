@@ -1,10 +1,6 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 
 urlpatterns = [
     # ADMIN
@@ -17,7 +13,6 @@ urlpatterns = [
     path('api/', include('comandas.urls')),
     path('api/', include('caja.urls')),
     
-    # JWT
-    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    # AUTENTICACIÓN Y USUARIOS (JWT, Google OAuth, Registro y Recupero)
+    path("api/auth/", include("usuarios.urls")),
 ]
