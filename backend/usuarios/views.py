@@ -69,7 +69,7 @@ class RegistroView(APIView):
         )
 
 
-# 3. Google OAuth 2.0 (Nombre unificado con urls.py)
+# 3. Google OAuth 2.0 (Asignación controlada y set_unusable_password)
 class GoogleOauthView(APIView):
     """
     Endpoint para autenticación y registro federado mediante Google OAuth 2.0.
@@ -86,7 +86,7 @@ class GoogleOauthView(APIView):
         email = google_info.get("email")
 
         with transaction.atomic():
-            usuario, _ = Usuario.objects.get_or_create(
+            usuario, created = Usuario.objects.get_or_create(
                 email=email,
                 defaults={
                     "nombre": google_info.get("given_name", ""),
@@ -95,6 +95,9 @@ class GoogleOauthView(APIView):
                     "is_active": True,
                 },
             )
+            if created:
+                usuario.set_unusable_password()
+                usuario.save()
 
         refresh = RefreshToken.for_user(usuario)
         return Response(

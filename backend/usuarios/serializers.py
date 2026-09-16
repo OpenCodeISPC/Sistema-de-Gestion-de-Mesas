@@ -11,6 +11,7 @@ from google.auth.transport import requests as google_requests
 
 Usuario = get_user_model()
 
+
 # 1. Serializer de lectura de usuario
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,7 +20,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "is_active", "is_staff", "fecha_creacion"]
 
 
-# 2. Serializer de Registro tradicional
+# 2. Serializer de Registro tradicional (rol obligatorio elegido por el usuario)
 class RegistroSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True, 
@@ -28,7 +29,7 @@ class RegistroSerializer(serializers.ModelSerializer):
     )
     rol = serializers.ChoiceField(
         choices=Usuario.ROLES, 
-        required=True, 
+        required=True
     )
 
     class Meta:
@@ -54,6 +55,7 @@ class GoogleOAuthSerializer(serializers.Serializer):
     rol = serializers.ChoiceField(
         choices=Usuario.ROLES, 
         required=False, 
+        default="MOZO"
     )
 
     def validate_token(self, value):
@@ -105,4 +107,3 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
- 
