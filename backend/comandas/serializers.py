@@ -14,6 +14,7 @@ class ComandaSerializer(serializers.ModelSerializer):
             'numero_pedido', 
             'tiempo_espera', 
             'estado', 
-            'sector', 
+            'sector',
+            'creado_en', 
             'cliente'
         ]

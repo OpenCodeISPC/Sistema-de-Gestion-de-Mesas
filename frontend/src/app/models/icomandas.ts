@@ -16,12 +16,14 @@ export interface IDetalleComanda {
 // Interfaz principal de la comanda
 export interface IComanda {
   id_comanda?: number;
-  numero_mesa: number;        
-  numero_pedido: number;      
-  tiempo_espera?: string;     
-  estado: EstadoComanda;      
-  sector: SectorComanda;      
-  detalles: IDetalleComanda[]; 
+  numero_mesa: number;
+  numero_pedido: number;
+  tiempo_espera?: string;
+  estado: EstadoComanda;
+  sector: SectorComanda;
+  cliente?: string;
+  creado_en?: string; // Timestamp en formato ISO enviado por Django
+  detalles?: IDetalleComanda[];
 }
 
 // DTO para crear una nueva comanda
