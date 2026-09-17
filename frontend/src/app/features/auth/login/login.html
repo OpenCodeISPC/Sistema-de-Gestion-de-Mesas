@@ -1,45 +1,84 @@
 <section class="sgmb-auth">
   <main class="sgmb-auth__content container py-5">
-    <div class="sgmb-auth__form card shadow-sm p-4 mx-auto">
+    <div class="sgmb-auth__form card shadow-sm p-4 mx-auto" style="max-width: 450px;">
       <h1>Iniciar Sesión</h1>
 
-      <div class="sgmb-auth__field mb-3">
-        <label for="username"> Ingrese su nombre de usuario </label>
+      <!-- Alertas de Feedback -->
+      @if (mensajeExito) {
+        <div class="alert alert-success" role="alert">{{ mensajeExito }}</div>
+      }
+      @if (mensajeError) {
+        <div class="alert alert-danger" role="alert">{{ mensajeError }}</div>
+      }
 
-        <input id="username" type="text" placeholder="Ejemplo: Lucia07"  class="form-control">
-      </div>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+        
+        <!-- Campo Correo -->
+        <div class="sgmb-auth__field mb-3">
+          <label for="username" class="form-label text-muted">Ingrese su correo</label>
+          <input 
+            id="username" 
+            type="email" 
+            formControlName="email"
+            placeholder="Ejemplo: juan@correo.com"  
+            class="form-control"
+            [class.is-invalid]="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)"
+          >
+          @if (loginForm.get('email')?.errors && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)) {
+            <div class="invalid-feedback d-block">
+              @if (loginForm.get('email')?.hasError('required')) { El correo es obligatorio. }
+              @if (loginForm.get('email')?.hasError('email')) { Ingrese un formato de correo válido. }
+            </div>
+          }
+        </div>
 
-      <div class="sgmb-auth__field mb-3">
-        <label for="password"> Ingrese su contraseña </label>
+        <!-- Campo Contraseña -->
+        <div class="sgmb-auth__field mb-3">
+          <label for="password" class="form-label text-muted">Ingrese su contraseña</label>
+          <input 
+            id="password" 
+            type="password" 
+            formControlName="password"
+            placeholder="Ejemplo: Casa1234"  
+            class="form-control"
+            [class.is-invalid]="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)"
+          >
+          @if (loginForm.get('password')?.errors && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)) {
+            <div class="invalid-feedback d-block">
+              @if (loginForm.get('password')?.hasError('required')) { La contraseña es obligatoria. }
+              @if (loginForm.get('password')?.hasError('minlength')) { Mínimo 6 caracteres. }
+            </div>
+          }
+        </div>
 
-        <input id="password" type="password" placeholder="Ejemplo: Casa12"  class="form-control">
-      </div>
+        <!-- Botones de Acción y Google -->
+        <div class="d-flex flex-column justify-content-center align-items-stretch gap-3 mt-4">
+          
+          <!-- Contenedor donde se renderiza automáticamente el botón oficial de Google -->
+          <div id="google-btn-container" class="w-100 d-flex justify-content-center"></div>
 
-      <div class="sgmb-auth__roles">
-        <label> Seleccione su rol de acceso: </label>
-
-        <div class="sgmb-role-grid">
-          <button type="button">Cocina</button>
-
-          <button type="button">Mozo</button>
-
-          <button type="button">Barra</button>
-
-          <button type="button" class="sgmb-role-grid__item--active">
-            Administrador
+          <!-- Botón de Envío Clásico -->
+          <button 
+            type="submit" 
+            [disabled]="cargando"
+            class="sgmb-auth__submit btn btn-primary w-100 py-2"
+          >
+            @if (cargando) {
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Procesando...
+            } @else {
+              Iniciar sesión
+            }
           </button>
         </div>
-      </div>
+      </form>
 
-      <button type="button" class="sgmb-auth__submit btn btn-primary w-100">Iniciar sesión</button>
-
-      <p class="sgmb-auth__footer">
-        ¿No tenes una cuenta<i class="bi bi-question-circle" aria-hidden="true"></i>
-        <a routerLink="/registro">Registrate</a>
+      <p class="sgmb-auth__footer mt-3 text-center">
+        ¿No tenés una cuenta? <a routerLink="/registro">Registrate</a>
       </p>
 
-      <p class="sgmb-auth__forgot">
-        <a routerLink="/recupero-password"> ¿Olvidaste tu contraseña<i class="bi bi-question-circle" aria-hidden="true"></i> </a>
+      <p class="sgmb-auth__forgot text-center">
+        <a routerLink="/recupero-password">¿Olvidaste tu contraseña?</a>
       </p>
     </div>
   </main>

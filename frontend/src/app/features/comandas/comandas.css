@@ -1,0 +1,19 @@
+
+.sgmb-order-card__detail {
+  position: relative;
+}
+
+.sgmb-order-card__time {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  background-color: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
