@@ -14,7 +14,4 @@ export class RegistroService {
     registrarUsuario(data:IRegistroRequest): Observable<IRegistroResponse> {
         return this.http.post<IRegistroResponse>(`${this.apiUrl}registro/`, data);
     }
-    registrarUsuarioOauth(data:IOauthRegistroRequest): Observable<IRegistroResponse> {
-        return this.http.post<IRegistroResponse>(`${this.apiUrl}registro-oauth/`, data);
-    }
 }

@@ -12,6 +12,7 @@ import { Router, RouterLink } from '@angular/router';
 import { RegistroService } from '../../../services/registro.service';
 import { RolUser, IRegistroRequest } from '../../../models/iregistro';
 import { environments } from '../../.././../environments/environments';
+import { LoginService } from '../../../services/login.service';
 
 declare const google: any;
 
@@ -25,6 +26,7 @@ export class Registro implements AfterViewInit {
   private readonly fb = inject(FormBuilder);
   private readonly registroService = inject(RegistroService);
   private readonly router = inject(Router);
+  private readonly loginService = inject(LoginService);
 
   registroForm!: FormGroup;
   rolDisponibles: RolUser[] = ['ADMIN', 'MOZO', 'CAJERO', 'COCINA'];
@@ -154,12 +156,11 @@ export class Registro implements AfterViewInit {
     const selectedRol: RolUser = this.registroForm.get('rol')?.value || 'MOZO';
 
     const payload = {
-      provider: 'google' as const,
       token: credentialToken,
       rol: selectedRol
     };
 
-    this.registroService.registrarUsuarioOauth(payload).subscribe({
+    this.loginService.loginOauth(payload).subscribe({
       next: (res) => {
         this.cargando = false;
         this.mensajeExito = 'Registro con Google exitoso.';

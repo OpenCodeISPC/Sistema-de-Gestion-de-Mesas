@@ -1,6 +1,9 @@
 <section class="sgmb-auth">
   <main class="sgmb-auth__content container py-5">
-    <div class="sgmb-auth__form sgmb-auth__form--register card shadow-sm p-4 mx-auto" style="max-width: 500px;">
+    <div
+      class="sgmb-auth__form sgmb-auth__form--register card shadow-sm p-4 mx-auto"
+      style="max-width: 500px"
+    >
       <h1>Crear Cuenta</h1>
 
       <!-- Alertas de Feedback -->
@@ -12,80 +15,108 @@
       }
 
       <form [formGroup]="registroForm" (ngSubmit)="onSubmit()" novalidate>
-        
         <!-- Nombre y Apellido -->
         <div class="sgmb-auth__password-grid mb-3">
           <div class="sgmb-auth__field">
-            <label for="name" class="form-label text-muted">Ingrese su nombre</label>
-            <input 
-              id="name" 
-              type="text" 
+            <label for="name" class="form-label text-muted"
+              >Ingrese su nombre</label
+            >
+            <input
+              id="name"
+              type="text"
               formControlName="nombre"
-              placeholder="Ej: Juan" 
+              placeholder="Ej: Juan"
               class="form-control"
-              [class.is-invalid]="registroForm.get('nombre')?.invalid && (registroForm.get('nombre')?.dirty || registroForm.get('nombre')?.touched)"
+              [class.is-invalid]="
+                registroForm.get('nombre')?.invalid &&
+                (registroForm.get('nombre')?.dirty ||
+                  registroForm.get('nombre')?.touched)
+              "
             />
           </div>
           <div class="sgmb-auth__field">
-            <label for="lastname" class="form-label text-muted">Ingrese su apellido</label>
-            <input 
-              id="lastname" 
-              type="text" 
+            <label for="lastname" class="form-label text-muted"
+              >Ingrese su apellido</label
+            >
+            <input
+              id="lastname"
+              type="text"
               formControlName="apellido"
-              placeholder="Ej: Lopez" 
+              placeholder="Ej: Lopez"
               class="form-control"
-              [class.is-invalid]="registroForm.get('apellido')?.invalid && (registroForm.get('apellido')?.dirty || registroForm.get('apellido')?.touched)"
+              [class.is-invalid]="
+                registroForm.get('apellido')?.invalid &&
+                (registroForm.get('apellido')?.dirty ||
+                  registroForm.get('apellido')?.touched)
+              "
             />
           </div>
         </div>
 
         <!-- Correo -->
         <div class="sgmb-auth__field mb-3">
-          <label for="email" class="form-label text-muted">Ingrese su correo electrónico</label>
-          <input 
-            id="email" 
-            type="email" 
+          <label for="email" class="form-label text-muted"
+            >Ingrese su correo electrónico</label
+          >
+          <input
+            id="email"
+            type="email"
             formControlName="email"
-            placeholder="Ej: juan_lopez@gmail.com" 
+            placeholder="Ej: juan_lopez@gmail.com"
             class="form-control"
-            [class.is-invalid]="registroForm.get('email')?.invalid && (registroForm.get('email')?.dirty || registroForm.get('email')?.touched)"
+            [class.is-invalid]="
+              registroForm.get('email')?.invalid &&
+              (registroForm.get('email')?.dirty || registroForm.get('email')?.touched)
+            "
           />
         </div>
 
         <!-- Contraseñas -->
         <div class="sgmb-auth__password-grid mb-3">
           <div class="sgmb-auth__field">
-            <label for="register-password" class="form-label text-muted">Contraseña</label>
-            <input 
-              id="register-password" 
-              type="password" 
+            <label for="register-password" class="form-label text-muted"
+              >Contraseña</label
+            >
+            <input
+              id="register-password"
+              type="password"
               formControlName="password"
-              placeholder="Mínimo 6 caracteres" 
+              placeholder="Mínimo 6 caracteres"
               class="form-control"
-              [class.is-invalid]="registroForm.get('password')?.invalid && (registroForm.get('password')?.dirty || registroForm.get('password')?.touched)"
+              [class.is-invalid]="
+                registroForm.get('password')?.invalid &&
+                (registroForm.get('password')?.dirty ||
+                  registroForm.get('password')?.touched)
+              "
             />
           </div>
 
           <div class="sgmb-auth__field">
-            <label for="confirm-password" class="form-label text-muted">Repetir contraseña</label>
-            <input 
-              id="confirm-password" 
-              type="password" 
+            <label for="confirm-password" class="form-label text-muted"
+              >Repetir contraseña</label
+            >
+            <input
+              id="confirm-password"
+              type="password"
               formControlName="confirmPassword"
-              placeholder="Repita la contraseña" 
+              placeholder="Repita la contraseña"
               class="form-control"
-              [class.is-invalid]="registroForm.hasError('passwordMismatch') && (registroForm.get('confirmPassword')?.dirty || registroForm.get('confirmPassword')?.touched)"
+              [class.is-invalid]="
+                registroForm.hasError('passwordmismatch') &&
+                (registroForm.get('confirmPassword')?.dirty ||
+                  registroForm.get('confirmPassword')?.touched)
+              "
             />
           </div>
         </div>
 
-        <!-- Selector de Roles -->
+ <!-- Selector de Roles -->
         <div class="sgmb-auth__roles mb-4">
           <label class="form-label text-muted">Seleccione su rol de acceso:</label>
           <div class="sgmb-role-grid d-flex gap-2">
             @for (r of rolDisponibles; track r) {
-              <button 
-                type="button" 
+              <button
+                type="button"
                 class="btn btn-outline-secondary flex-fill"
                 [class.btn-primary]="registroForm.get('rol')?.value === r"
                 [class.text-white]="registroForm.get('rol')?.value === r"
@@ -97,18 +128,26 @@
           </div>
         </div>
 
-        <!-- Botones de Acción -->
-        <div class="d-flex flex-column gap-3">
-          <!-- Contenedor Google OAuth -->
-          <div id="google-register-btn-container" class="w-100 d-flex justify-content-center"></div>
+        <!-- Botones de Acción y Google (Idénticos al Login) -->
+        <div class="d-flex flex-column justify-content-center align-items-stretch gap-3 mt-4">
+          <!-- Contenedor del botón de Google -->
+          <div
+            id="google-register-btn-container"
+            class="w-100 d-flex justify-content-center"
+          ></div>
 
-          <button 
-            type="submit" 
+          <!-- Botón de Envío Principal (Igual al de Login) -->
+          <button
+            type="submit"
             [disabled]="cargando"
             class="sgmb-auth__submit btn btn-primary w-100 py-2"
           >
             @if (cargando) {
-              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              <span
+                class="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
               Procesando...
             } @else {
               Crear Cuenta
@@ -118,7 +157,7 @@
       </form>
 
       <p class="sgmb-auth__footer mt-3 text-center">
-        ¿Ya tenés una cuenta? <a routerLink="/">Iniciar sesión</a>
+        ¿Ya tenés una cuenta? <a routerLink="/login">Iniciar sesión</a>
       </p>
     </div>
   </main>
