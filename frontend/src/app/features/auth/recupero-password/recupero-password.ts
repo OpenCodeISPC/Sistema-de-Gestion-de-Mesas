@@ -11,6 +11,8 @@ import { RecuperoPasswordService } from '../../../services/recupero-password.ser
   templateUrl: './recupero-password.html',
   styleUrl: './recupero-password.css',
 })
+
+
 export class RecuperoPassword implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly recuperoPasswordService = inject(RecuperoPasswordService);
@@ -60,6 +62,7 @@ export class RecuperoPassword implements OnInit {
         this.mensajeExito = res.message
           ? `${res.message} Se envió a ${email}.`
           : `Se envió el correo de recuperación a ${email}.`;
+        this.emailForm.reset();
       },
       error: (err) => {
         this.mensajeError = err?.error?.detail || err?.error?.message || 'Ocurrió un error al procesar la solicitud.';
@@ -83,7 +86,10 @@ export class RecuperoPassword implements OnInit {
     this.recuperoPasswordService.restablecerPassword(payload).subscribe({
       next: (res) => {
         this.mensajeExito = res.message || 'Contraseña restablecida con éxito.';
-        setTimeout(() => this.router.navigate(['/']), 2000);
+        setTimeout(() => this.router.navigate(['/']), 1000);
+
+        this.emailForm.reset();
+
       },
       error: (err) => {
         this.mensajeError = err?.error?.detail || err?.error?.token || err?.error?.uid || 'El enlace es inválido o expiró.';
