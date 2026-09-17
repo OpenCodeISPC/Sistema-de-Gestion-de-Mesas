@@ -1,105 +1,124 @@
 <section class="sgmb-auth">
   <main class="sgmb-auth__content container py-5">
-    <div
-      class="sgmb-auth__form sgmb-auth__form--register card shadow-sm p-4 mx-auto"
-    >
+    <div class="sgmb-auth__form sgmb-auth__form--register card shadow-sm p-4 mx-auto" style="max-width: 500px;">
       <h1>Crear Cuenta</h1>
 
-      <div class="sgmb-auth__password-grid mb-3">
-        <div class="sgmb-auth__field mb-3">
-          <label for="name" class="text-muted"> Ingrese su nombre</label>
+      <!-- Alertas de Feedback -->
+      @if (mensajeExito) {
+        <div class="alert alert-success" role="alert">{{ mensajeExito }}</div>
+      }
+      @if (mensajeError) {
+        <div class="alert alert-danger" role="alert">{{ mensajeError }}</div>
+      }
 
-          <input
-            id="name"
-            type="text"
-            placeholder="Ej: Juan"
-            class="form-control"
-          />
-        </div>
-        <div class="sgmb-auth__field mb-3">
-        <label for="lastname" class="text-muted"> Ingrese su apellido</label>
-
-        <input
-          id="lastname"
-          type="text"
-          placeholder="Ej: Lopez"
-          class="form-control"
-        />
-      </div>
- </div>
-
-      <div class="sgmb-auth__field mb-3">
-        <label for="email" class="text-muted"> Ingrese su gmail </label>
-
-        <input
-          id="email"
-          type="email"
-          placeholder="Ej: juan_lopez@gmail.com"
-          class="form-control"
-        />
-      </div>
-
-      <div class="sgmb-auth__password-grid">
-        <div class="sgmb-auth__field mb-3">
-          <label for="register-password" class="text-muted">
-            Ingrese su contraseña
-          </label>
-
-          <input
-            id="register-password"
-            type="password"
-            placeholder="Ej: ingrese la contraseña"
-            class="form-control"
-          />
+      <form [formGroup]="registroForm" (ngSubmit)="onSubmit()" novalidate>
+        
+        <!-- Nombre y Apellido -->
+        <div class="sgmb-auth__password-grid mb-3">
+          <div class="sgmb-auth__field">
+            <label for="name" class="form-label text-muted">Ingrese su nombre</label>
+            <input 
+              id="name" 
+              type="text" 
+              formControlName="nombre"
+              placeholder="Ej: Juan" 
+              class="form-control"
+              [class.is-invalid]="registroForm.get('nombre')?.invalid && (registroForm.get('nombre')?.dirty || registroForm.get('nombre')?.touched)"
+            />
+          </div>
+          <div class="sgmb-auth__field">
+            <label for="lastname" class="form-label text-muted">Ingrese su apellido</label>
+            <input 
+              id="lastname" 
+              type="text" 
+              formControlName="apellido"
+              placeholder="Ej: Lopez" 
+              class="form-control"
+              [class.is-invalid]="registroForm.get('apellido')?.invalid && (registroForm.get('apellido')?.dirty || registroForm.get('apellido')?.touched)"
+            />
+          </div>
         </div>
 
+        <!-- Correo -->
         <div class="sgmb-auth__field mb-3">
-          <label for="confirm-password" class="text-muted">
-            Confirme su contraseña
-          </label>
-
-          <input
-            id="confirm-password"
-            type="password"
-            placeholder="repita la contraseña"
+          <label for="email" class="form-label text-muted">Ingrese su correo electrónico</label>
+          <input 
+            id="email" 
+            type="email" 
+            formControlName="email"
+            placeholder="Ej: juan_lopez@gmail.com" 
             class="form-control"
+            [class.is-invalid]="registroForm.get('email')?.invalid && (registroForm.get('email')?.dirty || registroForm.get('email')?.touched)"
           />
         </div>
-      </div>
 
-      <div class="sgmb-auth__roles">
-        <label class="text-muted"> Seleccione su rol de acceso: </label>
+        <!-- Contraseñas -->
+        <div class="sgmb-auth__password-grid mb-3">
+          <div class="sgmb-auth__field">
+            <label for="register-password" class="form-label text-muted">Contraseña</label>
+            <input 
+              id="register-password" 
+              type="password" 
+              formControlName="password"
+              placeholder="Mínimo 6 caracteres" 
+              class="form-control"
+              [class.is-invalid]="registroForm.get('password')?.invalid && (registroForm.get('password')?.dirty || registroForm.get('password')?.touched)"
+            />
+          </div>
 
-        <div class="sgmb-role-grid">
-          <button type="button">COCINA</button>
+          <div class="sgmb-auth__field">
+            <label for="confirm-password" class="form-label text-muted">Repetir contraseña</label>
+            <input 
+              id="confirm-password" 
+              type="password" 
+              formControlName="confirmPassword"
+              placeholder="Repita la contraseña" 
+              class="form-control"
+              [class.is-invalid]="registroForm.hasError('passwordMismatch') && (registroForm.get('confirmPassword')?.dirty || registroForm.get('confirmPassword')?.touched)"
+            />
+          </div>
+        </div>
 
-          <button type="button">MOZO</button>
+        <!-- Selector de Roles -->
+        <div class="sgmb-auth__roles mb-4">
+          <label class="form-label text-muted">Seleccione su rol de acceso:</label>
+          <div class="sgmb-role-grid d-flex gap-2">
+            @for (r of rolDisponibles; track r) {
+              <button 
+                type="button" 
+                class="btn btn-outline-secondary flex-fill"
+                [class.btn-primary]="registroForm.get('rol')?.value === r"
+                [class.text-white]="registroForm.get('rol')?.value === r"
+                (click)="setRol(r)"
+              >
+                {{ r }}
+              </button>
+            }
+          </div>
+        </div>
 
-          <button type="button">CAJERO</button>
+        <!-- Botones de Acción -->
+        <div class="d-flex flex-column gap-3">
+          <!-- Contenedor Google OAuth -->
+          <div id="google-register-btn-container" class="w-100 d-flex justify-content-center"></div>
 
-          <button type="button" class="sgmb-role-grid__item--active">
-            ADMIN
+          <button 
+            type="submit" 
+            [disabled]="cargando"
+            class="sgmb-auth__submit btn btn-primary w-100 py-2"
+          >
+            @if (cargando) {
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Procesando...
+            } @else {
+              Crear Cuenta
+            }
           </button>
         </div>
-      </div>
+      </form>
 
-      <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-4">
-      <button type="button" class="btn btn-outline-danger h-auto" >
-        <i class="bi bi-google" aria-hidden="true"></i>
-        Iniciar con Google
-      </button>
-
-      <button type="button" class="sgmb-auth__submit btn w-auto px-3">
-        Iniciar sesión
-      </button>
-    </div>
-
-      <p class="sgmb-auth__footer">
-        ¿Ya tenés una cuenta<i
-          class="bi bi-question-circle"
-          aria-hidden="true"
-        ></i>
-        <a href="">Iniciar sesión</a>
+      <p class="sgmb-auth__footer mt-3 text-center">
+        ¿Ya tenés una cuenta? <a routerLink="/">Iniciar sesión</a>
       </p>
     </div>
   </main>

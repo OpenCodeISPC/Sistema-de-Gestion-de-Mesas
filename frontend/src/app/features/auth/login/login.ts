@@ -33,7 +33,7 @@ export class Login implements OnInit {
     // 1. Inicializar formulario reactivo
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(20)]],
     });
 
     // 2. Inicializar botón oficial de Google en cuanto cargue la vista
@@ -56,7 +56,6 @@ export class Login implements OnInit {
         this.cargando = false;
         this.mensajeExito = '¡Inicio de sesión exitoso! Redirigiendo...';
 
-        // Guardar tokens y datos del usuario en localStorage
         // Guardar tokens y datos del usuario de forma segura asegurando el tipo string
         localStorage.setItem('access', res.access!);
         localStorage.setItem('refresh', res.refresh!);

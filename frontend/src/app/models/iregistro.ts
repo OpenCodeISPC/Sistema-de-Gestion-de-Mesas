@@ -35,7 +35,8 @@ export type RegistroPayload = IRegistroRequest | IOauthRegistroRequest;
 // 3. RESPUESTA DEL REGISTRO
 // Si el backend devuelve el usuario creado, reutilizá IUsuario:
 export interface IRegistroResponse {
-    user: IUser;
+    user?: IUser;
     access?:string;
     refresh?: string;
+    detail?: string; 
 }
