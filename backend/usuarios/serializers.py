@@ -71,9 +71,10 @@ class GoogleOAuthSerializer(serializers.Serializer):
                 client_id
             )
             return google_info
-        except ValueError:
-            raise serializers.ValidationError("El token de Google es inválido o ha expirado.")
-
+        except Exception as e:
+            print(str(e))
+            raise serializers.ValidationError(f"El token de Google es inválido o ha expirado.{str(e)}")
+        
 
 # 5. Serializers para Recupero de Contraseña
 class PasswordResetRequestSerializer(serializers.Serializer):

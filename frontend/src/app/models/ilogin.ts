@@ -19,7 +19,7 @@ export type LoginPayload = ILoginRequest | IOauthRequest;
 
 export interface ILoginResponse {
     access: string;
-    refresh?: string;
+    refresh: string;
     user?: IUser;
 }
 // 3. REFRESCO DE TOKEN (Vital para el ciclo de vida de JWT)
@@ -28,4 +28,4 @@ export interface IRefreshTokenRequest {
 }
 export interface IRefreshTokenResponse {
     access: string;
-}
+}  
