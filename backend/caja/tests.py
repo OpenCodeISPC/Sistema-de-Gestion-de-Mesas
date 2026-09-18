@@ -20,6 +20,7 @@ class PagoApiTests(TestCase):
             apellido='Casarino',
             rol='CAJERO',
         )
+        self.client.force_authenticate(user=self.usuario)
         self.pedido = Pedido.objects.create(
             estado='LISTO',
             total=108000,
