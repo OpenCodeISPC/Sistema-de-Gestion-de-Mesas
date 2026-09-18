@@ -3,7 +3,7 @@ La r en r'pedidos/' indica un Raw String (cadena cruda).
 Desactiva los caracteres de escape de Python (como \n o \t),
 haciendo que las barras invertidas \\ se interpreten como texto literal.
 Se usa en urls.py como buena práctica para evitar que Python confunda expresiones
-de rutas (ej. \d, \w) con comandos especiales.
+de rutas (ej. \\d, \\w) con comandos especiales.
 '''
 
 from django.urls import path, include
