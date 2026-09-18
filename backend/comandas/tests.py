@@ -29,9 +29,9 @@ class ComandaApiTests(TestCase):
     def test_actualizar_estado(self):
         response = self.client.patch(
             f'/api/comandas/{self.comanda.id}/',
-            {'estado': 'EN_PREPARACION'},
+            {'estado': 'PREPARACION'},
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.comanda.refresh_from_db()
-        self.assertEqual(self.comanda.estado, 'EN_PREPARACION')
+        self.assertEqual(self.comanda.estado, 'PREPARACION')
