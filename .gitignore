@@ -1,34 +1,30 @@
 # ================================
+# Variables de entorno
+# ================================
+.env
+.env.*
+!.env.example
+frontend/.env
+backend/.env.*
+backend/.env.*
+!backend/.env.desarrollo.example
+
+# ================================
 # Entornos virtuales
 # ================================
 .venv/
 venv/
 env/
-.env
-.env.*
 
 # ================================
-# Variables de entorno
-# ================================
-.env
-frontend/.env
-
-# ================================
-# VSCode
-# ================================
-.vscode/
-
-# ================================
-# Python
+# Python / Django
 # ================================
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-
+*.py[cod]
+*$py.class
 db.sqlite3
 staticfiles/
-backend/.env.*
+media/
 
 # ================================
 # Node / Angular
@@ -38,24 +34,24 @@ frontend/node_modules/
 frontend/dist/
 frontend/.angular/
 dist/
+.angular/
 
-# ================================
-# Angular build dentro de Django
-# ================================
+# Build de Angular dentro de Django
 backend/static/frontend/*
 
 # ================================
-# Docker / temporales
+# Docker & Bases de Datos
 # ================================
-*.ctl
-*.pid
-*.sock
+*.dump
+*.sql
+*.json
+*.tar
+*.gz
 
 # ================================
-# Sistema operativo
+# Editores y Sistema Operativo
 # ================================
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
-
-# DB backups
-*.dump
