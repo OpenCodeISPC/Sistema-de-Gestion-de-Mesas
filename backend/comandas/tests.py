@@ -1,12 +1,22 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
+
+from usuarios.models import Usuario
+
 from .models import Comanda
 
 
 class ComandaApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
+        self.usuario = Usuario.objects.create(
+            email='mozo@test.com',
+            nombre='Juan',
+            apellido='Test',
+            rol='MOZO',
+        )
+        self.client.force_authenticate(user=self.usuario)
         self.comanda = Comanda.objects.create(
             numero_mesa=1,
             estado='PENDIENTE'
