@@ -1,0 +1,37 @@
+from django.test import TestCase
+from rest_framework.test import APIClient
+from rest_framework import status
+
+from usuarios.models import Usuario
+
+from .models import Comanda
+
+
+class ComandaApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.usuario = Usuario.objects.create(
+            email='mozo@test.com',
+            nombre='Juan',
+            apellido='Test',
+            rol='MOZO',
+        )
+        self.client.force_authenticate(user=self.usuario)
+        self.comanda = Comanda.objects.create(
+            numero_mesa=1,
+            estado='PENDIENTE'
+        )
+
+    def test_obtener_comandas(self):
+        response = self.client.get('/api/comandas/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_actualizar_estado(self):
+        response = self.client.patch(
+            f'/api/comandas/{self.comanda.id}/',
+            {'estado': 'PREPARACION'},
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.comanda.refresh_from_db()
+        self.assertEqual(self.comanda.estado, 'PREPARACION')

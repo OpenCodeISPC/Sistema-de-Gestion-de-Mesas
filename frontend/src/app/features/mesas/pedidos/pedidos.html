@@ -2,248 +2,178 @@
 
   <!-- Encabezado del pedido -->
   <div class="sgmb-order-panel__header">
-    <h2>Pedido Mesa 01</h2>
+    <h2>Pedido Mesa {{ numeroMesa() }}</h2>
 
-    <button type="button" class="sgmb-order-panel__close" aria-label="Cerrar pedido">
+    <button type="button" (click)="cerrarPanel()" class="sgmb-order-panel__close" aria-label="Cerrar pedido">
       <i class="bi bi-x-lg" aria-hidden="true"></i>
     </button>
   </div>
 
 
   <!-- =======================================================
-       CATEGORÍA: BARRA
+        CATEGORÍA: BARRA
        ======================================================= -->
 
   <section class="sgmb-order-category sgmb-order-category--bar">
 
-    <button type="button" class="sgmb-order-category__header" aria-expanded="true">
+    <button type="button" (click)="toggleBarra()" class="sgmb-order-category__header"
+      [attr.aria-expanded]="barraAbierta()">
 
       <div class="sgmb-order-category__title">
         <span class="sgmb-order-category__icon"><i class="bi bi-cup-straw" aria-hidden="true"></i></span>
         <span>Barra</span>
       </div>
 
-      <span class="sgmb-order-category__arrow">⌄</span>
+      <span class="sgmb-order-category__arrow">{{ barraAbierta() ? '⌄' : '❯' }}</span>
     </button>
 
 
     <!-- Productos de barra -->
+    @if (barraAbierta()) {
     <div class="sgmb-order-category__content">
 
-      <!-- Producto 1 -->
+      @for (item of detallesBarra(); track item.id_detalle_pedido) {
       <div class="sgmb-order-item">
-
         <div class="sgmb-order-item__info">
-          <strong>Cerveza Rubia Imperial Golden</strong>
-          <small>Rubia</small>
+          <strong>{{ item.producto.nombre }}</strong>
+          <small>{{ item.observaciones || 'Sin observaciones' }}</small>
         </div>
 
         <div class="sgmb-order-item__actions">
+          <button type="button" (click)="modificarCantidad(item.id_detalle_pedido, -1)">−</button>
+          <span>{{ item.cantidad }}</span>
+          <button type="button" (click)="modificarCantidad(item.id_detalle_pedido, 1)">+</button>
 
-          <button type="button">−</button>
-
-          <span>2</span>
-
-          <button type="button">+</button>
-
-          <button type="button" class="sgmb-order-item__delete" aria-label="Eliminar producto">
+          <button type="button" (click)="eliminarProducto(item.id_detalle_pedido)" class="sgmb-order-item__delete">
             <i class="bi bi-trash3" aria-hidden="true"></i>
           </button>
-
         </div>
-
       </div>
+      } @empty {
+      <p class="text-muted small p-2 m-0">No hay productos de la barra en este pedido.</p>
+      }
 
-
-      <!-- Producto 2 -->
-      <div class="sgmb-order-item">
-
-        <div class="sgmb-order-item__info">
-          <strong>Cerveza Roja Imperial Red</strong>
-          <small>Roja</small>
-        </div>
-
-        <div class="sgmb-order-item__actions">
-
-          <button type="button">−</button>
-
-          <span>1</span>
-
-          <button type="button">+</button>
-
-          <button type="button" class="sgmb-order-item__delete" aria-label="Eliminar producto">
-            <i class="bi bi-trash3" aria-hidden="true"></i>
-          </button>
-
-        </div>
-
+      <!-- Desplegable dinámico o botón de agregar -->
+      @if (categoriaEnSeleccion() === 'barra') {
+      <div class="mt-2 p-2 bg-light rounded border">
+        <label class="form-label small fw-bold">Seleccionar producto:</label>
+        <select class="form-select form-select-sm" #selectBarra
+          (change)="seleccionarProducto(selectBarra.value ? productosParaAgregar()[+selectBarra.value] : null!)">
+          <option value="">-- Elige un bebida --</option>
+          @for (prod of productosParaAgregar(); track prod.id_producto; let i = $index) {
+          <option [value]="i">{{ prod.nombre }} - ${{ prod.precio }}</option>
+          }
+        </select>
+        <button type="button" (click)="categoriaEnSeleccion.set(null)"
+          class="btn btn-link btn-sm text-danger mt-1 p-0">Cancelar</button>
       </div>
-
-
-      <!-- Producto 3 -->
-      <div class="sgmb-order-item">
-
-        <div class="sgmb-order-item__info">
-          <strong>Agua Mineral</strong>
-          <small>Sin gas</small>
-        </div>
-
-        <div class="sgmb-order-item__actions">
-
-          <button type="button">−</button>
-
-          <span>1</span>
-
-          <button type="button">+</button>
-
-          <button type="button" class="sgmb-order-item__delete" aria-label="Eliminar producto">
-            <i class="bi bi-trash3" aria-hidden="true"></i>
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- Agregar producto -->
-      <button type="button" class="sgmb-order-add sgmb-order-add--bar btn btn-sm">
+      } @else {
+      <button type="button" (click)="abrirSelectorProducto('barra')"
+        class="sgmb-order-add sgmb-order-add--kitchen btn btn-sm w-100 mt-2">
         + Agregar otro producto de barra
       </button>
+      }
 
     </div>
+    }
 
   </section>
 
 
   <!-- =======================================================
-       CATEGORÍA: COCINA
+        CATEGORÍA: COCINA
        ======================================================= -->
 
   <section class="sgmb-order-category sgmb-order-category--kitchen">
 
-    <button type="button" class="sgmb-order-category__header" aria-expanded="true">
+    <button type="button" (click)="toggleCocina()" class="sgmb-order-category__header"
+      [attr.aria-expanded]="cocinaAbierta()">
 
       <div class="sgmb-order-category__title">
         <span class="sgmb-order-category__icon"><i class="bi bi-person-workspace" aria-hidden="true"></i></span>
         <span>Cocina</span>
       </div>
 
-      <span class="sgmb-order-category__arrow">⌄</span>
+      <span class="sgmb-order-category__arrow">{{ cocinaAbierta() ? '⌄' : '❯' }}</span>
     </button>
 
 
     <!-- Productos de cocina -->
+    @if (cocinaAbierta()) {
     <div class="sgmb-order-category__content">
 
-      <!-- Producto 1 -->
+      @for (item of detallesCocina(); track item.id_detalle_pedido) {
       <div class="sgmb-order-item">
-
         <div class="sgmb-order-item__info">
-          <strong>Papas Fritas</strong>
-          <small>Porción</small>
+          <strong>{{ item.producto.nombre }}</strong>
+          <small>{{ item.observaciones || 'Sin observaciones' }}</small>
         </div>
 
         <div class="sgmb-order-item__actions">
+          <button type="button" (click)="modificarCantidad(item.id_detalle_pedido, -1)">−</button>
+          <span>{{ item.cantidad }}</span>
+          <button type="button" (click)="modificarCantidad(item.id_detalle_pedido, 1)">+</button>
 
-          <button type="button">−</button>
-
-          <span>1</span>
-
-          <button type="button">+</button>
-
-          <button type="button" class="sgmb-order-item__delete" aria-label="Eliminar producto">
+          <button type="button" (click)="eliminarProducto(item.id_detalle_pedido)" class="sgmb-order-item__delete">
             <i class="bi bi-trash3" aria-hidden="true"></i>
           </button>
-
         </div>
-
       </div>
+      } @empty {
+      <p class="text-muted small p-2 m-0">No hay productos de cocina en este pedido.</p>
+      }
 
-
-      <!-- Producto 2 -->
-      <div class="sgmb-order-item">
-
-        <div class="sgmb-order-item__info">
-          <strong>Rabas</strong>
-          <small>Porción</small>
-        </div>
-
-        <div class="sgmb-order-item__actions">
-
-          <button type="button">−</button>
-
-          <span>1</span>
-
-          <button type="button">+</button>
-
-          <button type="button" class="sgmb-order-item__delete" aria-label="Eliminar producto">
-            <i class="bi bi-trash3" aria-hidden="true"></i>
-          </button>
-
-        </div>
-
+      <!-- Desplegable dinámico o botón de agregar -->
+      @if (categoriaEnSeleccion() === 'cocina') {
+      <div class="mt-2 p-2 bg-light rounded border">
+        <label class="form-label small fw-bold">Seleccionar producto:</label>
+        <select class="form-select form-select-sm" #selectCocina
+          (change)="seleccionarProducto(selectCocina.value ? productosParaAgregar()[+selectCocina.value] : null!)">
+          <option value="">-- Elige un plato --</option>
+          @for (prod of productosParaAgregar(); track prod.id_producto; let i = $index) {
+          <option [value]="i">{{ prod.nombre }} - ${{ prod.precio }}</option>
+          }
+        </select>
+        <button type="button" (click)="categoriaEnSeleccion.set(null)"
+          class="btn btn-link btn-sm text-danger mt-1 p-0">Cancelar</button>
       </div>
-
-
-      <!-- Producto 3 -->
-      <div class="sgmb-order-item">
-
-        <div class="sgmb-order-item__info">
-          <strong>Salsa Golf</strong>
-          <small>Extra</small>
-        </div>
-
-        <div class="sgmb-order-item__actions">
-
-          <button type="button">−</button>
-
-          <span>1</span>
-
-          <button type="button">+</button>
-
-          <button type="button" class="sgmb-order-item__delete" aria-label="Eliminar producto">
-            <i class="bi bi-trash3" aria-hidden="true"></i>
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- Agregar producto -->
-      <button type="button" class="sgmb-order-add sgmb-order-add--kitchen btn btn-sm">
+      } @else {
+      <button type="button" (click)="abrirSelectorProducto('cocina')"
+        class="sgmb-order-add sgmb-order-add--kitchen btn btn-sm w-100 mt-2">
         + Agregar otro producto de cocina
       </button>
+      }
 
     </div>
+    }
 
   </section>
 
 
   <!-- =======================================================
-       TOTAL
+        TOTAL
        ======================================================= -->
 
   <div class="sgmb-order-total">
 
     <span>Total del pedido</span>
 
-    <strong>$ 27.500</strong>
+    <strong>$ {{ totalCalculado() | number:'1.2-2' }}</strong>
 
   </div>
 
 
   <!-- =======================================================
-       ACCIONES
+        ACCIONES
        ======================================================= -->
 
   <div class="sgmb-order-actions">
 
-    <button type="button" class="sgmb-order-actions__confirm btn btn-success">
+    <button type="button" (click)="confirmarPedido()" class="sgmb-order-actions__confirm btn btn-success">
       <i class="bi bi-check-lg" aria-hidden="true"></i> Confirmar pedido
     </button>
 
-    <button type="button" class="sgmb-order-actions__close btn btn-outline-secondary">
+    <button type="button" (click)="cerrarMesa()" class="sgmb-order-actions__close btn btn-outline-secondary">
       <i class="bi bi-x-lg" aria-hidden="true"></i> Cerrar mesa
     </button>
 
