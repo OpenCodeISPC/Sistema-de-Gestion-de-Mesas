@@ -112,16 +112,8 @@ export class Login implements OnInit {
 
 
         // Guardar tokens y datos del usuario de forma segura asegurando el tipo string
-<<<<<<< HEAD
-
-        localStorage.setItem('access', res.access!);
-
-        localStorage.setItem('refresh', res.refresh!);
-
-=======
         localStorage.setItem(AUTH_TOKEN_KEY, res.access!);
         localStorage.setItem(REFRESH_TOKEN_KEY, res.refresh!);
->>>>>>> rama-aldo
         localStorage.setItem('user', JSON.stringify(res.user));
 
 
@@ -213,16 +205,8 @@ export class Login implements OnInit {
 
 
         // Guardar tokens y datos del usuario de forma segura asegurando el tipo string
-<<<<<<< HEAD
-
-        localStorage.setItem('access', res.access!);
-
-        localStorage.setItem('refresh', res.refresh!);
-
-=======
         localStorage.setItem(AUTH_TOKEN_KEY, res.access!);
         localStorage.setItem(REFRESH_TOKEN_KEY, res.refresh!);
->>>>>>> rama-aldo
         localStorage.setItem('user', JSON.stringify(res.user));
 
 
