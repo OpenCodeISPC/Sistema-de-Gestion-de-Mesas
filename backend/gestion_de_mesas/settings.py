@@ -53,13 +53,15 @@ INSTALLED_APPS = [
 # Configuración del servidor ASGI
 ASGI_APPLICATION = "gestion_de_mesas.asgi.application"
 
+REDIS_HOST = os.getenv("REDIS_HOST", "redis")
+REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
 # Configuración de Channel Layers (usando Redis en Docker)
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [
-                ("127.0.0.1", 6379)
+                (REDIS_HOST, REDIS_PORT)
             ],  # Asegúrate de tener el contenedor de Redis corriendo en este puerto
         },
     },

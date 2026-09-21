@@ -19,6 +19,7 @@ import { Router, RouterLink } from '@angular/router';
 import { LoginService } from '../../../services/login.service';
 
 import { environments } from '../../.././../environments/environments';
+import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from '../../../constants/auth.constants';
 
 
 
@@ -111,11 +112,8 @@ export class Login implements OnInit {
 
 
         // Guardar tokens y datos del usuario de forma segura asegurando el tipo string
-
-        localStorage.setItem('access', res.access!);
-
-        localStorage.setItem('refresh', res.refresh!);
-
+        localStorage.setItem(AUTH_TOKEN_KEY, res.access!);
+        localStorage.setItem(REFRESH_TOKEN_KEY, res.refresh!);
         localStorage.setItem('user', JSON.stringify(res.user));
 
 
@@ -207,11 +205,8 @@ export class Login implements OnInit {
 
 
         // Guardar tokens y datos del usuario de forma segura asegurando el tipo string
-
-        localStorage.setItem('access', res.access!);
-
-        localStorage.setItem('refresh', res.refresh!);
-
+        localStorage.setItem(AUTH_TOKEN_KEY, res.access!);
+        localStorage.setItem(REFRESH_TOKEN_KEY, res.refresh!);
         localStorage.setItem('user', JSON.stringify(res.user));
 
 
