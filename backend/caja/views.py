@@ -3,6 +3,8 @@ from rest_framework import viewsets
 
 from pedidos.models import Pedido
 
+from auditoria.mongo import registrar_evento
+
 from .models import Pago
 from .serializers import PagoReadSerializer, PagoWriteSerializer
 
@@ -68,3 +70,15 @@ class PagoViewSet(viewsets.ModelViewSet):
             if not tiene_pedidos_abiertos and pedido.mesa.estado != 'LIBRE':
                 pedido.mesa.estado = 'LIBRE'
                 pedido.mesa.save()
+
+        registrar_evento(
+            tipo='PAGO_REGISTRADO',
+            actor=pago.cajero.email if pago.cajero else None,
+            detalle=f'Cobro de la mesa {pedido.mesa.numero}',
+            datos={
+                'id_pago': pago.id_pago,
+                'id_pedido': pedido.id_pedido,
+                'monto': pago.monto,
+                'metodo_pago': pago.metodo_pago,
+            },
+        )

@@ -57,7 +57,29 @@ ng serve -o
 - El nombre del grupo en Redis (para no mezclar tráfico de salas).
 - La ruta en routing.py.
 - El modelo y serializer que usa la señal (signals.py).
-==================================================================================
+=================================================================================================
+
+================================MODULO DE AUDITORIA (MongoDB)=======================================
+### Que hace
+La app `auditoria` persiste en MongoDB los eventos criticos del sistema (logs no relacionales de auditoria).
+Cuando se registra un cobro en caja queda guardado automaticamente un evento `PAGO_REGISTRADO`.
+
+### Config
+- La conexion usa las variables `MONGO_URI` y `MONGO_DB_NAME` de `.env.desarrollo`.
+- Contenedor: `sgmb_mongo` (puerto 27018 -> 27017), usuario root `sgmb_user` / `1234`, authSource `admin`.
+
+### Endpoints
+| Metodo | Ruta            | Descripcion                                  |
+| ------ | --------------- | -------------------------------------------- |
+| GET    | /api/auditoria/ | Ultimos eventos de auditoria (?tipo=&limite=)|
+
+### Ver en MongoDB Compass
+host `localhost`, puerto `27018`, autenticacion Usuario/Contrasena, usuario `sgmb_user`, clave `1234`,
+Authentication Database `admin`; luego base `sgmb_mongo_db`, coleccion `eventos_auditoria`.
+
+### Nota
+Si MongoDB esta caido el cobro NO se pierde: el evento se descarta con un warning en la consola.
+====================================================================================================
 
 ### Crear mesas en la bd, se ejecuta desde la raiz de proyecto:
 docker exec -i sgmb_backend python manage.py shell << EOF
