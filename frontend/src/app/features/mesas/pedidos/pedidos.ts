@@ -215,7 +215,7 @@ export class Pedidos implements OnInit {
         detalles: detallesPayload
       };
 
-      this.pedidoService.actualizarPedido(pedido.id_pedido, payload).subscribe({
+      this.pedidoService.actualaizarEstadoOParcial(pedido.id_pedido, payload).subscribe({
         next: (pedidoActualizado) => {
           this.pedidoActual.set(pedidoActualizado);
           console.log('Pedido actualizado correctamente');

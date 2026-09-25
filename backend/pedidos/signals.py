@@ -5,7 +5,7 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
 from .models import Pedido
-from .serializers import PedidoSerializer # O el serializer que uses para GET
+from .serializers import PedidoReadSerializer # O el serializer que uses para GET
 
 @receiver(post_save, sender=Pedido)
 def notificar_cambio_pedido(sender, instance, created, **kwargs):
@@ -15,7 +15,7 @@ def notificar_cambio_pedido(sender, instance, created, **kwargs):
     event_type = 'PEDIDO_CREADO' if created else 'PEDIDO_ESTADO_CAMBIADO'
     
     # Serializar los datos completos del pedido para la UI
-    pedido_data = PedidoSerializer(instance).data
+    pedido_data = PedidoReadSerializer(instance).data
 
     # Emitir el mensaje a todos los conectados al WebSocket
     async_to_sync(channel_layer.group_send)(
