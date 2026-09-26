@@ -1,8 +1,12 @@
-import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from "@angular/router";
 import { ComandaService } from '../../services/comandas.service'; 
-import { IComanda, EstadoComanda, SectorComanda } from '../../models/icomandas';
+import { WebsocketService } from '../../services/websocket.service';
+import { IPedido, EstadoPedido } from '../../models/ipedido';
+
+// Mantenemos el Sector aquí para el switch de la vista (Cocina / Barra)
+export type SectorComanda = 'COCINA' | 'BARRA';
 
 @Component({
   selector: 'app-comandas',
@@ -13,73 +17,92 @@ import { IComanda, EstadoComanda, SectorComanda } from '../../models/icomandas';
 })
 export class Comandas implements OnInit, OnDestroy {
   private comandaService = inject(ComandaService);
+  private wsService = inject(WebsocketService);
 
-  // Signals para el estado global del componente
-  comandas = signal<IComanda[]>([]);
+  // Signals reactivas usando IPedido directamente
+  pedidos = signal<IPedido[]>([]);
   cargando = signal<boolean>(false);
   errorMensaje = signal<string | null>(null);
 
-  // Signal para el filtro de los botones superiores (COCINA / BARRA)
   sectorActivo = signal<SectorComanda>('COCINA');
-
-  // Signal para refrescar los contadores de tiempo en pantalla cada 30 segundos
   ahora = signal<number>(Date.now());
   private intervalId: any;
 
-  // 1. Computed Signal: Filtra las comandas por sector activo
-  comandasPorSector = computed(() => {
-    return this.comandas().filter(c => c.sector === this.sectorActivo());
+  // 1. Filtramos por sector
+  // NOTA: Asumimos que el backend envía una propiedad 'sector' en el JSON, 
+  // si no lo hace, este filtro deberá ajustarse.
+  pedidosPorSector = computed(() => {
+    return this.pedidos().filter(p => (p as any).sector === this.sectorActivo());
   });
 
-  // 2. Computed Signals: Dividen el sector activo en 3 columnas
-  comandasPendientes = computed(() => {
-    return this.comandasPorSector().filter(c => c.estado === 'PENDIENTE');
+  // 2. Filtramos por Estados de IPedido
+  pedidosPendientes = computed(() => {
+    return this.pedidosPorSector().filter(p => p.estado === 'PENDIENTE');
   });
 
-  comandasEnPreparacion = computed(() => {
-    return this.comandasPorSector().filter(c => c.estado === 'PREPARACION');
+  pedidosEnPreparacion = computed(() => {
+    return this.pedidosPorSector().filter(p => p.estado === 'PREPARACION');
   });
 
-  comandasListas = computed(() => {
-    return this.comandasPorSector().filter(c => c.estado === 'LISTO');
+  pedidosListos = computed(() => {
+    return this.pedidosPorSector().filter(p => p.estado === 'LISTO');
   });
+
+  constructor() {
+    effect(() => {
+      const evento = this.wsService.ultimoEvento();
+      if (!evento) return;
+
+      console.log('Evento recibido por WebSocket:', evento);
+
+      const pedidoRecibido = evento.data as IPedido;
+      if (!pedidoRecibido || !pedidoRecibido.id_pedido) return;
+
+      if (evento.type === 'PEDIDO_CREADO') {
+        this.pedidos.update(lista => {
+          const existe = lista.some(p => p.id_pedido === pedidoRecibido.id_pedido);
+          if (existe) return lista;
+          return [pedidoRecibido, ...lista];
+        });
+      } 
+      else if (evento.type === 'PEDIDO_ESTADO_CAMBIADO') {
+        this.pedidos.update(lista => 
+          lista.map(p => p.id_pedido === pedidoRecibido.id_pedido ? { ...p, ...pedidoRecibido } : p)
+        );
+      }
+    });
+  }
 
   ngOnInit(): void {
-    this.cargarComandas();
-
-    // Actualiza el timestamp 'ahora' cada 30 segundos para refrescar contadores
-    this.intervalId = setInterval(() => {
-      this.ahora.set(Date.now());
-    }, 30000);
+    this.cargarPedidos();
+    this.wsService.conectar();
+    this.intervalId = setInterval(() => this.ahora.set(Date.now()), 30000);
   }
 
   ngOnDestroy(): void {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
+    if (this.intervalId) clearInterval(this.intervalId);
   }
 
-  cargarComandas(): void {
+  cargarPedidos(): void {
     this.cargando.set(true);
     this.errorMensaje.set(null);
 
     this.comandaService.getComandas().subscribe({
       next: (response: any) => {
-        // Normaliza respuesta si viene paginada o como lista directa
         const data = Array.isArray(response) ? response : (response.results || []);
         
-        // Asegura que detalles no sea undefined
-        const comandasProcesadas = data.map((c: IComanda) => ({
-          ...c,
-          detalles: c.detalles || []
+        // Ya no necesitamos normalizar IDs, confiamos en IPedido
+        const pedidosProcesados: IPedido[] = data.map((p: any) => ({
+          ...p,
+          detalles: p.detalles || []
         }));
 
-        this.comandas.set(comandasProcesadas);
+        this.pedidos.set(pedidosProcesados);
         this.cargando.set(false);
       },
       error: (err) => {
-        console.error('Error al cargar comandas:', err);
-        this.errorMensaje.set('No se pudieron cargar las comandas');
+        console.error('Error al cargar pedidos:', err);
+        this.errorMensaje.set('No se pudieron cargar los pedidos');
         this.cargando.set(false);
       }
     });
@@ -89,53 +112,49 @@ export class Comandas implements OnInit, OnDestroy {
     this.sectorActivo.set(sector);
   }
 
-  avanzarEstado(comanda: IComanda): void {
-    let nuevoEstado: EstadoComanda;
-
-    if (comanda.estado === 'PENDIENTE') nuevoEstado = 'PREPARACION';
-    else if (comanda.estado === 'PREPARACION') nuevoEstado = 'LISTO';
+  avanzarEstado(pedido: IPedido): void {
+    let nuevoEstado: EstadoPedido;
+    if (pedido.estado === 'PENDIENTE') nuevoEstado = 'PREPARACION';
+    else if (pedido.estado === 'PREPARACION') nuevoEstado = 'LISTO';
     else return;
 
-    this.actualizarEstado(comanda, nuevoEstado);
+    this.actualizarEstado(pedido, nuevoEstado);
   }
 
-  retrocederEstado(comanda: IComanda): void {
-    let nuevoEstado: EstadoComanda;
-
-    if (comanda.estado === 'LISTO') nuevoEstado = 'PREPARACION';
-    else if (comanda.estado === 'PREPARACION') nuevoEstado = 'PENDIENTE';
+  retrocederEstado(pedido: IPedido): void {
+    let nuevoEstado: EstadoPedido;
+    if (pedido.estado === 'LISTO') nuevoEstado = 'PREPARACION';
+    else if (pedido.estado === 'PREPARACION') nuevoEstado = 'PENDIENTE';
     else return;
 
-    this.actualizarEstado(comanda, nuevoEstado);
+    this.actualizarEstado(pedido, nuevoEstado);
   }
 
-  private actualizarEstado(comanda: IComanda, nuevoEstado: EstadoComanda): void {
-    if (!comanda.id_comanda) return;
-
-    // Actualización optimista
-    this.comandas.update(lista => 
-      lista.map(c => c.id_comanda === comanda.id_comanda ? { ...c, estado: nuevoEstado } : c)
+  private actualizarEstado(pedido: IPedido, nuevoEstado: EstadoPedido): void {
+    // Actualización optimista de la Signal
+    this.pedidos.update(lista => 
+      lista.map(p => p.id_pedido === pedido.id_pedido ? { ...p, estado: nuevoEstado } : p)
     );
 
-    this.comandaService.actualizarEstado(comanda.id_comanda, { estado: nuevoEstado }).subscribe({
+    // Acá le pasamos el ID del pedido y el DTO parcial ({ estado: nuevoEstado })
+    this.comandaService.actualizarEstado(pedido.id_pedido, { estado: nuevoEstado }).subscribe({
       next: () => {},
       error: (err) => {
-        console.error('Error al cambiar el estado de la comanda', err);
-        // Reversión
-        this.comandas.update(lista => 
-          lista.map(c => c.id_comanda === comanda.id_comanda ? { ...c, estado: comanda.estado } : c)
+        console.error('Error al cambiar el estado del pedido', err);
+        // Reversión si falla la API
+        this.pedidos.update(lista => 
+          lista.map(p => p.id_pedido === pedido.id_pedido ? { ...p, estado: pedido.estado } : p)
         );
-        this.errorMensaje.set('Hubo un error al mover la comanda');
+        this.errorMensaje.set('Hubo un error al mover el pedido');
       }
     });
   }
 
-  // Calcula el tiempo transcurrido desde 'creado_en'
-  calcularTiempoTranscurrido(creadoEn?: string): string {
-    if (!creadoEn) return '0 min';
+  calcularTiempoTranscurrido(fechaHora?: string): string {
+    if (!fechaHora) return '0 min';
 
     const tiempoActual = this.ahora();
-    const inicio = new Date(creadoEn).getTime();
+    const inicio = new Date(fechaHora).getTime();
     const diferenciaMinutos = Math.floor((tiempoActual - inicio) / (1000 * 60));
 
     if (diferenciaMinutos < 1) return 'Hace un momento';
