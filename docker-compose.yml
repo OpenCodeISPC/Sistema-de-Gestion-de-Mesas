@@ -12,7 +12,7 @@ services:
     volumes:
       - datos_postgres_sgmb:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-sgmb_db}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-sgmb_db}" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -29,7 +29,7 @@ services:
     volumes:
       - datos_mongo_sgmb:/data/db
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -61,7 +61,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate && python manage.py seed_mesas && python manage.py runserver 0.0.0.0:8000"
 
   frontend:
     build:

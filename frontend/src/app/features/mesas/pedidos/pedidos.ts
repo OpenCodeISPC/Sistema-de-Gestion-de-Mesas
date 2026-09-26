@@ -23,6 +23,8 @@ export class Pedidos implements OnInit {
   numeroMesa = input<number | string>('01');
   alCerrar = output<void>();
   alAgregarProducto = output<string>();
+  alConfirmarPedido = output<number>();
+  alCerrarMesa = output<number>();
 
   // Signals de estado
   pedidoActual = signal<IPedido | null>(null);
@@ -215,10 +217,13 @@ export class Pedidos implements OnInit {
         detalles: detallesPayload
       };
 
-      this.pedidoService.actualizarPedido(pedido.id_pedido, payload).subscribe({
+      this.pedidoService.actualaizarEstadoOParcial(pedido.id_pedido, payload).subscribe({
         next: (pedidoActualizado) => {
           this.pedidoActual.set(pedidoActualizado);
           console.log('Pedido actualizado correctamente');
+          if (this.mesaId()) {
+            this.alConfirmarPedido.emit(this.mesaId()!); //notifico a mesas
+          }
         },
         error: (err) => console.error('Error al actualizar pedido:', err)
       });
@@ -235,6 +240,7 @@ export class Pedidos implements OnInit {
         next: (nuevoPedido) => {
           this.pedidoActual.set(nuevoPedido);
           console.log('Pedido creado correctamente');
+          this.alConfirmarPedido.emit(this.mesaId()!) //notifico a mesas
         },
         error: (err) => console.error('Error al crear pedido:', err)
       });
@@ -243,11 +249,15 @@ export class Pedidos implements OnInit {
 
   cerrarMesa(): void {
     const pedido = this.pedidoActual();
-    if (!pedido) return;
+    const idMesa = this.mesaId();
+
+    if (!pedido || !idMesa) return;
 
     if (confirm(`¿Desea cerrar la comanda y pasar a cobro de la Mesa ${this.numeroMesa()}?`)) {
       this.pedidoService.actualaizarEstadoOParcial(pedido.id_pedido, { estado: 'CERRADO' }).subscribe({
         next: () => {
+          console.log(`Pedido ${pedido.id_pedido} cerrado exitosamente`)
+          this.alCerrarMesa.emit(idMesa)
           this.limpiarPanel();
           this.cerrarPanel();
         },

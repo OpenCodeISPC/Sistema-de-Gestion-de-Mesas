@@ -104,12 +104,19 @@
                 {{ mesa.estado | titlecase }}
               </span>
 
+              <!-- En mesas.html -->
               <div class="sgmb-table-actions" (click)="$event.stopPropagation()">
                 <button type="button" [attr.aria-label]="'Editar mesa ' + mesa.numero">
                   <i class="bi bi-pencil-square" aria-hidden="true"></i>
                 </button>
-                <button type="button" [attr.aria-label]="'Más opciones mesa ' + mesa.numero">
-                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+
+                <!-- BOTÓN DE ACCIÓN RESERVADA / LIBRE -->
+                <button type="button" (click)="toggleReservaMesa(mesa, $event)"
+                  [attr.aria-label]="(mesa.estado === 'RESERVADA' ? 'Liberar reserva mesa ' : 'Reservar mesa ') + mesa.numero"
+                  [title]="mesa.estado === 'RESERVADA' ? 'Quitar reserva' : 'Marcar como Reservada'">
+                  <i class="bi"
+                    [ngClass]="mesa.estado === 'RESERVADA' ? 'bi-calendar-x text-danger' : 'bi-calendar-check text-warning'"
+                    aria-hidden="true"></i>
                 </button>
               </div>
 
@@ -128,7 +135,8 @@
       <!-- COMPONENTE HIJO PEDIDOS -->
       @if (mesaSeleccionada()) {
       <app-pedidos [mesaId]="mesaSeleccionada()?.id_mesa || null" [numeroMesa]="mesaSeleccionada()?.numero || '01'"
-        (alCerrar)="deseleccionarMesa()">
+        (alCerrar)="deseleccionarMesa()" (alConfirmarPedido)="marcarMesaComoOcupada($event)"
+        (alCerrarMesa)="marcarMesaComoLibre($event)">
       </app-pedidos>
       }
 

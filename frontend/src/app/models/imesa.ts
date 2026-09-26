@@ -18,9 +18,9 @@ export interface ICrearMesaDTO {
 
 // DTO para actualización completa (PUT)
 export interface IActualizarMesaDTO {
-  numero: number;
-  capacidad: number;
-  estado: EstadoMesa;
+  numero?: number;
+  capacidad?: number;
+  estado?: EstadoMesa;
   ubicacion?: string | null;
 }
 
@@ -31,3 +31,4 @@ export interface IPatchMesaDTO {
   estado?: EstadoMesa;
   ubicacion?: string | null;
 }
+
