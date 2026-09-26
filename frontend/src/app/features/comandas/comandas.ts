@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from "@angular/router";
-import { ComandaService } from '../../services/comandas.service'; 
+import { ComandaService } from '../../services/comandas.service';
+import { WebsocketService } from '../../services/websocket.service';
 import { IComanda, EstadoComanda, SectorComanda } from '../../models/icomandas';
 
 @Component({
@@ -13,25 +14,22 @@ import { IComanda, EstadoComanda, SectorComanda } from '../../models/icomandas';
 })
 export class Comandas implements OnInit, OnDestroy {
   private comandaService = inject(ComandaService);
+  private wsService = inject(WebsocketService);
 
-  // Signals para el estado global del componente
+  // Signals reactivas de estado
   comandas = signal<IComanda[]>([]);
   cargando = signal<boolean>(false);
   errorMensaje = signal<string | null>(null);
 
-  // Signal para el filtro de los botones superiores (COCINA / BARRA)
   sectorActivo = signal<SectorComanda>('COCINA');
-
-  // Signal para refrescar los contadores de tiempo en pantalla cada 30 segundos
   ahora = signal<number>(Date.now());
   private intervalId: any;
 
-  // 1. Computed Signal: Filtra las comandas por sector activo
+  // Computed Signals para filtrado derivado automático
   comandasPorSector = computed(() => {
     return this.comandas().filter(c => c.sector === this.sectorActivo());
   });
 
-  // 2. Computed Signals: Dividen el sector activo en 3 columnas
   comandasPendientes = computed(() => {
     return this.comandasPorSector().filter(c => c.estado === 'PENDIENTE');
   });
@@ -44,10 +42,49 @@ export class Comandas implements OnInit, OnDestroy {
     return this.comandasPorSector().filter(c => c.estado === 'LISTO');
   });
 
+  constructor() {
+    //  REACTIVIDAD DE ANGULAR 20 CON WEBSOCKETS:
+    // El effect() rastrea la Signal wsService.ultimoEvento() y se ejecuta automáticamente
+    effect(() => {
+      const evento = this.wsService.ultimoEvento();
+      if (!evento) return;
+
+      console.log(' Evento recibido por WebSocket:', evento);
+
+      const comandaRecibida = evento.data as IComanda;
+      // Normalización de propiedades entre backend Django y frontend Angular
+      const idComandaNormalizado = comandaRecibida.id_comanda || (comandaRecibida as any).id_pedido;
+
+      if (!idComandaNormalizado) return;
+
+      if (evento.type === 'PEDIDO_CREADO') {
+        this.comandas.update(lista => {
+          const existe = lista.some(c => (c.id_comanda || (c as any).id_pedido) === idComandaNormalizado);
+          if (existe) return lista;
+          return [{ ...comandaRecibida, id_comanda: idComandaNormalizado }, ...lista];
+        });
+      }
+      else if (evento.type === 'PEDIDO_ESTADO_CAMBIADO') {
+        this.comandas.update(lista =>
+          lista.map(c => {
+            const actualId = c.id_comanda || (c as any).id_pedido;
+            return actualId === idComandaNormalizado
+              ? { ...c, ...comandaRecibida, id_comanda: idComandaNormalizado }
+              : c;
+          })
+        );
+      }
+    });
+  }
+
   ngOnInit(): void {
+    // 1. Cargar comandas iniciales mediante HTTP
     this.cargarComandas();
 
-    // Actualiza el timestamp 'ahora' cada 30 segundos para refrescar contadores
+    // 2. Conectar al WebSocket
+    this.wsService.conectar();
+
+    // 3. Temporizador para actualizar contadores
     this.intervalId = setInterval(() => {
       this.ahora.set(Date.now());
     }, 30000);
@@ -65,13 +102,12 @@ export class Comandas implements OnInit, OnDestroy {
 
     this.comandaService.getComandas().subscribe({
       next: (response: any) => {
-        // Normaliza respuesta si viene paginada o como lista directa
         const data = Array.isArray(response) ? response : (response.results || []);
-        
-        // Asegura que detalles no sea undefined
-        const comandasProcesadas = data.map((c: IComanda) => ({
+
+        const comandasProcesadas = data.map((c: any) => ({
           ...c,
-          detalles: c.detalles || []
+          id_comanda: c.id_comanda || c.id_pedido, // Mapea id_pedido si viene de la app pedidos
+          detalles: c.detalles || c.items || []
         }));
 
         this.comandas.set(comandasProcesadas);
@@ -91,7 +127,6 @@ export class Comandas implements OnInit, OnDestroy {
 
   avanzarEstado(comanda: IComanda): void {
     let nuevoEstado: EstadoComanda;
-
     if (comanda.estado === 'PENDIENTE') nuevoEstado = 'PREPARACION';
     else if (comanda.estado === 'PREPARACION') nuevoEstado = 'LISTO';
     else return;
@@ -101,7 +136,6 @@ export class Comandas implements OnInit, OnDestroy {
 
   retrocederEstado(comanda: IComanda): void {
     let nuevoEstado: EstadoComanda;
-
     if (comanda.estado === 'LISTO') nuevoEstado = 'PREPARACION';
     else if (comanda.estado === 'PREPARACION') nuevoEstado = 'PENDIENTE';
     else return;
@@ -110,27 +144,27 @@ export class Comandas implements OnInit, OnDestroy {
   }
 
   private actualizarEstado(comanda: IComanda, nuevoEstado: EstadoComanda): void {
-    if (!comanda.id_comanda) return;
+    const idTarget = comanda.id_comanda || (comanda as any).id_pedido;
+    if (!idTarget) return;
 
-    // Actualización optimista
-    this.comandas.update(lista => 
-      lista.map(c => c.id_comanda === comanda.id_comanda ? { ...c, estado: nuevoEstado } : c)
+    // Actualización optimista de la Signal
+    this.comandas.update(lista =>
+      lista.map(c => ((c.id_comanda || (c as any).id_pedido) === idTarget) ? { ...c, estado: nuevoEstado } : c)
     );
 
-    this.comandaService.actualizarEstado(comanda.id_comanda, { estado: nuevoEstado }).subscribe({
-      next: () => {},
+    this.comandaService.actualizarEstado(idTarget, { estado: nuevoEstado }).subscribe({
+      next: () => { },
       error: (err) => {
         console.error('Error al cambiar el estado de la comanda', err);
-        // Reversión
-        this.comandas.update(lista => 
-          lista.map(c => c.id_comanda === comanda.id_comanda ? { ...c, estado: comanda.estado } : c)
+        // Reversión si falla la API
+        this.comandas.update(lista =>
+          lista.map(c => ((c.id_comanda || (c as any).id_pedido) === idTarget) ? { ...c, estado: comanda.estado } : c)
         );
         this.errorMensaje.set('Hubo un error al mover la comanda');
       }
     });
   }
 
-  // Calcula el tiempo transcurrido desde 'creado_en'
   calcularTiempoTranscurrido(creadoEn?: string): string {
     if (!creadoEn) return '0 min';
 
@@ -145,4 +179,4 @@ export class Comandas implements OnInit, OnDestroy {
     const minsRestantes = diferenciaMinutos % 60;
     return `${horas}h ${minsRestantes}m`;
   }
-}
+}  
