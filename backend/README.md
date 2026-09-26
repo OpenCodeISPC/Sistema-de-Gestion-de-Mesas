@@ -59,25 +59,6 @@ ng serve -o
 - El modelo y serializer que usa la señal (signals.py).
 ==================================================================================
 
-### Crear mesas en la bd, se ejecuta desde la raiz de proyecto:
-docker exec -i sgmb_backend python manage.py shell << EOF
-from mesas.models import Mesa
 
-Mesa.objects.bulk_create([
-    Mesa(numero=1, capacidad=4, estado="LIBRE", ubicacion="Salón principal"),
-    Mesa(numero=2, capacidad=4, estado="OCUPADA", ubicacion="Salón principal"),
-    Mesa(numero=3, capacidad=6, estado="RESERVADA", ubicacion="Salón principal"),
-    Mesa(numero=4, capacidad=4, estado="LIBRE", ubicacion="Salón principal"),
-    Mesa(numero=5, capacidad=6, estado="OCUPADA", ubicacion="Salón principal"),
-    Mesa(numero=6, capacidad=2, estado="RESERVADA", ubicacion="Salón principal"),
-
-    Mesa(numero=10, capacidad=2, estado="LIBRE", ubicacion="Terraza"),
-    Mesa(numero=11, capacidad=4, estado="OCUPADA", ubicacion="Terraza"),
-    Mesa(numero=12, capacidad=4, estado="LIBRE", ubicacion="Terraza"),
-    Mesa(numero=13, capacidad=6, estado="RESERVADA", ubicacion="Terraza"),
-])
-
-print("✅ 10 mesas cargadas con éxito.")
-EOF
 
 ------------------------------------------------------------------------------------------

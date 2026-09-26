@@ -27,23 +27,23 @@ export class Mesas implements OnInit {
   // SIGNALS COMPUTADAS (Totales para las cards de resumen)
   // --------------------------------------------------------------------------
   totalMesas = computed(() => this.mesas().length);
-  
-  mesasDisponibles = computed(() => 
+
+  mesasDisponibles = computed(() =>
     this.mesas().filter(m => m.estado === 'LIBRE').length
   );
 
-  mesasReservadas = computed(() => 
+  mesasReservadas = computed(() =>
     this.mesas().filter(m => m.estado === 'RESERVADA').length
   );
 
-  mesasOcupadas = computed(() => 
+  mesasOcupadas = computed(() =>
     this.mesas().filter(m => m.estado === 'OCUPADA').length
   );
 
   // Agrupación por ubicación/sector (ej: "Salón Principal", "Terraza")
   mesasPorSector = computed(() => {
     const mapa = new Map<string, IMesa[]>();
-    
+
     for (const mesa of this.mesas()) {
       const sector = mesa.ubicacion?.trim() || 'Salón Principal';
       if (!mapa.has(sector)) {
@@ -96,10 +96,42 @@ export class Mesas implements OnInit {
     }
   }
 
+  marcarMesaComoOcupada(idMesa: number): void {
+    this.mesas.update(lista =>
+      lista.map(m => m.id_mesa === idMesa ? { ...m, estado: 'OCUPADA' } : m)
+    )
+    if (this.mesaSeleccionada()?.id_mesa === idMesa) {
+      this.mesaSeleccionada.update(m => m ? { ...m, estado: 'OCUPADA' } : null)
+    }
+    this.mesaService.actualizarMesa(idMesa, { estado: 'OCUPADA' }).subscribe({
+      next: () => console.log(`Mesa ${idMesa} marcada como OCUPADA`),
+      error: (err) => console.error('Error al actualizar estado de la mesa:', err)
+    })
+  }
+
+  marcarMesaComoLibre(idMesa: number): void {
+    this.mesas.update(lista =>
+      lista.map(m => m.id_mesa === idMesa ? { ...m, estado: 'LIBRE' } : m)
+    )
+    // si la mesa seleccionada es la que se cerro, deseleccionamos el panel lateral
+    if (this.mesaSeleccionada()?.id_mesa === idMesa) {
+      this.deseleccionarMesa()
+    }
+    //resguardo por Http al endpoint de mesa
+    this.mesaService.actualizarMesa(idMesa, { estado: 'LIBRE' } as any).subscribe({
+      next: () => console.log(`Mesa ${idMesa} marcada como LIBRE`),
+      error: (err) => console.error('Error al actualizar estado de la mesa:', err)
+    })
+  }
+
   // --------------------------------------------------------------------------
   // INTERACCIONES CON LA INTERFAZ
   // --------------------------------------------------------------------------
   seleccionarMesa(mesa: IMesa): void {
+    if (mesa.estado === 'RESERVADA') {
+      alert(`La Mesa ${mesa.numero} está reservada. Debes cambiar su estado a LIBRE para abrir un pedido`)
+      return
+    }
     this.mesaSeleccionada.set(mesa);
   }
 
@@ -132,6 +164,43 @@ export class Mesas implements OnInit {
       case 'OCUPADA': return 'bi-x-lg';
       case 'RESERVADA': return 'bi-calendar-event';
       default: return 'bi-check-lg';
+    }
+  }
+
+  // Método para alternar entre RESERVADA y LIBRE
+  toggleReservaMesa(mesa: IMesa, event: Event): void {
+    event.stopPropagation(); // Evita que se abra el panel al hacer clic en el botón de opciones
+
+    if (mesa.estado === 'OCUPADA') {
+      alert('No se puede reservar una mesa que ya está ocupada con un pedido activo.');
+      return;
+    }
+
+    const nuevoEstado: EstadoMesa = mesa.estado === 'RESERVADA' ? 'LIBRE' : 'RESERVADA';
+    const accionText = nuevoEstado === 'RESERVADA' ? 'reservar' : 'liberar';
+
+    if (confirm(`¿Deseas ${accionText} la Mesa ${mesa.numero}?`)) {
+      // 1. Actualización optimista de Signals
+      this.mesas.update(lista =>
+        lista.map(m => m.id_mesa === mesa.id_mesa ? { ...m, estado: nuevoEstado } : m)
+      );
+
+      // 2. Construcción del payload completo requerido por el Serializer
+      const payload = {
+        numero: mesa.numero,
+        capacidad: mesa.capacidad,
+        estado: nuevoEstado,
+        ubicacion: mesa.ubicacion
+      };
+
+      // 2. Notificación al backend
+      this.mesaService.actualizarMesa(mesa.id_mesa, payload as any).subscribe({
+        next: () => console.log(`Mesa ${mesa.numero} actualizada a ${nuevoEstado}`),
+        error: (err) => {
+          console.error('Error al cambiar el estado de reserva:', err);
+          this.cargarMesas(); // Reversión en caso de error
+        }
+      });
     }
   }
 }

@@ -12,15 +12,15 @@ class Command(BaseCommand):
 
         mesas_iniciales = [
             Mesa(numero=1, capacidad=4, estado="LIBRE", ubicacion="Salón principal"),
-            Mesa(numero=2, capacidad=4, estado="OCUPADA", ubicacion="Salón principal"),
-            Mesa(numero=3, capacidad=6, estado="RESERVADA", ubicacion="Salón principal"),
+            Mesa(numero=2, capacidad=4, estado="LIBRE", ubicacion="Salón principal"),
+            Mesa(numero=3, capacidad=6, estado="LIBRE", ubicacion="Salón principal"),
             Mesa(numero=4, capacidad=4, estado="LIBRE", ubicacion="Salón principal"),
-            Mesa(numero=5, capacidad=6, estado="OCUPADA", ubicacion="Salón principal"),
-            Mesa(numero=6, capacidad=2, estado="RESERVADA", ubicacion="Salón principal"),
+            Mesa(numero=5, capacidad=6, estado="LIBRE", ubicacion="Salón principal"),
+            Mesa(numero=6, capacidad=2, estado="LIBRE", ubicacion="Salón principal"),
             Mesa(numero=10, capacidad=2, estado="LIBRE", ubicacion="Terraza"),
-            Mesa(numero=11, capacidad=4, estado="OCUPADA", ubicacion="Terraza"),
+            Mesa(numero=11, capacidad=4, estado="LIBRE", ubicacion="Terraza"),
             Mesa(numero=12, capacidad=4, estado="LIBRE", ubicacion="Terraza"),
-            Mesa(numero=13, capacidad=6, estado="RESERVADA", ubicacion="Terraza"),
+            Mesa(numero=13, capacidad=6, estado="LIBRE", ubicacion="Terraza"),
         ]
 
         Mesa.objects.bulk_create(mesas_iniciales)
