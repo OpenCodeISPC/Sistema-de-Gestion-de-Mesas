@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'comandas',
     'caja',
     'usuarios',
+    'auditoria',
 ]
 
 # Configuración del servidor ASGI

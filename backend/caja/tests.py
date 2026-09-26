@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -6,9 +6,14 @@ from mesas.models import Mesa
 from pedidos.models import Pedido
 from usuarios.models import Usuario
 
+from auditoria.mongo import _obtener_cliente, listar_eventos, ping_db
+
 from .models import Pago
 
+DB_TEST = 'sgmb_mongo_db_test'
 
+
+@override_settings(MONGO_DB_NAME=DB_TEST)
 class PagoApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -21,6 +26,8 @@ class PagoApiTests(TestCase):
             rol='CAJERO',
         )
         self.client.force_authenticate(user=self.usuario)
+        if ping_db():
+            _obtener_cliente().drop_database(DB_TEST)
         self.pedido = Pedido.objects.create(
             estado='LISTO',
             total=108000,
@@ -86,3 +93,12 @@ class PagoApiTests(TestCase):
         response = self.client.get('/api/pagos/?metodo_pago=TARJETA')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 0)
+
+    def test_crear_pago_registra_evento_de_auditoria(self):
+        self.client.post('/api/pagos/', self.pago_data, format='json')
+
+        eventos = listar_eventos(tipo='PAGO_REGISTRADO')
+        self.assertEqual(len(eventos), 1)
+        self.assertEqual(eventos[0]['actor'], 'cajero@test.com')
+        self.assertEqual(eventos[0]['detalle'], 'Cobro de la mesa 1')
+        self.assertEqual(eventos[0]['datos']['monto'], self.pago_data['monto'])
