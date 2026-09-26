@@ -30,46 +30,39 @@
     </a>
   </nav>
 
-  <!-- Contenido principal -->
   <main class="sgmb-services__content">
     <header class="sgmb-services__header">
       <h1>Comandas de servicio</h1>
       <div class="sgmb-service-switch">
-        <button 
-          type="button" 
-          class="sgmb-service-switch__button btn"
-          [class.sgmb-service-switch__button--active]="sectorActivo() === 'COCINA'"
-          (click)="cambiarSector('COCINA')">
+        <button type="button" class="sgmb-service-switch__button btn"
+          [class.sgmb-service-switch__button--active]="sectorActivo() === 'COCINA'" (click)="cambiarSector('COCINA')">
           Cocina
         </button>
 
-        <button 
-          type="button" 
-          class="sgmb-service-switch__button btn"
-          [class.sgmb-service-switch__button--active]="sectorActivo() === 'BARRA'"
-          (click)="cambiarSector('BARRA')">
+        <button type="button" class="sgmb-service-switch__button btn"
+          [class.sgmb-service-switch__button--active]="sectorActivo() === 'BARRA'" (click)="cambiarSector('BARRA')">
           Barra
         </button>
       </div>
     </header>
 
     @if (cargando()) {
-      <div class="p-4 text-center">
-        <span class="spinner-border text-primary" role="status"></span>
-        <p class="mt-2 text-muted">Cargando comandas...</p>
-      </div>
+    <div class="p-4 text-center">
+      <span class="spinner-border text-primary" role="status"></span>
+      <p class="mt-2 text-muted">Cargando comandas...</p>
+    </div>
     }
 
     @if (errorMensaje()) {
-      <div class="alert alert-danger m-3" role="alert">
-        {{ errorMensaje() }}
-      </div>
+    <div class="alert alert-danger m-3" role="alert">
+      {{ errorMensaje() }}
+    </div>
     }
 
-    <!-- TABLEROS DE COMANDAS -->
-    <section class="sgmb-orders-board" *ngIf="!cargando()">
+    @if (!cargando()) {
+    <section class="sgmb-orders-board">
 
-      <!-- ================= PENDIENTES ================= -->
+      <!-- PENDIENTES -->
       <article class="sgmb-order-column sgmb-order-column--pending">
         <header class="sgmb-order-column__header">
           <div class="sgmb-order-column__icon">
@@ -79,51 +72,57 @@
         </header>
 
         <div class="sgmb-order-column__body">
-          @for (pedido of pedidosPendientes(); track pedido.id_pedido || $index) {
-            <article class="sgmb-order-card sgmb-order-card--pending">
-              <div class="sgmb-order-card__main">
-                <div class="sgmb-order-card__table">
-                  <div class="sgmb-order-card__icon">
-                    <i class="bi bi-list" aria-hidden="true"></i>
-                  </div>
-                  <div>
-                    <span>Mesa</span>
-                    <strong>{{ pedido.mesa }}</strong>
-                    <small>Pedido</small>
-                    <strong>#{{ pedido.id_pedido }}</strong>
-                  </div>
+          @for (pedido of pedidosPendientes(); track pedido.id_comanda || (pedido.id_pedido || $index)) {
+          <article class="sgmb-order-card sgmb-order-card--pending">
+            <div class="sgmb-order-card__main">
+              <div class="sgmb-order-card__table">
+                <div class="sgmb-order-card__icon">
+                  <i class="bi bi-list" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <span>Mesa</span>
+                  <strong>{{ pedido.numero_mesa || pedido.mesa }}</strong>
+                  <small>Pedido</small>
+                  <strong>#{{ pedido.id_comanda || pedido.id_pedido }}</strong>
+                </div>
+              </div>
+
+              <div class="sgmb-order-card__detail">
+                <div class="sgmb-order-card__time"
+                  [title]="'Creado a las: ' + ((pedido.creado_en || pedido.fecha_hora) | date:'HH:mm')">
+                  <i class="bi bi-clock-history" aria-hidden="true"></i>
+                  {{ calcularTiempoTranscurrido(pedido.creado_en || pedido.fecha_hora) }}
                 </div>
 
-                <div class="sgmb-order-card__detail">
-                  <div class="sgmb-order-card__time" [title]="'Creado a las: ' + (pedido.fecha_hora | date:'HH:mm')">
-                    <i class="bi bi-clock-history" aria-hidden="true"></i>
-                    {{ calcularTiempoTranscurrido(pedido.fecha_hora) }}
-                  </div>
-
-                  @for (detalle of pedido.detalles; track detalle.id_detalle_pedido || $index) {
-                    <p>- {{ detalle.producto.nombre }} <span *ngIf="detalle.cantidad > 1">(x{{ detalle.cantidad }})</span></p>
-                    @if (detalle.observaciones) {
-                      <div class="sgmb-order-card__comment">
-                        <span>◯</span> {{ detalle.observaciones }}
-                      </div>
-                    }
+                @for (detalle of pedido.detalles; track detalle.id_detalle || $index) {
+                <p>
+                  - {{ detalle.producto_nombre || detalle.producto?.nombre }}
+                  @if (detalle.cantidad && detalle.cantidad > 1) {
+                  <span>(x{{ detalle.cantidad }})</span>
                   }
+                </p>
+                @if (detalle.comentario || detalle.observaciones) {
+                <div class="sgmb-order-card__comment">
+                  <span>◯</span> {{ detalle.comentario || detalle.observaciones }}
                 </div>
+                }
+                }
               </div>
+            </div>
 
-              <div class="sgmb-order-card__actions">
-                <button type="button" (click)="avanzarEstado(pedido)">
-                  <i class="bi bi-chevron-right" aria-hidden="true"></i>
-                </button>
-              </div>
-            </article>
+            <div class="sgmb-order-card__actions">
+              <button type="button" (click)="avanzarEstado(pedido)">
+                <i class="bi bi-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </article>
           } @empty {
-            <p class="text-muted p-3">No hay comandas pendientes</p>
+          <p class="text-muted p-3">No hay comandas pendientes</p>
           }
         </div>
       </article>
 
-      <!-- ================= PREPARACIÓN ================= -->
+      <!-- PREPARACIÓN -->
       <article class="sgmb-order-column sgmb-order-column--preparing">
         <header class="sgmb-order-column__header">
           <div class="sgmb-order-column__icon">
@@ -133,54 +132,60 @@
         </header>
 
         <div class="sgmb-order-column__body">
-          @for (pedido of pedidosEnPreparacion(); track pedido.id_pedido || $index) {
-            <article class="sgmb-order-card sgmb-order-card--preparing">
-              <div class="sgmb-order-card__main">
-                <div class="sgmb-order-card__table">
-                  <div class="sgmb-order-card__icon">
-                    <i class="bi bi-list" aria-hidden="true"></i>
-                  </div>
-                  <div>
-                    <span>Mesa</span>
-                    <strong>{{ pedido.mesa }}</strong>
-                    <small>Pedido</small>
-                    <strong>#{{ pedido.id_pedido }}</strong>
-                  </div>
+          @for (pedido of pedidosEnPreparacion(); track pedido.id_comanda || (pedido.id_pedido || $index)) {
+          <article class="sgmb-order-card sgmb-order-card--preparing">
+            <div class="sgmb-order-card__main">
+              <div class="sgmb-order-card__table">
+                <div class="sgmb-order-card__icon">
+                  <i class="bi bi-list" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <span>Mesa</span>
+                  <strong>{{ pedido.numero_mesa || pedido.mesa }}</strong>
+                  <small>Pedido</small>
+                  <strong>#{{ pedido.id_comanda || pedido.id_pedido }}</strong>
+                </div>
+              </div>
+
+              <div class="sgmb-order-card__detail">
+                <div class="sgmb-order-card__time"
+                  [title]="'Creado a las: ' + ((pedido.creado_en || pedido.fecha_hora) | date:'HH:mm')">
+                  <i class="bi bi-clock-history" aria-hidden="true"></i>
+                  {{ calcularTiempoTranscurrido(pedido.creado_en || pedido.fecha_hora) }}
                 </div>
 
-                <div class="sgmb-order-card__detail">
-                  <div class="sgmb-order-card__time" [title]="'Creado a las: ' + (pedido.fecha_hora | date:'HH:mm')">
-                    <i class="bi bi-clock-history" aria-hidden="true"></i>
-                    {{ calcularTiempoTranscurrido(pedido.fecha_hora) }}
-                  </div>
-
-                  @for (detalle of pedido.detalles; track detalle.id_detalle_pedido || $index) {
-                    <p>- {{ detalle.producto.nombre }} <span *ngIf="detalle.cantidad > 1">(x{{ detalle.cantidad }})</span></p>
-                    @if (detalle.observaciones) {
-                      <div class="sgmb-order-card__comment">
-                        <span>◯</span> {{ detalle.observaciones }}
-                      </div>
-                    }
+                @for (detalle of pedido.detalles; track detalle.id_detalle || $index) {
+                <p>
+                  - {{ detalle.producto_nombre || detalle.producto?.nombre }}
+                  @if (detalle.cantidad && detalle.cantidad > 1) {
+                  <span>(x{{ detalle.cantidad }})</span>
                   }
+                </p>
+                @if (detalle.comentario || detalle.observaciones) {
+                <div class="sgmb-order-card__comment">
+                  <span>◯</span> {{ detalle.comentario || detalle.observaciones }}
                 </div>
+                }
+                }
               </div>
+            </div>
 
-              <div class="sgmb-order-card__actions">
-                <button type="button" (click)="retrocederEstado(pedido)">
-                  <i class="bi bi-chevron-left" aria-hidden="true"></i>
-                </button>
-                <button type="button" (click)="avanzarEstado(pedido)">
-                  <i class="bi bi-chevron-right" aria-hidden="true"></i>
-                </button>
-              </div>
-            </article>
+            <div class="sgmb-order-card__actions">
+              <button type="button" (click)="retrocederEstado(pedido)">
+                <i class="bi bi-chevron-left" aria-hidden="true"></i>
+              </button>
+              <button type="button" (click)="avanzarEstado(pedido)">
+                <i class="bi bi-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </article>
           } @empty {
-            <p class="text-muted p-3">No hay comandas en preparación</p>
+          <p class="text-muted p-3">No hay comandas en preparación</p>
           }
         </div>
       </article>
 
-      <!-- ================= LISTOS ================= -->
+      <!-- LISTOS -->
       <article class="sgmb-order-column sgmb-order-column--ready">
         <header class="sgmb-order-column__header">
           <div class="sgmb-order-column__icon">
@@ -190,50 +195,57 @@
         </header>
 
         <div class="sgmb-order-column__body">
-          @for (pedido of pedidosListos(); track pedido.id_pedido || $index) {
-            <article class="sgmb-order-card sgmb-order-card--ready">
-              <div class="sgmb-order-card__main">
-                <div class="sgmb-order-card__table">
-                  <div class="sgmb-order-card__icon">
-                    <i class="bi bi-list" aria-hidden="true"></i>
-                  </div>
-                  <div>
-                    <span>Mesa</span>
-                    <strong>{{ pedido.mesa }}</strong>
-                    <small>Pedido</small>
-                    <strong>#{{ pedido.id_pedido }}</strong>
-                  </div>
+          @for (pedido of pedidosListos(); track pedido.id_comanda || (pedido.id_pedido || $index)) {
+          <article class="sgmb-order-card sgmb-order-card--ready">
+            <div class="sgmb-order-card__main">
+              <div class="sgmb-order-card__table">
+                <div class="sgmb-order-card__icon">
+                  <i class="bi bi-list" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <span>Mesa</span>
+                  <strong>{{ pedido.numero_mesa || pedido.mesa }}</strong>
+                  <small>Pedido</small>
+                  <strong>#{{ pedido.id_comanda || pedido.id_pedido }}</strong>
+                </div>
+              </div>
+
+              <div class="sgmb-order-card__detail">
+                <div class="sgmb-order-card__time"
+                  [title]="'Creado a las: ' + ((pedido.creado_en || pedido.fecha_hora) | date:'HH:mm')">
+                  <i class="bi bi-clock-history" aria-hidden="true"></i>
+                  {{ calcularTiempoTranscurrido(pedido.creado_en || pedido.fecha_hora) }}
                 </div>
 
-                <div class="sgmb-order-card__detail">
-                  <div class="sgmb-order-card__time" [title]="'Creado a las: ' + (pedido.fecha_hora | date:'HH:mm')">
-                    <i class="bi bi-clock-history" aria-hidden="true"></i>
-                    {{ calcularTiempoTranscurrido(pedido.fecha_hora) }}
-                  </div>
-
-                  @for (detalle of pedido.detalles; track detalle.id_detalle_pedido || $index) {
-                    <p>- {{ detalle.producto.nombre }} <span *ngIf="detalle.cantidad > 1">(x{{ detalle.cantidad }})</span></p>
-                    @if (detalle.observaciones) {
-                      <div class="sgmb-order-card__comment">
-                        <span>◯</span> {{ detalle.observaciones }}
-                      </div>
-                    }
+                @for (detalle of pedido.detalles; track detalle.id_detalle || $index) {
+                <p>
+                  - {{ detalle.producto_nombre || detalle.producto?.nombre }}
+                  @if (detalle.cantidad && detalle.cantidad > 1) {
+                  <span>(x{{ detalle.cantidad }})</span>
                   }
+                </p>
+                @if (detalle.comentario || detalle.observaciones) {
+                <div class="sgmb-order-card__comment">
+                  <span>◯</span> {{ detalle.comentario || detalle.observaciones }}
                 </div>
+                }
+                }
               </div>
+            </div>
 
-              <div class="sgmb-order-card__actions">
-                <button type="button" (click)="retrocederEstado(pedido)">
-                  <i class="bi bi-chevron-left" aria-hidden="true"></i>
-                </button>
-              </div>
-            </article>
+            <div class="sgmb-order-card__actions">
+              <button type="button" (click)="retrocederEstado(pedido)">
+                <i class="bi bi-chevron-left" aria-hidden="true"></i>
+              </button>
+            </div>
+          </article>
           } @empty {
-            <p class="text-muted p-3">No hay comandas listas</p>
+          <p class="text-muted p-3">No hay comandas listas</p>
           }
         </div>
       </article>
 
     </section>
+    }
   </main>
 </section>

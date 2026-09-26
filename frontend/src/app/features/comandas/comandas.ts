@@ -1,12 +1,9 @@
 import { Component, OnInit, OnDestroy, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from "@angular/router";
-import { ComandaService } from '../../services/comandas.service'; 
+import { ComandaService } from '../../services/comandas.service';
 import { WebsocketService } from '../../services/websocket.service';
-import { IPedido, EstadoPedido } from '../../models/ipedido';
-
-// Mantenemos el Sector aquí para el switch de la vista (Cocina / Barra)
-export type SectorComanda = 'COCINA' | 'BARRA';
+import { IComanda, EstadoComanda, SectorComanda } from '../../models/icomandas';
 
 @Component({
   selector: 'app-comandas',
@@ -19,8 +16,7 @@ export class Comandas implements OnInit, OnDestroy {
   private comandaService = inject(ComandaService);
   private wsService = inject(WebsocketService);
 
-  // Signals reactivas usando IPedido directamente
-  pedidos = signal<IPedido[]>([]);
+  comandas = signal<IComanda[]>([]);
   cargando = signal<boolean>(false);
   errorMensaje = signal<string | null>(null);
 
@@ -28,24 +24,21 @@ export class Comandas implements OnInit, OnDestroy {
   ahora = signal<number>(Date.now());
   private intervalId: any;
 
-  // 1. Filtramos por sector
-  // NOTA: Asumimos que el backend envía una propiedad 'sector' en el JSON, 
-  // si no lo hace, este filtro deberá ajustarse.
-  pedidosPorSector = computed(() => {
-    return this.pedidos().filter(p => (p as any).sector === this.sectorActivo());
+  comandasPorSector = computed(() => {
+    return this.comandas().filter(c => c.sector === this.sectorActivo());
   });
 
-  // 2. Filtramos por Estados de IPedido
+  // Alias para mantener compatibilidad exacta con las llamadas del HTML
   pedidosPendientes = computed(() => {
-    return this.pedidosPorSector().filter(p => p.estado === 'PENDIENTE');
+    return this.comandasPorSector().filter(c => c.estado === 'PENDIENTE');
   });
 
   pedidosEnPreparacion = computed(() => {
-    return this.pedidosPorSector().filter(p => p.estado === 'PREPARACION');
+    return this.comandasPorSector().filter(c => c.estado === 'PREPARACION');
   });
 
   pedidosListos = computed(() => {
-    return this.pedidosPorSector().filter(p => p.estado === 'LISTO');
+    return this.comandasPorSector().filter(c => c.estado === 'LISTO');
   });
 
   constructor() {
@@ -53,56 +46,66 @@ export class Comandas implements OnInit, OnDestroy {
       const evento = this.wsService.ultimoEvento();
       if (!evento) return;
 
-      console.log('Evento recibido por WebSocket:', evento);
+      const comandaRecibida = evento.data as IComanda;
+      const idComandaNormalizado = comandaRecibida.id_comanda || (comandaRecibida as any).id_pedido;
 
-      const pedidoRecibido = evento.data as IPedido;
-      if (!pedidoRecibido || !pedidoRecibido.id_pedido) return;
+      if (!idComandaNormalizado) return;
 
       if (evento.type === 'PEDIDO_CREADO') {
-        this.pedidos.update(lista => {
-          const existe = lista.some(p => p.id_pedido === pedidoRecibido.id_pedido);
+        this.comandas.update(lista => {
+          const existe = lista.some(c => (c.id_comanda || (c as any).id_pedido) === idComandaNormalizado);
           if (existe) return lista;
-          return [pedidoRecibido, ...lista];
+          return [{ ...comandaRecibida, id_comanda: idComandaNormalizado }, ...lista];
         });
-      } 
+      }
       else if (evento.type === 'PEDIDO_ESTADO_CAMBIADO') {
-        this.pedidos.update(lista => 
-          lista.map(p => p.id_pedido === pedidoRecibido.id_pedido ? { ...p, ...pedidoRecibido } : p)
+        this.comandas.update(lista =>
+          lista.map(c => {
+            const actualId = c.id_comanda || (c as any).id_pedido;
+            return actualId === idComandaNormalizado
+              ? { ...c, ...comandaRecibida, id_comanda: idComandaNormalizado }
+              : c;
+          })
         );
       }
     });
   }
 
   ngOnInit(): void {
-    this.cargarPedidos();
+    this.cargarComandas();
     this.wsService.conectar();
-    this.intervalId = setInterval(() => this.ahora.set(Date.now()), 30000);
+
+    this.intervalId = setInterval(() => {
+      this.ahora.set(Date.now());
+    }, 30000);
   }
 
   ngOnDestroy(): void {
-    if (this.intervalId) clearInterval(this.intervalId);
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   }
 
-  cargarPedidos(): void {
+  cargarComandas(): void {
     this.cargando.set(true);
     this.errorMensaje.set(null);
 
     this.comandaService.getComandas().subscribe({
       next: (response: any) => {
         const data = Array.isArray(response) ? response : (response.results || []);
-        
-        // Ya no necesitamos normalizar IDs, confiamos en IPedido
-        const pedidosProcesados: IPedido[] = data.map((p: any) => ({
-          ...p,
-          detalles: p.detalles || []
+
+        const comandasProcesadas = data.map((c: any) => ({
+          ...c,
+          id_comanda: c.id_comanda || c.id_pedido,
+          detalles: c.detalles || c.items || []
         }));
 
-        this.pedidos.set(pedidosProcesados);
+        this.comandas.set(comandasProcesadas);
         this.cargando.set(false);
       },
       error: (err) => {
-        console.error('Error al cargar pedidos:', err);
-        this.errorMensaje.set('No se pudieron cargar los pedidos');
+        console.error('Error al cargar comandas:', err);
+        this.errorMensaje.set('No se pudieron cargar las comandas');
         this.cargando.set(false);
       }
     });
@@ -112,49 +115,49 @@ export class Comandas implements OnInit, OnDestroy {
     this.sectorActivo.set(sector);
   }
 
-  avanzarEstado(pedido: IPedido): void {
-    let nuevoEstado: EstadoPedido;
-    if (pedido.estado === 'PENDIENTE') nuevoEstado = 'PREPARACION';
-    else if (pedido.estado === 'PREPARACION') nuevoEstado = 'LISTO';
+  avanzarEstado(comanda: IComanda): void {
+    let nuevoEstado: EstadoComanda;
+    if (comanda.estado === 'PENDIENTE') nuevoEstado = 'PREPARACION';
+    else if (comanda.estado === 'PREPARACION') nuevoEstado = 'LISTO';
     else return;
 
-    this.actualizarEstado(pedido, nuevoEstado);
+    this.actualizarEstado(comanda, nuevoEstado);
   }
 
-  retrocederEstado(pedido: IPedido): void {
-    let nuevoEstado: EstadoPedido;
-    if (pedido.estado === 'LISTO') nuevoEstado = 'PREPARACION';
-    else if (pedido.estado === 'PREPARACION') nuevoEstado = 'PENDIENTE';
+  retrocederEstado(comanda: IComanda): void {
+    let nuevoEstado: EstadoComanda;
+    if (comanda.estado === 'LISTO') nuevoEstado = 'PREPARACION';
+    else if (comanda.estado === 'PREPARACION') nuevoEstado = 'PENDIENTE';
     else return;
 
-    this.actualizarEstado(pedido, nuevoEstado);
+    this.actualizarEstado(comanda, nuevoEstado);
   }
 
-  private actualizarEstado(pedido: IPedido, nuevoEstado: EstadoPedido): void {
-    // Actualización optimista de la Signal
-    this.pedidos.update(lista => 
-      lista.map(p => p.id_pedido === pedido.id_pedido ? { ...p, estado: nuevoEstado } : p)
+  private actualizarEstado(comanda: IComanda, nuevoEstado: EstadoComanda): void {
+    const idTarget = comanda.id_comanda || (comanda as any).id_pedido;
+    if (!idTarget) return;
+
+    this.comandas.update(lista =>
+      lista.map(c => ((c.id_comanda || (c as any).id_pedido) === idTarget) ? { ...c, estado: nuevoEstado } : c)
     );
 
-    // Acá le pasamos el ID del pedido y el DTO parcial ({ estado: nuevoEstado })
-    this.comandaService.actualizarEstado(pedido.id_pedido, { estado: nuevoEstado }).subscribe({
-      next: () => {},
+    this.comandaService.actualizarEstado(idTarget, { estado: nuevoEstado }).subscribe({
+      next: () => { },
       error: (err) => {
-        console.error('Error al cambiar el estado del pedido', err);
-        // Reversión si falla la API
-        this.pedidos.update(lista => 
-          lista.map(p => p.id_pedido === pedido.id_pedido ? { ...p, estado: pedido.estado } : p)
+        console.error('Error al cambiar el estado de la comanda', err);
+        this.comandas.update(lista =>
+          lista.map(c => ((c.id_comanda || (c as any).id_pedido) === idTarget) ? { ...c, estado: comanda.estado } : c)
         );
-        this.errorMensaje.set('Hubo un error al mover el pedido');
+        this.errorMensaje.set('Hubo un error al mover la comanda');
       }
     });
   }
 
-  calcularTiempoTranscurrido(fechaHora?: string): string {
-    if (!fechaHora) return '0 min';
+  calcularTiempoTranscurrido(creadoEn?: string): string {
+    if (!creadoEn) return '0 min';
 
     const tiempoActual = this.ahora();
-    const inicio = new Date(fechaHora).getTime();
+    const inicio = new Date(creadoEn).getTime();
     const diferenciaMinutos = Math.floor((tiempoActual - inicio) / (1000 * 60));
 
     if (diferenciaMinutos < 1) return 'Hace un momento';
