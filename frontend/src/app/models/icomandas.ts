@@ -1,5 +1,3 @@
-
-
 // Definimos los estados para que coincidan con las tres columnas de tu HTML
 export type EstadoComanda = 'PENDIENTE' | 'PREPARACION' | 'LISTO';
 
