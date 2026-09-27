@@ -65,14 +65,47 @@ class PedidoWriteSerializer(serializers.ModelSerializer):
             'usuario',
             'detalles'
         ]
+        # Hacemos 'usuario' y 'total' opcionales si los calculas en el backend
+        extra_kwargs = {
+            'usuario': {'required': False, 'allow_null': True},
+            'total': {'required': False}
+        }    
 
     def create(self, validated_data):
         detalles_data = validated_data.pop('detalles', [])
+        
+        # Asigna el usuario desde el request si está autenticado y no vino en el body
+        request = self.context.get('request')
+        if request and hasattr(request, 'user') and request.user.is_authenticated:
+            validated_data['usuario'] = request.user
+
+        # Asigna total inicial si no viene
+        if 'total' not in validated_data:
+            validated_data['total'] = 0
+
         pedido = Pedido.objects.create(**validated_data)
         
+        total_calculado = 0
         for detalle_data in detalles_data:
-            DetallePedido.objects.create(pedido=pedido, **detalle_data)
+            producto = detalle_data.get('producto')
+            cantidad = detalle_data.get('cantidad', 1)
             
+            # Obtiene precio_unitario del producto si no vino expresamente
+            precio_unitario = detalle_data.get('precio_unitario') or getattr(producto, 'precio', 0)
+            subtotal = precio_unitario * cantidad
+            
+            DetallePedido.objects.create(
+                pedido=pedido,
+                producto=producto,
+                cantidad=cantidad,
+                precio_unitario=precio_unitario,
+                subtotal=subtotal,
+                observaciones=detalle_data.get('observaciones', '')
+            )
+            total_calculado += subtotal
+
+        pedido.total = total_calculado
+        pedido.save()
         return pedido
 
     def update(self, instance, validated_data):

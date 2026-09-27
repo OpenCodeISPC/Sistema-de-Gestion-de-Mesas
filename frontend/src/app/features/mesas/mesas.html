@@ -134,8 +134,10 @@
 
       <!-- COMPONENTE HIJO PEDIDOS -->
       @if (mesaSeleccionada()) {
-      <app-pedidos [mesaId]="mesaSeleccionada()?.id_mesa || null" [numeroMesa]="mesaSeleccionada()?.numero || '01'"
-        (alCerrar)="deseleccionarMesa()" (alConfirmarPedido)="marcarMesaComoOcupada($event)"
+      <app-pedidos [mesaId]="mesaSeleccionada()?.id_mesa || null"
+       [numeroMesa]="mesaSeleccionada()?.numero || '01'"
+        (alCerrar)="deseleccionarMesa()"
+         (alConfirmarPedido)="marcarMesaComoOcupada($event)"
         (alCerrarMesa)="marcarMesaComoLibre($event)">
       </app-pedidos>
       }

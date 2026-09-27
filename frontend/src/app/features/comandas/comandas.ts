@@ -25,10 +25,10 @@ export class Comandas implements OnInit, OnDestroy {
   private intervalId: any;
 
   comandasPorSector = computed(() => {
-    return this.comandas().filter(c => c.sector === this.sectorActivo());
+    // Si el backend no provee sector, asumimos 'COCINA' por defecto para que no desaparezcan
+    return this.comandas().filter(c => (c.sector || 'COCINA') === this.sectorActivo());
   });
 
-  // Alias para mantener compatibilidad exacta con las llamadas del HTML
   pedidosPendientes = computed(() => {
     return this.comandasPorSector().filter(c => c.estado === 'PENDIENTE');
   });
@@ -46,16 +46,24 @@ export class Comandas implements OnInit, OnDestroy {
       const evento = this.wsService.ultimoEvento();
       if (!evento) return;
 
-      const comandaRecibida = evento.data as IComanda;
-      const idComandaNormalizado = comandaRecibida.id_comanda || (comandaRecibida as any).id_pedido;
+      const comandaRecibida = evento.data as any; // Recibimos el payload crudo de Django
+      const idComandaNormalizado = comandaRecibida.id_comanda || comandaRecibida.id_pedido;
 
       if (!idComandaNormalizado) return;
+
+      // Normalizamos el objeto para asegurar compatibilidad con la interfaz
+      const comandaLimpia: IComanda = {
+        ...comandaRecibida,
+        id_comanda: idComandaNormalizado,
+        sector: comandaRecibida.sector || 'COCINA',
+        detalles: comandaRecibida.detalles || comandaRecibida.items || []
+      };
 
       if (evento.type === 'PEDIDO_CREADO') {
         this.comandas.update(lista => {
           const existe = lista.some(c => (c.id_comanda || (c as any).id_pedido) === idComandaNormalizado);
           if (existe) return lista;
-          return [{ ...comandaRecibida, id_comanda: idComandaNormalizado }, ...lista];
+          return [comandaLimpia, ...lista];
         });
       }
       else if (evento.type === 'PEDIDO_ESTADO_CAMBIADO') {
@@ -63,9 +71,9 @@ export class Comandas implements OnInit, OnDestroy {
           lista.map(c => {
             const actualId = c.id_comanda || (c as any).id_pedido;
             return actualId === idComandaNormalizado
-              ? { ...c, ...comandaRecibida, id_comanda: idComandaNormalizado }
+              ? { ...c, ...comandaLimpia, id_comanda: idComandaNormalizado }
               : c;
-          })
+          }).filter(c => ['PENDIENTE', 'PREPARACION', 'LISTO'].includes(c.estado as string)) // Remueve la comanda si pasa a CERRADO
         );
       }
     });
@@ -94,11 +102,14 @@ export class Comandas implements OnInit, OnDestroy {
       next: (response: any) => {
         const data = Array.isArray(response) ? response : (response.results || []);
 
-        const comandasProcesadas = data.map((c: any) => ({
-          ...c,
-          id_comanda: c.id_comanda || c.id_pedido,
-          detalles: c.detalles || c.items || []
-        }));
+        const comandasProcesadas = data
+          .filter((c: any) => ['PENDIENTE', 'PREPARACION', 'LISTO'].includes(c.estado)) // Filtra las ya entregadas/cerradas
+          .map((c: any) => ({
+            ...c,
+            id_comanda: c.id_comanda || c.id_pedido,
+            sector: c.sector || 'COCINA',
+            detalles: c.detalles || c.items || []
+          }));
 
         this.comandas.set(comandasProcesadas);
         this.cargando.set(false);
@@ -137,6 +148,7 @@ export class Comandas implements OnInit, OnDestroy {
     const idTarget = comanda.id_comanda || (comanda as any).id_pedido;
     if (!idTarget) return;
 
+    // Actualización optimista de la UI
     this.comandas.update(lista =>
       lista.map(c => ((c.id_comanda || (c as any).id_pedido) === idTarget) ? { ...c, estado: nuevoEstado } : c)
     );
@@ -145,6 +157,7 @@ export class Comandas implements OnInit, OnDestroy {
       next: () => { },
       error: (err) => {
         console.error('Error al cambiar el estado de la comanda', err);
+        // Reversión visual si falla el backend
         this.comandas.update(lista =>
           lista.map(c => ((c.id_comanda || (c as any).id_pedido) === idTarget) ? { ...c, estado: comanda.estado } : c)
         );
