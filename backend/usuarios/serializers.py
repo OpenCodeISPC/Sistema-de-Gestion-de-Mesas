@@ -38,14 +38,30 @@ class RegistroSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
     def create(self, validated_data):
-        return Usuario.objects.create_user(**validated_data)
+        password = validated_data.pop("password")
+        user = Usuario(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+
+    #def validate_rol(self,value):
+        roles_validos = {k for k, _ in Usuario.ROLES}
+        if value not in roles_validos:
+            raise serializers.ValidationError("El rol seleccionado no es válido.")
+        return value
 
 
 # 3. Serializer para Login JWT con usuario incluido
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
-        data["user"] = UsuarioSerializer(self.user).data
+
+        user = self.user
+        roles_validos = {k for k, _ in Usuario.ROLES}
+        if user.rol not in roles_validos:
+            raise serializers.ValidationError("El rol del usuario no es válido.")
+
+        data["user"] = UsuarioSerializer(user).data
         return data
 
 
