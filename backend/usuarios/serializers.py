@@ -55,7 +55,13 @@ class RegistroSerializer(serializers.ModelSerializer):
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
-        data["user"] = UsuarioSerializer(self.user).data
+
+        user = self.user
+        roles_validos = {k for k, _ in Usuario.ROLES}
+        if user.rol not in roles_validos:
+            raise serializers.ValidationError("El rol del usuario no es válido.")
+
+        data["user"] = UsuarioSerializer(user).data
         return data
 
 
