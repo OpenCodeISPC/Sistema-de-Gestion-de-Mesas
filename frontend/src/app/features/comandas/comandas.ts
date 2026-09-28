@@ -25,8 +25,21 @@ export class Comandas implements OnInit, OnDestroy {
   private intervalId: any;
 
   comandasPorSector = computed(() => {
-    // Si el backend no provee sector, asumimos 'COCINA' por defecto para que no desaparezcan
-    return this.comandas().filter(c => (c.sector || 'COCINA') === this.sectorActivo());
+    const sectorActual = this.sectorActivo();
+
+    return this.comandas()
+      .map(pedido => {
+        // 1. Filtramos los productos INTERNOS de la comanda
+        const detallesDelSector = (pedido.detalles || []).filter((detalle: any) => {
+          const categoriaProd = detalle.producto?.categoria;
+          return categoriaProd && String(categoriaProd).toUpperCase() === sectorActual;
+        });
+
+        // 2. Retornamos una copia de la comanda pero SOLO con los detalles que le tocan a esta vista
+        return { ...pedido, detalles: detallesDelSector };
+      })
+      // 3. Finalmente, descartamos las comandas que se quedaron vacías para este sector (ej: si en Cocina solo pidieron bebidas)
+      .filter(pedido => pedido.detalles.length > 0);
   });
 
   pedidosPendientes = computed(() => {
