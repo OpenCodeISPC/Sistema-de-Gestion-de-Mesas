@@ -44,6 +44,11 @@ class RegistroSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+    #def validate_rol(self,value):
+        roles_validos = {k for k, _ in Usuario.ROLES}
+        if value not in roles_validos:
+            raise serializers.ValidationError("El rol seleccionado no es válido.")
+        return value
 
 
 # 3. Serializer para Login JWT con usuario incluido
