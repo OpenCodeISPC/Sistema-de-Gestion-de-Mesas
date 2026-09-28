@@ -38,7 +38,12 @@ class RegistroSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
     def create(self, validated_data):
-        return Usuario.objects.create_user(**validated_data)
+        password = validated_data.pop("password")
+        user = Usuario(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+
 
 
 # 3. Serializer para Login JWT con usuario incluido
