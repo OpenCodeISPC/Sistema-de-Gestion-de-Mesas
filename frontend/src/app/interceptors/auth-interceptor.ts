@@ -43,7 +43,7 @@
  * ROTATE_REFRESH_TOKENS=True y BLACKLIST_AFTER_ROTATION=True, por eso
  * es obligatorio guardar el refresh token nuevo que devuelve la
  * respuesta de /token/refresh/ — el viejo queda invalidado (blacklist)
- * apenas se usa una vez.
+ * apenas se usa una vez..
  */
 
 
