@@ -13,9 +13,10 @@ services:
       - datos_postgres_sgmb:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-sgmb_db}" ]
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
 
   mongo_nuevo_proyecto:
     image: mongo:7
