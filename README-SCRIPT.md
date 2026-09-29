@@ -62,3 +62,10 @@ Si preferís no perder tus datos, usá `--conservar` primero. Si al levantar ves
 | `password authentication failed` | Volumen de Postgres con credenciales viejas → correr con `--si` |
 | El script pide confirmación y no sabés qué hacer | Responder `s` es seguro en desarrollo; se pierden solo datos de prueba |
 | Docker no responde / `Docker no está corriendo` | Abrir Docker Desktop antes de correr el script |
+
+### NOTA: en caso de que docker quede colgado o corrupto
+
+(limpiando tablas, colecciones o estados corruptos de bases de datos).
+
+- ejecutar: 
+- docker compose down -v --remove-orphans
