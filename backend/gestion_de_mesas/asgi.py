@@ -11,15 +11,18 @@ https://docs.djangoproject.com/en/6.0/howto/deployment/asgi/
 
 import os
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gestion_de_mesas.settings")
+
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
 import pedidos.routing
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gestion_de_mesas.settings")
 
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
-        "websocket": URLRouter(pedidos.routing.websocket_urlpatterns),
+        "websocket": AuthMiddlewareStack(
+            URLRouter(pedidos.routing.websocket_urlpatterns)
+        ),
     }
 )

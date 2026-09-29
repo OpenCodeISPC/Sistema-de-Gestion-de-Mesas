@@ -11,7 +11,7 @@ export interface EventoWebSocket<T = any> {
 })
 export class WebsocketService {
   private socket?: WebSocket
-  private readonly wsUrl = 'ws://localhost:8000/ws/pedidos/'; //url de django channels
+  private readonly wsUrl = 'ws://localhost:8000/ws/comandas/'; //url de django channels
   private intencionalDesconexion = false;
 
   //signal para exponer el ultimo evento recibido a la app
