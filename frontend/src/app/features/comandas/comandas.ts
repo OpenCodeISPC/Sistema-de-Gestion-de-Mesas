@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from "@angular/router";
 import { ComandaService } from '../../services/comandas.service'; 
 import { WebsocketService } from '../../services/websocket.service';
-import { IPedido, EstadoPedido } from '../../models/ipedido';
+import { IPedido } from '../../models/ipedido';
+import { EstadoComanda } from '../../models/icomandas';
 
 // Mantenemos el Sector aquí para el switch de la vista (Cocina / Barra)
 export type SectorComanda = 'COCINA' | 'BARRA';
@@ -113,7 +114,7 @@ export class Comandas implements OnInit, OnDestroy {
   }
 
   avanzarEstado(pedido: IPedido): void {
-    let nuevoEstado: EstadoPedido;
+    let nuevoEstado: EstadoComanda;
     if (pedido.estado === 'PENDIENTE') nuevoEstado = 'PREPARACION';
     else if (pedido.estado === 'PREPARACION') nuevoEstado = 'LISTO';
     else return;
@@ -122,7 +123,7 @@ export class Comandas implements OnInit, OnDestroy {
   }
 
   retrocederEstado(pedido: IPedido): void {
-    let nuevoEstado: EstadoPedido;
+    let nuevoEstado: EstadoComanda;
     if (pedido.estado === 'LISTO') nuevoEstado = 'PREPARACION';
     else if (pedido.estado === 'PREPARACION') nuevoEstado = 'PENDIENTE';
     else return;
@@ -130,7 +131,7 @@ export class Comandas implements OnInit, OnDestroy {
     this.actualizarEstado(pedido, nuevoEstado);
   }
 
-  private actualizarEstado(pedido: IPedido, nuevoEstado: EstadoPedido): void {
+  private actualizarEstado(pedido: IPedido, nuevoEstado: EstadoComanda): void {
     // Actualización optimista de la Signal
     this.pedidos.update(lista => 
       lista.map(p => p.id_pedido === pedido.id_pedido ? { ...p, estado: nuevoEstado } : p)
