@@ -42,16 +42,20 @@ export class Comandas implements OnInit, OnDestroy {
       .filter(pedido => pedido.detalles.length > 0);
   });
 
+  estadoDelSector(pedido: any): string {
+    return this.sectorActivo() === 'COCINA' ? pedido.estado_cocina : pedido.estado_barra
+  }
+
   pedidosPendientes = computed(() => {
-    return this.comandasPorSector().filter(c => c.estado === 'PENDIENTE');
+    return this.comandasPorSector().filter(c => this.estadoDelSector(c) === 'PENDIENTE');
   });
 
   pedidosEnPreparacion = computed(() => {
-    return this.comandasPorSector().filter(c => c.estado === 'PREPARACION');
+    return this.comandasPorSector().filter(c => this.estadoDelSector(c) === 'PREPARACION');
   });
 
   pedidosListos = computed(() => {
-    return this.comandasPorSector().filter(c => c.estado === 'LISTO');
+    return this.comandasPorSector().filter(c => this.estadoDelSector(c) === 'LISTO');
   });
 
   constructor() {
@@ -86,7 +90,11 @@ export class Comandas implements OnInit, OnDestroy {
             return actualId === idComandaNormalizado
               ? { ...c, ...comandaLimpia, id_comanda: idComandaNormalizado }
               : c;
-          }).filter(c => ['PENDIENTE', 'PREPARACION', 'LISTO'].includes(c.estado as string)) // Remueve la comanda si pasa a CERRADO
+          }).filter(c => {
+            const cocinaActiva = ['PENDIENTE', 'PREPARACION', 'LISTO'].includes(c.estado_cocina as string);
+            const barraActiva = ['PENDIENTE', 'PREPARACION', 'LISTO'].includes(c.estado_barra as string);
+            return cocinaActiva || barraActiva;
+          })
         );
       }
     });
@@ -115,9 +123,7 @@ export class Comandas implements OnInit, OnDestroy {
       next: (response: any) => {
         const data = Array.isArray(response) ? response : (response.results || []);
 
-        const comandasProcesadas = data
-          .filter((c: any) => ['PENDIENTE', 'PREPARACION', 'LISTO'].includes(c.estado)) // Filtra las ya entregadas/cerradas
-          .map((c: any) => ({
+        const comandasProcesadas = data.map((c: any) => ({
             ...c,
             id_comanda: c.id_comanda || c.id_pedido,
             sector: c.sector || 'COCINA',
@@ -140,18 +146,22 @@ export class Comandas implements OnInit, OnDestroy {
   }
 
   avanzarEstado(comanda: IComanda): void {
+    const estadoActual = this.estadoDelSector(comanda)
     let nuevoEstado: EstadoComanda;
-    if (comanda.estado === 'PENDIENTE') nuevoEstado = 'PREPARACION';
-    else if (comanda.estado === 'PREPARACION') nuevoEstado = 'LISTO';
+
+    if (estadoActual === 'PENDIENTE') nuevoEstado = 'PREPARACION';
+    else if (estadoActual === 'PREPARACION') nuevoEstado = 'LISTO';
     else return;
 
     this.actualizarEstado(comanda, nuevoEstado);
   }
 
   retrocederEstado(comanda: IComanda): void {
+    const estadoActual = this.estadoDelSector(comanda)
     let nuevoEstado: EstadoComanda;
-    if (comanda.estado === 'LISTO') nuevoEstado = 'PREPARACION';
-    else if (comanda.estado === 'PREPARACION') nuevoEstado = 'PENDIENTE';
+
+    if (estadoActual === 'LISTO') nuevoEstado = 'PREPARACION';
+    else if (estadoActual === 'PREPARACION') nuevoEstado = 'PENDIENTE';
     else return;
 
     this.actualizarEstado(comanda, nuevoEstado);
@@ -161,22 +171,36 @@ export class Comandas implements OnInit, OnDestroy {
     const idTarget = comanda.id_comanda || (comanda as any).id_pedido;
     if (!idTarget) return;
 
+    //Detectar que campo de la base hay que actulizar
+    const campoEstado = this.sectorActivo() === 'COCINA' ? 'estado_cocina' : 'estado_barra'
+    const payload = { [campoEstado]: nuevoEstado }
+
     // Actualización optimista de la UI
     this.comandas.update(lista =>
-      lista.map(c => ((c.id_comanda || (c as any).id_pedido) === idTarget) ? { ...c, estado: nuevoEstado } : c)
+      lista.map(c => {
+        if ((c.id_comanda || (c as any).id_pedido) === idTarget) {
+          return { ...c, [campoEstado]: nuevoEstado };
+        }
+        return c;
+      })
     );
 
-    this.comandaService.actualizarEstado(idTarget, { estado: nuevoEstado }).subscribe({
+    this.comandaService.actualizarEstado(idTarget, payload).subscribe({
       next: () => { },
       error: (err) => {
-        console.error('Error al cambiar el estado de la comanda', err);
-        // Reversión visual si falla el backend
+        console.error('Error al cambiar el estado de la comanda', err)
+        //reversin visual si fall
         this.comandas.update(lista =>
-          lista.map(c => ((c.id_comanda || (c as any).id_pedido) === idTarget) ? { ...c, estado: comanda.estado } : c)
-        );
-        this.errorMensaje.set('Hubo un error al mover la comanda');
+          lista.map(c => {
+            if ((c.id_comanda || (c as any).id_pedido) === idTarget) {
+              return { ...c, [campoEstado]: this.estadoDelSector(comanda) }
+            }
+            return c
+          })
+        )
+        this.errorMensaje.set('Hubo un error al Mover la comanda')
       }
-    });
+    })
   }
 
   calcularTiempoTranscurrido(creadoEn?: string): string {

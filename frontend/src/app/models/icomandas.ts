@@ -21,6 +21,8 @@ export interface IComanda {
   numero_pedido?: number;
   tiempo_espera?: string;
   estado: EstadoComanda;
+  estado_cocina?:EstadoComanda;
+  estado_barra?:EstadoComanda;
   sector: SectorComanda;
   cliente?: string;
   creado_en?: string;
@@ -36,5 +38,7 @@ export interface ICrearComandaDTO {
 
 export interface IActualizarComandaDTO {
   estado?: EstadoComanda;
+  estado_cocina?: EstadoComanda;
+  estao_barra?: EstadoComanda;
   numero_mesa?: number;
 }

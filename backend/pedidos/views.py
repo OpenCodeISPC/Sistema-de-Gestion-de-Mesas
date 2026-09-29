@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from django.db.models import Q
 from .models import Pedido
 from .serializers import PedidoReadSerializer, PedidoWriteSerializer
 
@@ -33,4 +34,15 @@ class PedidoViewSet(viewsets.ModelViewSet):
 
     # pedidos/views.py
 
-    
+
+class ComandaViewSet(viewsets.ModelViewSet):
+    # Trae el pedido si Cocina O Barra todavía tienen tareas pendientes
+    queryset = Pedido.objects.filter(
+        Q(estado_cocina__in=["PENDIENTE", "PREPARACION", "LISTO"])
+        | Q(estado_barra__in=["PENDIENTE", "PREPARACION", "LISTO"])
+    ).order_by("-fecha_hora")
+
+    def get_serializer_class(self):
+        if self.action in ["list", "retrieve"]:
+            return PedidoReadSerializer
+        return PedidoWriteSerializer

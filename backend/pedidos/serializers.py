@@ -44,6 +44,8 @@ class PedidoReadSerializer(serializers.ModelSerializer):
             'id_pedido',
             'fecha_hora',
             'estado',
+            'estado_cocina',
+            'estado_barra',
             'total',
             'mesa',
             'usuario',
@@ -60,6 +62,8 @@ class PedidoWriteSerializer(serializers.ModelSerializer):
         fields = [
             'id_pedido',
             'estado',
+            'estado_cocina',
+            'estado_barra',
             'total',
             'mesa',
             'usuario',
