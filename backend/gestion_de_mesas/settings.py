@@ -113,9 +113,9 @@ WSGI_APPLICATION = "gestion_de_mesas.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.getenv("DB_NAME", "sgmb_db"),
-        "USER": os.getenv("DB_USER", "sgmb_user"),
-        "PASSWORD": os.getenv("DB_PASSWORD", "1234"),
+        "NAME": os.environ["DB_NAME"],
+        "USER": os.environ["DB_USER"],
+        "PASSWORD": os.environ["DB_PASSWORD"],
         "HOST": os.getenv("DB_HOST", "localhost"),
         "PORT": os.getenv("DB_PORT", "5434"),
     }
