@@ -65,7 +65,7 @@ Si preferís no perder tus datos, usá `--conservar` primero. Si al levantar ves
 
 ### NOTA: en caso de que docker quede colgado o corrupto
 
-(limpiando tablas, colecciones o estados corruptos de bases de datos).
+- (limpiando tablas, colecciones o estados corruptos de bases de datos).
 
 - ejecutar: 
 - docker compose down -v --remove-orphans
