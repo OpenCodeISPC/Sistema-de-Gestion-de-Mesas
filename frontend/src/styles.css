@@ -4,6 +4,7 @@
    Bootstrap Icons se importa desde npm.
    ========================================================= */
 @import "bootstrap-icons/font/bootstrap-icons.css";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 /* Los estilos sgmb siguen definiendo la identidad visual del sistema.
    Bootstrap aporta estructura y componentes; sgmb tiene prioridad visual. */
@@ -60,7 +61,7 @@ body {
 body {
   background: var(--sgmb-bg);
   color: var(--sgmb-black);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: 'Inter', sans-serif;
 }
 
 button,
@@ -107,7 +108,6 @@ button {
   color: var(--sgmb-white);
   text-decoration: none;
 
-  font-family: Arial, sans-serif;
   font-size: 23px;
   font-weight: bold;
 
@@ -136,7 +136,6 @@ button {
   color: var(--sgmb-white);
   text-decoration: none;
 
-  font-family: Arial, sans-serif;
   font-size: 15px;
   font-weight: 600;
 
@@ -185,7 +184,6 @@ button {
   background: transparent;
   color: white;
 
-  font-family: Arial, sans-serif;
   font-size: 14px;
   font-weight: 600;
 
@@ -241,7 +239,6 @@ button {
 
   color: #81705b;
 
-  font-family: Arial, sans-serif;
 }
 
 
@@ -406,14 +403,12 @@ button {
 
 .sgmb-welcome h1 {
   margin: 0;
-  font-family: Arial, sans-serif;
   font-size: clamp(48px, 5vw, 82px);
   font-weight: 400;
 }
 
 .sgmb-welcome p {
   margin: 12px 0 65px;
-  font-family: Arial, sans-serif;
   font-size: 21px;
 }
 
@@ -455,7 +450,6 @@ button {
 .sgmb-dashboard-card p {
   margin: 0;
   min-height: 65px;
-  font-family: Arial, sans-serif;
   font-size: 17px;
   line-height: 1.35;
 }
@@ -467,7 +461,6 @@ button {
   border-radius: 8px;
   color: white;
   padding: 12px;
-  font-family: Arial, sans-serif;
   font-size: 16px;
 }
 
@@ -617,7 +610,6 @@ button {
 
   padding: 9px 25px;
 
-  font-family: Georgia, "Times New Roman", serif;
   font-size: 15px;
 
   cursor: pointer;
@@ -1778,7 +1770,6 @@ button {
 
   text-decoration: none;
 
-  font-family: Georgia, "Times New Roman", serif;
   font-size: 16px;
 
   transition: .2s ease;
@@ -1833,7 +1824,6 @@ button {
 
   color: #9a7d5c;
 
-  font-family: Georgia, "Times New Roman", serif;
 
   font-size: 36px;
   font-weight: bold;
@@ -1869,7 +1859,6 @@ button {
 
   color: #9a7d5c;
 
-  font-family: Georgia, "Times New Roman", serif;
   font-size: 16px;
 
   cursor: pointer;
@@ -1930,7 +1919,6 @@ button {
 .sgmb-order-column__header h2 {
   margin: 0;
 
-  font-family: Arial, sans-serif;
 
   font-size: 18px;
 }
@@ -2099,8 +2087,6 @@ button {
 
   color: #877d75;
 
-  font-family: Arial, sans-serif;
-
   font-size: 12px;
 }
 
@@ -2114,8 +2100,6 @@ button {
   padding: 4px 9px;
 
   border-radius: 4px;
-
-  font-family: Arial, sans-serif;
 
   font-size: 10px;
   font-weight: bold;
@@ -2148,8 +2132,6 @@ button {
   margin-top: 4px;
 
   color: #8b817a;
-
-  font-family: Arial, sans-serif;
 
   font-size: 11px;
 }
@@ -2185,8 +2167,6 @@ button {
   border-radius: 4px;
 
   color: white;
-
-  font-family: Arial, sans-serif;
 
   font-size: 13px;
   font-weight: bold;
@@ -2315,8 +2295,6 @@ button {
 
   color: #977654;
 
-  font-family: Georgia, "Times New Roman", serif;
-
   font-size: 25px;
   font-weight: bold;
 }
@@ -2340,8 +2318,6 @@ button {
 
   color: #ffffff;
 
-  font-family: Georgia, "Times New Roman", serif;
-
   font-size: 15px;
   font-weight: bold;
 
@@ -2363,8 +2339,6 @@ button {
   padding: 0 25px;
 
   color: #555;
-
-  font-family: Georgia, "Times New Roman", serif;
 
   font-size: 17px;
 
@@ -2419,8 +2393,6 @@ button {
 
   color: #ffffff;
 
-  font-family: Georgia, "Times New Roman", serif;
-
   font-size: 15px;
   font-weight: bold;
 
@@ -2447,8 +2419,6 @@ button {
   background: #ffffff;
 
   color: #c9c4bf;
-
-  font-family: Georgia, "Times New Roman", serif;
 
   cursor: pointer;
 
@@ -2491,9 +2461,8 @@ button {
 
   color: #ffffff;
 
-  font-family: Georgia, "Times New Roman", serif;
-
   font-size: 15px;
+
   font-weight: bold;
 
   cursor: pointer;
@@ -2516,9 +2485,8 @@ button {
 
   color: #9a7958;
 
-  font-family: Georgia, "Times New Roman", serif;
-
   font-size: 14px;
+
   font-weight: bold;
 }
 
@@ -2566,8 +2534,6 @@ button {
   margin: 0 auto 30px;
 
   color: #927b63;
-
-  font-family: Georgia, "Times New Roman", serif;
 
   font-size: 16px;
 
@@ -2696,7 +2662,6 @@ button {
 
   font-size: 24px;
   line-height: 1;
-  font-family: arial, sans-serif;
 }
 
 
@@ -2732,8 +2697,8 @@ button {
 
   border: 0;
 
-  font-family: Georgia, "Times New Roman", serif;
   font-size: 18px;
+
   font-weight: bold;
 
   text-align: left;
@@ -2907,7 +2872,6 @@ button {
 
   background: white;
 
-  font-family: Georgia, "Times New Roman", serif;
   font-size: 13px;
 
   cursor: pointer;
@@ -2983,9 +2947,8 @@ button {
 
   color: white;
 
-  font-family: Georgia, "Times New Roman", serif;
-
   font-size: 15px;
+
   font-weight: bold;
 
   cursor: pointer;
@@ -3101,8 +3064,8 @@ button {
   background: var(--sgmb-brown);
   color: white;
 
-  font-family: Arial, sans-serif;
   font-size: 14px;
+
   font-weight: 600;
 
   cursor: pointer;
@@ -3195,7 +3158,6 @@ button {
 
   color: var(--sgmb-black);
 
-  font-family: Arial, sans-serif;
   font-size: 14px;
 }
 
@@ -3223,8 +3185,6 @@ button {
   padding: 0 12px;
 
   color: #76665b;
-
-  font-family: Arial, sans-serif;
 
   outline: none;
 }
@@ -3256,7 +3216,6 @@ button {
 
   background: #fffdfb;
 
-  font-family: Arial, sans-serif;
 }
 
 
@@ -3425,8 +3384,6 @@ button {
 
   color: #999;
 
-  font-family: Arial, sans-serif;
-
   font-size: 13px;
 }
 
@@ -3525,8 +3482,6 @@ button {
 
   color: #999;
 
-  font-family: Arial, sans-serif;
-
   font-size: 13px;
 }
 
@@ -3605,8 +3560,6 @@ button {
 
   color: #5e5145;
 
-  font-family: Arial, sans-serif;
-
   font-size: 14px;
 
   outline: none;
@@ -3674,9 +3627,8 @@ button {
 
   padding: 0 18px;
 
-  font-family: Arial, sans-serif;
-
   font-size: 14px;
+  
   font-weight: 600;
 
   cursor: pointer;
