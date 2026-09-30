@@ -2686,14 +2686,15 @@ button {
   display: grid;
   place-items: center;
 
-  border: 1px solid var(--sgmb-border);
+  border: 0px solid var(--sgmb-border);
   border-radius: 5px;
 
-  background: white;
+  background: transparent;
   color: var(--sgmb-brown);
 
-  font-size: 21px;
+  font-size: 24px;
   line-height: 1;
+  font-family: arial, sans-serif;
 }
 
 
