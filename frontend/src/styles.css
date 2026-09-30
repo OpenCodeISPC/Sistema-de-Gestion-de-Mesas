@@ -880,6 +880,8 @@ button {
    --------------------------------------------------------- */
 
 .sgmb-sector h3 {
+  text-align: left;
+  
   margin: 0 0 10px;
 
   color: var(--sgmb-brown);
