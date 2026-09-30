@@ -22,9 +22,8 @@ services:
     image: mongo:7
     container_name: sgmb_mongo
     restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-adminpassword}
+    env_file:
+      - ./backend/.env.desarrollo
     ports:
       - "27018:27017"
     volumes:
