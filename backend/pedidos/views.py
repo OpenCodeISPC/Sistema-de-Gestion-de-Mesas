@@ -32,8 +32,6 @@ class PedidoViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-    # pedidos/views.py
-
 
 class ComandaViewSet(viewsets.ModelViewSet):
     # Trae el pedido si Cocina O Barra todavía tienen tareas pendientes
