@@ -29,17 +29,23 @@ def notificar_cambio_pedido(sender, instance, created, **kwargs):
             }
         )
     elif instance.estado == 'CERRADO' and instance.mesa:
-        instance.mesa.estado = 'LIBRE'    
-        instance.mesa.save()
-        
-        async_to_sync(channel_layer.group_send)(
-            'pedidos_group',
-            {
-                'type': 'emiter_evento',
-                'event_type': 'MESA_CAMBIO_ESTADO',
-                'data': MesaSerializer(instance.mesa).data
-            }
-        )
+        # Solo liberar la mesa si no quedan otros pedidos abiertos sobre ella
+        otros_abiertos = Pedido.objects.filter(mesa=instance.mesa).exclude(
+            estado__in=['CERRADO', 'CANCELADO']
+        ).exclude(id_pedido=instance.id_pedido).exists()
+
+        if not otros_abiertos and instance.mesa.estado != 'LIBRE':
+            instance.mesa.estado = 'LIBRE'
+            instance.mesa.save()
+
+            async_to_sync(channel_layer.group_send)(
+                'pedidos_group',
+                {
+                    'type': 'emitir_evento',
+                    'event_type': 'MESA_CAMBIO_ESTADO',
+                    'data': MesaSerializer(instance.mesa).data
+                }
+            )
         
     # 2. Notificamos el evento del pedido para la comanda de Cocina/Barra
     event_type = 'PEDIDO_CREADO' if created else 'PEDIDO_ESTADO_CAMBIADO'
