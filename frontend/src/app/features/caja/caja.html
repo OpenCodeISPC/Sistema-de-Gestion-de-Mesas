@@ -12,15 +12,17 @@
 </nav>
 
 <nav class="sgmb-cash-tabs">
-  <button class="sgmb-cash-tabs__item sgmb-cash-tabs__item--active btn"><i class="bi bi-cash-coin"
-      aria-hidden="true"></i> <span>Cobros</span></button>
-  <button class="sgmb-cash-tabs__item btn"><i class="bi bi-cash-stack" aria-hidden="true"></i> <span>Cierre de
-      caja</span></button>
+  <button (click)="cambiarTab('cobros')" [class.sgmb-cash-tabs__item--active]="tabActivo() === 'cobros'"
+    class="sgmb-cash-tabs__item btn"><i class="bi bi-cash-coin" aria-hidden="true"></i> <span>Cobros</span></button>
+  <button (click)="cambiarTab('cierre')" [class.sgmb-cash-tabs__item--active]="tabActivo() === 'cierre'"
+    class="sgmb-cash-tabs__item btn"><i class="bi bi-cash-stack" aria-hidden="true"></i> <span>Cierre de caja</span></button>
 </nav>
 
 <main class="sgmb-page sgmb-caja">
 
-  <header class="sgmb-page-header sgmb-page-header--caja">
+  <section *ngIf="tabActivo() === 'cobros'">
+
+    <header class="sgmb-page-header sgmb-page-header--caja">
     <div>
       <h1>Gestión de cobros</h1>
       <p>Administra los cobros pendientes y el estado de pagos.</p>
@@ -51,7 +53,9 @@
     </section>
   </header>
 
-  <p *ngIf="errorMensaje()" class="sgmb-mensaje sgmb-mensaje--error">{{ errorMensaje() }}</p>
+<p *ngIf="errorCobros()" class="sgmb-mensaje sgmb-mensaje--error">{{ errorCobros() }}</p>
+<p *ngIf="cajaCerrada()" class="sgmb-mensaje sgmb-mensaje--error"><i class="bi bi-cash-stack"
+      aria-hidden="true"></i> La caja de hoy ya está cerrada. No se pueden registrar más cobros.</p>
   <p *ngIf="cargando()" class="sgmb-mensaje">Cargando cobros...</p>
 
   <section class="sgmb-cash-layout">
@@ -155,6 +159,129 @@
       </ng-template>
 
     </aside>
+
+  </section>
+
+  </section>
+
+  <section *ngIf="tabActivo() === 'cierre'" class="sgmb-cierre">
+
+    <header class="sgmb-page-header sgmb-page-header--caja">
+      <div>
+        <h1>Cierre de caja</h1>
+        <p>Arqueo del turno y cierre del día.</p>
+      </div>
+
+      <section class="sgmb-cash-summary">
+
+        <article class="sgmb-cash-summary-card">
+          <div class="sgmb-cash-summary-card__icon sgmb-icon--red"><i class="bi bi-cash-coin" aria-hidden="true"></i>
+          </div>
+          <div><small>Efectivo</small><strong>{{ formatearMoneda(resumenCaja()?.monto_efectivo ?? 0) }}</strong></div>
+          <span *ngIf="resumenCaja()?.cerrado" class="sgmb-badge sgmb-badge--success">Cerrado</span>
+        </article>
+
+        <article class="sgmb-cash-summary-card">
+          <div class="sgmb-cash-summary-card__icon sgmb-icon--green"><i class="bi bi-credit-card"
+              aria-hidden="true"></i></div>
+          <div><small>Tarjeta</small><strong>{{ formatearMoneda(resumenCaja()?.monto_tarjeta ?? 0) }}</strong></div>
+        </article>
+
+        <article class="sgmb-cash-summary-card">
+          <div class="sgmb-cash-summary-card__icon sgmb-icon--orange"><i class="bi bi-bank"
+              aria-hidden="true"></i></div>
+          <div><small>Transferencia</small><strong>{{ formatearMoneda(resumenCaja()?.monto_transferencia ?? 0) }}</strong></div>
+        </article>
+
+      </section>
+    </header>
+
+<p *ngIf="errorCierre()" class="sgmb-mensaje sgmb-mensaje--error">{{ errorCierre() }}</p>
+    <p *ngIf="!resumenCaja()" class="sgmb-mensaje">Cargando resumen de caja...</p>
+
+    <div class="sgmb-cierre-layout">
+
+      <article class="sgmb-panel sgmb-cierre-panel">
+        <div class="sgmb-payment-detail__title">
+          <h2>Arqueo del día</h2>
+          <span>{{ resumenCaja()?.fecha }}</span>
+        </div>
+
+        <ng-container *ngIf="resumenCaja() as resumen">
+
+          <div class="sgmb-total-lines">
+            <p>Efectivo esperado: <b>{{ formatearMoneda(resumen.monto_efectivo) }}</b></p>
+            <p>Tarjeta: <b>{{ formatearMoneda(resumen.monto_tarjeta) }}</b></p>
+            <p>Transferencia: <b>{{ formatearMoneda(resumen.monto_transferencia) }}</b></p>
+            <p>Otros: <b>{{ formatearMoneda(resumen.monto_otro) }}</b></p>
+            <p>Cobros registrados hoy: <b>{{ resumen.total_pagos }}</b></p>
+            <strong>Total cobrado: <b>{{ formatearMoneda(resumen.total_cobrado) }}</b></strong>
+          </div>
+
+          <p *ngIf="resumen.cerrado && resumen.cierre" class="sgmb-mensaje sgmb-mensaje--exito"><i class="bi bi-check-lg"
+              aria-hidden="true"></i> Caja cerrada el {{ formatearFechaHora(resumen.cierre.fecha_hora) }} por
+            {{ resumen.cierre.nombre_cajero }}. Diferencia:
+            <b [class.sgmb-dif--positiva]="resumen.cierre.diferencia >= 0"
+              [class.sgmb-dif--negativa]="resumen.cierre.diferencia < 0">{{ formatearMoneda(resumen.cierre.diferencia) }}</b>.
+          </p>
+
+          <div *ngIf="resumen.cerrado" class="sgmb-cierre-actions">
+            <button class="sgmb-cierre-action sgmb-cierre-action--reabrir btn" (click)="reabrirCaja()"
+              [disabled]="reabriendo()"><i class="bi bi-unlock" aria-hidden="true"></i> &nbsp;
+              {{ reabriendo() ? 'Reabriendo...' : 'Reabrir caja' }}</button>
+          </div>
+
+          <ng-container *ngIf="!resumen.cerrado">
+
+            <label class="sgmb-input-label">Monto rendido (efectivo en caja)</label>
+            <div class="sgmb-money-input">
+              <span>$</span>
+              <input type="text" placeholder="0,00" class="form-control" [ngModel]="totalRendido()"
+                (ngModelChange)="totalRendido.set($event)">
+            </div>
+
+            <label class="sgmb-input-label">Observaciones</label>
+            <input type="text" class="form-control" placeholder="Opcional" [ngModel]="observaciones()"
+              (ngModelChange)="observaciones.set($event)">
+
+            <div class="sgmb-total-lines sgmb-cierre-diferencia">
+              <p>Diferencia: <b [class.sgmb-dif--positiva]="diferenciaPreview() >= 0"
+                  [class.sgmb-dif--negativa]="diferenciaPreview() < 0">{{ formatearMoneda(diferenciaPreview()) }}</b></p>
+            </div>
+
+            <div class="sgmb-cierre-actions">
+              <button class="sgmb-cierre-action sgmb-cierre-action--cerrar btn" (click)="confirmarCierre()"
+                [disabled]="cerrando()"><i class="bi bi-cash-stack" aria-hidden="true"></i> &nbsp;
+                {{ cerrando() ? 'Cerrando...' : 'Cerrar caja' }}</button>
+            </div>
+
+          </ng-container>
+
+        </ng-container>
+      </article>
+
+      <article class="sgmb-panel sgmb-cierre-historial">
+        <h2>Historial de cierres</h2>
+
+        <div *ngIf="cierreHistorial().length === 0" class="sgmb-vacio">Todavía no se registraron cierres.</div>
+
+        <div class="sgmb-cierre-record sgmb-cierre-record--header">
+          <span>Fecha</span>
+          <span>Cajero</span>
+          <span>Total cobrado</span>
+          <span>Diferencia</span>
+        </div>
+
+        <div *ngFor="let cierre of cierreHistorial()" class="sgmb-cierre-record">
+          <span>{{ cierre.fecha_cierre }}</span>
+          <span>{{ cierre.nombre_cajero ?? '—' }}</span>
+          <span>{{ formatearMoneda(cierre.total_cobrado) }}</span>
+          <b [class.sgmb-dif--positiva]="cierre.diferencia >= 0"
+            [class.sgmb-dif--negativa]="cierre.diferencia < 0">{{ formatearMoneda(cierre.diferencia) }}</b>
+        </div>
+      </article>
+
+    </div>
 
   </section>
 
