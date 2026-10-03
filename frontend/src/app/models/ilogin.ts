@@ -28,4 +28,5 @@ export interface IRefreshTokenRequest {
 }
 export interface IRefreshTokenResponse {
     access: string;
+    refresh?: string;
 }  

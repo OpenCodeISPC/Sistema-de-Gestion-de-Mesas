@@ -28,19 +28,25 @@ def notificar_cambio_pedido(sender, instance, created, **kwargs):
             }
         )
     elif instance.estado == 'CERRADO' and instance.mesa:
-        instance.mesa.estado = 'LIBRE'
-        instance.mesa.save()
+        # Solo liberar la mesa si no quedan otros pedidos abiertos sobre ella
+        otros_abiertos = Pedido.objects.filter(mesa=instance.mesa).exclude(
+            estado__in=['CERRADO', 'CANCELADO']
+        ).exclude(id_pedido=instance.id_pedido).exists()
 
-        async_to_sync(channel_layer.group_send)(
-            'comandas',
-            {
-                'type': 'comanda_event',
-                'evento': {
-                    'type': 'MESA_CAMBIO_ESTADO',
-                    'data': MesaSerializer(instance.mesa).data
+        if not otros_abiertos and instance.mesa.estado != 'LIBRE':
+            instance.mesa.estado = 'LIBRE'
+            instance.mesa.save()
+
+            async_to_sync(channel_layer.group_send)(
+                'comandas',
+                {
+                    'type': 'comanda_event',
+                    'evento': {
+                        'type': 'MESA_CAMBIO_ESTADO',
+                        'data': MesaSerializer(instance.mesa).data
+                    }
                 }
-            }
-        )
+            )
 
     event_type = 'PEDIDO_CREADO' if created else 'PEDIDO_ESTADO_CAMBIADO'
     pedido_data = PedidoReadSerializer(instance).data

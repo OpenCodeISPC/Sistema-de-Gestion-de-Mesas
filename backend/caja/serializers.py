@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Pago
+from .models import CierreCaja, Pago
 
 
 class PagoReadSerializer(serializers.ModelSerializer):
@@ -62,3 +62,49 @@ class PagoWriteSerializer(serializers.ModelSerializer):
                 {'monto': 'El monto del cobro debe ser mayor a 0.'}
             )
         return attrs
+
+
+class CierreCajaReadSerializer(serializers.ModelSerializer):
+    """Serializer para LECTURA (GET) - Devuelve el cierre listo para Angular."""
+    nombre_cajero = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CierreCaja
+        fields = [
+            'id_cierre',
+            'fecha_hora',
+            'fecha_cierre',
+            'cajero',
+            'nombre_cajero',
+            'monto_efectivo',
+            'monto_tarjeta',
+            'monto_transferencia',
+            'monto_otro',
+            'total_cobrado',
+            'total_rendido',
+            'diferencia',
+            'observaciones',
+        ]
+
+    def get_nombre_cajero(self, obj):
+        """Devuelve el nombre completo del cajero que realizó el cierre."""
+        if obj.cajero:
+            return f"{obj.cajero.nombre} {obj.cajero.apellido}"
+        return None
+
+
+class CierreCajaWriteSerializer(serializers.ModelSerializer):
+    """Serializer para ESCRITURA (POST) - Solo recibe lo que declara el cajero."""
+    class Meta:
+        model = CierreCaja
+        fields = ['total_rendido', 'observaciones']
+        extra_kwargs = {
+            'observaciones': {'required': False},
+        }
+
+    def validate_total_rendido(self, value):
+        if value < 0:
+            raise serializers.ValidationError(
+                'El monto rendido no puede ser negativo.'
+            )
+        return value
