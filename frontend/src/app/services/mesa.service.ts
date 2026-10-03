@@ -49,7 +49,7 @@ export class MesaService {
    * Actualización completa de una mesa (PUT)
    */
   actualizarMesa(id: number, mesa: IActualizarMesaDTO): Observable<IMesa> {
-    return this.http.put<IMesa>(`${this.apiUrl}${id}/`, mesa);
+    return this.http.patch<IMesa>(`${this.apiUrl}${id}/`, mesa);
   }
 
   /**

@@ -13,17 +13,17 @@ services:
       - datos_postgres_sgmb:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-sgmb_db}" ]
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
 
   mongo_nuevo_proyecto:
     image: mongo:7
     container_name: sgmb_mongo
     restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-adminpassword}
+    env_file:
+      - ./backend/.env.desarrollo
     ports:
       - "27018:27017"
     volumes:
@@ -61,7 +61,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-    command: sh -c "python manage.py migrate && python manage.py seed_mesas && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate && python manage.py seed_mesas && uvicorn gestion_de_mesas.asgi:application --host 0.0.0.0 --port 8000 --reload"
 
   frontend:
     build:

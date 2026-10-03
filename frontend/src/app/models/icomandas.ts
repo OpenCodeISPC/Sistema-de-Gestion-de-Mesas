@@ -1,23 +1,32 @@
+// src/app/models/icomandas.ts
+
 export type EstadoComanda = 'PENDIENTE' | 'PREPARACION' | 'LISTO';
 export type SectorComanda = 'COCINA' | 'BARRA';
 
-// Interfaz para cada ítem dentro de un pedido
 export interface IDetalleComanda {
   id_detalle?: number;
-  producto_nombre: string;
+  id_detalle_pedido?: number;
+  producto_nombre?: string;
+  producto?: { nombre: string };
+  cantidad?: number;
   comentario?: string;
+  observaciones?: string;
 }
 
-// Interfaz principal de la comanda
 export interface IComanda {
   id_comanda?: number;
-  numero_mesa: number;
-  numero_pedido: number;
+  id_pedido?: number;
+  numero_mesa?: number;
+  mesa?: number | string;
+  numero_pedido?: number;
   tiempo_espera?: string;
   estado: EstadoComanda;
+  estado_cocina?:EstadoComanda;
+  estado_barra?:EstadoComanda;
   sector: SectorComanda;
   cliente?: string;
-  creado_en?: string; 
+  creado_en?: string;
+  fecha_hora?: string;
   detalles?: IDetalleComanda[];
 }
 
@@ -29,5 +38,7 @@ export interface ICrearComandaDTO {
 
 export interface IActualizarComandaDTO {
   estado?: EstadoComanda;
+  estado_cocina?: EstadoComanda;
+  estao_barra?: EstadoComanda;
   numero_mesa?: number;
 }

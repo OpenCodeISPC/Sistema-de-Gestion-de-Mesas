@@ -191,61 +191,75 @@ export class Pedidos implements OnInit {
     );
   }
 
-  confirmarPedido(): void {
-    const pedido = this.pedidoActual();
-    const detalles = this.detallesLocales();
+ confirmarPedido(): void {
+  const pedido = this.pedidoActual();
+  const detalles = this.detallesLocales();
 
-    if (!detalles.length) {
-      alert('Debe agregar al menos un producto antes de confirmar');
-      return;
-    }
-
-    const detallesPayload = detalles
-      .filter(d => d.producto && d.producto.id_producto !== undefined)
-      .map(d => ({
-        producto: d.producto.id_producto!,
-        cantidad: d.cantidad,
-        precio_unitario: d.precio_unitario,
-        subtotal: d.subtotal,
-        observaciones: d.observaciones
-      }));
-
-    if (pedido) {
-      const payload = {
-        estado: 'PREPARACION' as EstadoPedido,
-        total: this.totalCalculado(),
-        detalles: detallesPayload
-      };
-
-      this.pedidoService.actualaizarEstadoOParcial(pedido.id_pedido, payload).subscribe({
-        next: (pedidoActualizado) => {
-          this.pedidoActual.set(pedidoActualizado);
-          console.log('Pedido actualizado correctamente');
-          if (this.mesaId()) {
-            this.alConfirmarPedido.emit(this.mesaId()!); //notifico a mesas
-          }
-        },
-        error: (err) => console.error('Error al actualizar pedido:', err)
-      });
-    } else if (this.mesaId()) {
-      const payload = {
-        mesa: this.mesaId()!,
-        usuario: 1,
-        estado: 'PENDIENTE' as EstadoPedido,
-        total: this.totalCalculado(),
-        detalles: detallesPayload
-      };
-
-      this.pedidoService.crearPedido(payload).subscribe({
-        next: (nuevoPedido) => {
-          this.pedidoActual.set(nuevoPedido);
-          console.log('Pedido creado correctamente');
-          this.alConfirmarPedido.emit(this.mesaId()!) //notifico a mesas
-        },
-        error: (err) => console.error('Error al crear pedido:', err)
-      });
-    }
+  if (!detalles.length) {
+    alert('Debe agregar al menos un producto antes de confirmar');
+    return;
   }
+
+  // 1. Mapeo estricto de detalles para el PedidoWriteSerializer de Django
+  const detallesPayload = detalles.map(d => {
+    // Garantizamos obtener el ID entero del producto sin importar la variante de la propiedad
+    const idProducto = d.producto.id_producto || (d.producto as any).id;
+
+    return {
+      producto: Number(idProducto),
+      cantidad: d.cantidad,
+      precio_unitario: Number(d.precio_unitario || d.producto.precio),
+      subtotal: Number(d.subtotal || (d.cantidad * d.producto.precio)),
+      observaciones: d.observaciones || ''
+    };
+  });
+
+  // 2. Si el pedido YA EXISTE (Actualización)
+  if (pedido) {
+    const payload = {
+      mesa: Number(this.mesaId()!),
+      estado: pedido.estado || ('PENDIENTE' as EstadoPedido),
+      total: Number(this.totalCalculado()),
+      detalles: detallesPayload
+    };
+
+    console.log('📌 Enviando actualización de pedido:', JSON.stringify(payload, null, 2));
+
+    this.pedidoService.actualaizarEstadoOParcial(pedido.id_pedido, payload).subscribe({
+      next: (pedidoActualizado) => {
+        this.pedidoActual.set(pedidoActualizado);
+        console.log('✅ Pedido actualizado correctamente');
+        if (this.mesaId()) {
+          this.alConfirmarPedido.emit(this.mesaId()!);
+        }
+      },
+      error: (err) => console.error('❌ Error al actualizar pedido:', err)
+    });
+
+  // 3. Si es un PEDIDO NUEVO (Creación)
+  } else if (this.mesaId()) {
+    const payload = {
+      mesa: Number(this.mesaId()!),
+      usuario: 1,
+      estado: 'PENDIENTE' as EstadoPedido,
+      total: Number(this.totalCalculado()),
+      detalles: detallesPayload
+    };
+
+    console.log('📌 Enviando creación de pedido nuevo:', JSON.stringify(payload, null, 2));
+
+    this.pedidoService.crearPedido(payload).subscribe({
+      next: (nuevoPedido) => {
+        this.pedidoActual.set(nuevoPedido);
+        console.log('✅ Pedido creado correctamente');
+        if (this.mesaId()) {
+          this.alConfirmarPedido.emit(this.mesaId()!);
+        }
+      },
+      error: (err) => console.error('❌ Error al crear pedido:', err)
+    });
+  }
+}
 
   cerrarMesa(): void {
     const pedido = this.pedidoActual();
