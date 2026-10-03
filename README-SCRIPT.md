@@ -69,3 +69,4 @@ Si preferís no perder tus datos, usá `--conservar` primero. Si al levantar ves
 
 - ejecutar: 
 - docker compose down -v --remove-orphans
+- Y volver a ejecutar el scrpits
