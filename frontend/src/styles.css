@@ -2409,38 +2409,28 @@ button {
   gap: 45px;
 }
 
-
 .sgmb-role-grid button {
   height: 68px;
-
-  border: 1px solid #cbbba9;
-
-  border-radius: 0;
-
+  border: 1px solid var(--sgmb-border);
+  border-radius: 6px; 
   background: #ffffff;
-
-  color: #c9c4bf;
-
+  color: var(--sgmb-brown-dark); 
+  font-weight: 600;
   cursor: pointer;
-
-  transition: .2s ease;
+  transition: all 0.2s ease;
 }
-
 
 .sgmb-role-grid button:hover {
+  background: var(--sgmb-brown); 
   border-color: var(--sgmb-brown);
-
-  color: var(--sgmb-brown);
+  color: #ffffff; 
 }
 
-
-.sgmb-role-grid__item--active {
-  background: #a97f58 !important;
-
-  border-color: #a97f58 !important;
-
-  color: #ffffff !important;
-
+.sgmb-role-grid .sgmb-role-grid__item--active,
+.sgmb-role-grid button.active {
+  background: var(--sgmb-brown-dark) !important; 
+  border-color: var(--sgmb-brown-dark) !important;
+  color: #ffffff !important; 
   font-weight: bold;
 }
 
