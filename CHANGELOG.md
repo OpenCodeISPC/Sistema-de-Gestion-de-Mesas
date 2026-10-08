@@ -53,3 +53,7 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 - Se completan todas las vistas de django corresponde a cada app
 - Se completan los codigos de los servicios, models, ts para angular
 - Se agrega jwt para login
+
+### [1.0.0] - 2026-10-15
+
+- Se corrige tablero Kanban para mejorar el flujo de trabajo y adecuarlo a testing
