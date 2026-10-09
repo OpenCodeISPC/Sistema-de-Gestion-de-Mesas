@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from "@angular/router";
 import { AuthService } from '../../services/auth.service';
 
-declare const google: any
+declare const google: any;
+
 @Component({
   selector: 'app-navbar',
   imports: [CommonModule, RouterLink],
@@ -11,10 +12,10 @@ declare const google: any
   styleUrl: './navbar.css',
 })
 export class Navbar {
-  // 1. Inyectamos el Router de Angular
-  private authService = inject(AuthService)
+ 
+  public authService = inject(AuthService);
 
   logout(): void {
-    this.authService.logout()
+    this.authService.logout();
   }
 }

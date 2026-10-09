@@ -6,14 +6,16 @@
       <span></span><span></span><span></span>
     </button>
 
-    <div class="sgmb-navbar__links">
+    <!-- Oculta los links si no está logueado -->
+    <div class="sgmb-navbar__links" *ngIf="authService.isLoggedIn()">
       <a class="sgmb-navbar__link" routerLink="/dashboard">Dashboard</a>
       <a class="sgmb-navbar__link" routerLink="/mesas">Mesas</a>
       <a class="sgmb-navbar__link" routerLink="/comandas">Comandas</a>
       <a class="sgmb-navbar__link" routerLink="/caja">Caja</a>
     </div>
 
-    <div class="sgmb-navbar__user">
+    <!-- Oculta también el menú de usuario si no está logueado -->
+    <div class="sgmb-navbar__user" *ngIf="authService.isLoggedIn()">
       <span class="sgmb-navbar__user-icon" aria-hidden="true">●</span>
       <button class="sgmb-navbar__logout" type="button" (click)="logout()">Cerrar sesión</button>
     </div>
