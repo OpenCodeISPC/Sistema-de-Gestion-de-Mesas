@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+﻿import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -21,7 +21,7 @@ export class Caja implements OnInit {
   private pedidoService = inject(PedidoService);
   private mesaService = inject(MesaService);
 
-  // Signals inicializadas vacías para recibir datos del backend
+  // Signals inicializadas vacÃ­as para recibir datos del backend
   pagos = signal<IPago[]>([]);
   pedidos = signal<IPedido[]>([]);
   mesas = signal<IMesa[]>([]);
@@ -37,7 +37,7 @@ export class Caja implements OnInit {
   cobrando = signal<boolean>(false);
   cobroExitoso = signal<boolean>(false);
 
-  // Tab activo del módulo caja
+  // Tab activo del mÃ³dulo caja
   tabActivo = signal<'cobros' | 'cierre'>('cobros');
 
   // ---- Estado para el Cierre de caja ----
@@ -56,10 +56,10 @@ export class Caja implements OnInit {
     return (Number.isNaN(rendido) ? 0 : rendido) - efectivoEsperado;
   });
 
-  // La caja del día ya fue cerrada: no se pueden registrar más cobros
+  // La caja del dÃ­a ya fue cerrada: no se pueden registrar mÃ¡s cobros
   cajaCerrada = computed(() => this.resumenCaja()?.cerrado === true);
 
-  // Pedidos que aún no fueron cobrados (estado LISTO o ENTREGADO)
+  // Pedidos que aÃºn no fueron cobrados (estado LISTO o ENTREGADO)
   mesasPorCobrar = computed(() => {
     return this.pedidos().filter(p => p.estado === 'LISTO' || p.estado === 'ENTREGADO');
   });
@@ -124,7 +124,7 @@ export class Caja implements OnInit {
 
     const totalRendido = Number(this.totalRendido());
     if (Number.isNaN(totalRendido) || totalRendido < 0) {
-      this.errorCierre.set('Ingresá un monto rendido válido.');
+      this.errorCierre.set('IngresÃ¡ un monto rendido vÃ¡lido.');
       return;
     }
 
@@ -235,7 +235,7 @@ export class Caja implements OnInit {
     });
   }
 
-  // Devuelve el número real de la mesa a partir del ID que envía el pedido
+  // Devuelve el nÃºmero real de la mesa a partir del ID que envÃ­a el pedido
   numeroDeMesa(idMesa: number): number {
     const mesa = this.mesas().find(m => m.id_mesa === idMesa);
     return mesa ? mesa.numero : idMesa;
@@ -253,12 +253,12 @@ export class Caja implements OnInit {
     this.metodoPagoActivo.set(metodo);
   }
 
-  // Formatea un número al estilo argentino (ej: $118.800)
+  // Formatea un nÃºmero al estilo argentino (ej: $118.800)
   formatearMoneda(valor: number): string {
     return `$${valor.toLocaleString('es-AR')}`;
   }
 
-  // Convierte a número los decimales que envía Django como string
+  // Convierte a nÃºmero los decimales que envÃ­a Django como string
   aNumero(valor: string | number): number {
     return Number(valor);
   }
@@ -282,7 +282,7 @@ export class Caja implements OnInit {
     if (!pedido || this.cobrando()) return;
 
     if (this.cajaCerrada()) {
-      this.errorCobros.set('La caja de hoy ya está cerrada. No se pueden registrar más cobros.');
+      this.errorCobros.set('La caja de hoy ya estÃ¡ cerrada. No se pueden registrar mÃ¡s cobros.');
       return;
     }
 
@@ -301,7 +301,7 @@ export class Caja implements OnInit {
 
     this.cajaService.crearPago(dto).subscribe({
       next: (nuevoPago) => {
-        // Añade el cobro al historial y quita el pedido de la lista de pendientes
+        // AÃ±ade el cobro al historial y quita el pedido de la lista de pendientes
         this.pagos.update(lista => [nuevoPago, ...lista]);
         this.pedidos.update(lista => lista.filter(p => p.id_pedido !== pedido.id_pedido));
         this.cobrando.set(false);
@@ -333,3 +333,26 @@ export class Caja implements OnInit {
     return fallback;
   }
 }
+  exportarPDF(idCierre: number): void {
+    if (!idCierre) return;
+    this.cajaService.exportarCierrePdf(idCierre).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'cierre-caja-' + idCierre + '.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Error al exportar PDF', err);
+        this.errorCierre.set('No se pudo generar el PDF del cierre.');
+      }
+    });
+  }
+
+
+
+

@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+﻿import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import {
@@ -40,11 +40,11 @@ export class CajaService {
     );
   }
 
-  // Recibo el DTO de creación del cobro
+  // Recibo el DTO de creaciÃ³n del cobro
   crearPago(dto: ICrearPagoDTO): Observable<IPago> {
     return this.http.post<IPago>(this.pagosUrl, dto).pipe(
       catchError((err: HttpErrorResponse) => {
-        console.log('No se registró el PAGO', err);
+        console.log('No se registrÃ³ el PAGO', err);
         return throwError(() => err);
       })
     );
@@ -60,7 +60,7 @@ export class CajaService {
     );
   }
 
-  // Retorna el resumen del día (totales por método y estado de cierre)
+  // Retorna el resumen del dÃ­a (totales por mÃ©todo y estado de cierre)
   getResumenCaja(): Observable<ICierreResumen> {
     return this.http.get<ICierreResumen>(`${this.cierresUrl}resumen/`).pipe(
       catchError((err: HttpErrorResponse) => {
@@ -74,19 +74,30 @@ export class CajaService {
   crearCierre(dto: ICerrarCajaDTO): Observable<ICierreCaja> {
     return this.http.post<ICierreCaja>(this.cierresUrl, dto).pipe(
       catchError((err: HttpErrorResponse) => {
-        console.log('No se registró el CIERRE', err);
+        console.log('No se registrÃ³ el CIERRE', err);
         return throwError(() => err);
       })
     );
   }
 
-  // Reabre la caja del día (permite seguir cobrando tras un cierre)
+  // Reabre la caja del dÃ­a (permite seguir cobrando tras un cierre)
   reabrirCaja(): Observable<{ fecha: string; reabierta: boolean }> {
     return this.http.post<{ fecha: string; reabierta: boolean }>(`${this.cierresUrl}reabrir/`, {}).pipe(
       catchError((err: HttpErrorResponse) => {
-        console.log('No se reabrió la CAJA', err);
+        console.log('No se reabriÃ³ la CAJA', err);
         return throwError(() => err);
       })
     );
   }
+  // Exportar resumen de cierre en PDF
+  exportarCierrePdf(idCierre: number): Observable<Blob> {
+    return this.http.get(${this.cierresUrl}/exportar-pdf/, {
+      responseType: 'blob'
+    });
+  }
 }
+
+
+
+
+

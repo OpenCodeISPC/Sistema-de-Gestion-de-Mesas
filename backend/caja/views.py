@@ -1,15 +1,18 @@
-from django.db import transaction
+﻿from django.db import transaction
 from django.utils import timezone
-from django.db.models import Sum
+from django.db.models import Sum, Prefetch
+from django.http import HttpResponse
 from rest_framework import serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from pedidos.models import Pedido
+from pedidos.models import Pedido, DetallePedido
+from mesas.models import Mesa
 
 from auditoria.mongo import registrar_evento
 
 from .models import CierreCaja, Pago
+from .pdf_utils import generar_pdf_cierre
 from .serializers import (
     CierreCajaReadSerializer,
     CierreCajaWriteSerializer,
@@ -27,7 +30,7 @@ class PagoViewSet(viewsets.ModelViewSet):
     queryset = Pago.objects.all().order_by('-fecha_hora')
 
     def get_serializer_class(self):
-        # Utiliza un serializer optimizado según la acción (Lectura vs Escritura)
+        # Utiliza un serializer optimizado seg├║n la acci├│n (Lectura vs Escritura)
         if self.action in ['list', 'retrieve']:
             return PagoReadSerializer
         return PagoWriteSerializer
@@ -57,7 +60,7 @@ class PagoViewSet(viewsets.ModelViewSet):
         """Registra el cobro, cierra el pedido y libera la mesa si corresponde."""
         if CierreCaja.objects.filter(fecha_cierre=timezone.localdate()).exists():
             raise serializers.ValidationError(
-                'La caja de hoy ya fue cerrada. No se pueden registrar más cobros.'
+                'La caja de hoy ya fue cerrada. No se pueden registrar m├ís cobros.'
             )
 
         if self.request.user.is_authenticated:
@@ -73,7 +76,7 @@ class PagoViewSet(viewsets.ModelViewSet):
                 pedido.estado = 'CERRADO'
                 pedido.save()
 
-            # Liberar la mesa solo si no quedan más pedidos abiertos de la misma
+            # Liberar la mesa solo si no quedan m├ís pedidos abiertos de la misma
             tiene_pedidos_abiertos = Pedido.objects.filter(mesa=pedido.mesa).exclude(
                 estado__in=['CERRADO', 'CANCELADO']
             ).exists()
@@ -97,13 +100,13 @@ class PagoViewSet(viewsets.ModelViewSet):
 
 class CierreCajaViewSet(viewsets.ModelViewSet):
     """
-    ViewSet para el cierre de caja diario (arqueo del día).
+    ViewSet para el cierre de caja diario (arqueo del d├¡a).
 
-    Los montos por forma de pago se calculan automáticamente sobre los
-    Pagos del día. `POST /api/cierres/` recibe solo el monto rendido y
+    Los montos por forma de pago se calculan autom├íticamente sobre los
+    Pagos del d├¡a. `POST /api/cierres/` recibe solo el monto rendido y
     opcionalmente observaciones; la diferencia surge de comparar el
     monto rendido contra el efectivo esperado. Solo se permite un cierre
-    por día (dato garantizado además por una restricción única en la BD).
+    por d├¡a (dato garantizado adem├ís por una restricci├│n ├║nica en la BD).
     """
     queryset = CierreCaja.objects.all().order_by('-fecha_hora')
 
@@ -135,9 +138,36 @@ class CierreCajaViewSet(viewsets.ModelViewSet):
             + monto_transferencia + monto_otro,
         }
 
+
+    @action(detail=True, methods=["get"], url_path="exportar-pdf")
+    def exportar_pdf(self, request, pk=None):
+        cierre = self.get_object()
+        cierre_data = CierreCajaReadSerializer(cierre).data
+
+        dia = cierre.fecha_cierre
+        pagos_del_dia = (
+            Pago.objects.filter(fecha_hora__date=dia)
+            .select_related("pedido", "pedido__mesa", "cajero")
+            .prefetch_related(
+                Prefetch(
+                    "pedido__detalles",
+                    queryset=DetallePedido.objects.select_related("producto"),
+                )
+            )
+            .order_by("fecha_hora", "id_pago")
+        )
+        pagos_data = PagoReadSerializer(pagos_del_dia, many=True).data
+
+        totales = self._calcular_totales_dia(dia)
+
+        buffer = generar_pdf_cierre(cierre_data, pagos_data, totales)
+        slugified = f"cierre-caja-{cierre.fecha_cierre}.pdf"
+        response = HttpResponse(buffer.getvalue(), content_type="application/pdf")
+        response["Content-Disposition"] = f'attachment; filename="{slugified}"'
+        return response
     @action(detail=False, methods=['get'], url_path='resumen')
     def resumen(self, request):
-        """Devuelve los totales del día actual y si la caja ya fue cerrada."""
+        """Devuelve los totales del d├¡a actual y si la caja ya fue cerrada."""
         hoy = timezone.localdate()
         totales = self._calcular_totales_dia(hoy)
         cierre = CierreCaja.objects.filter(fecha_cierre=hoy).first()
@@ -151,16 +181,16 @@ class CierreCajaViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'], url_path='reabrir')
     def reabrir(self, request):
-        """Reabre la caja del día eliminando el cierre registrado.
+        """Reabre la caja del d├¡a eliminando el cierre registrado.
 
-        Se usa cuando caen más pedidos después de cerrar: borra el cierre
-        de hoy para volver a permitir cobros. La acción queda auditada.
+        Se usa cuando caen m├ís pedidos despu├®s de cerrar: borra el cierre
+        de hoy para volver a permitir cobros. La acci├│n queda auditada.
         """
         hoy = timezone.localdate()
         borrados, _ = CierreCaja.objects.filter(fecha_cierre=hoy).delete()
         if borrados == 0:
             raise serializers.ValidationError(
-                'La caja de hoy ya está abierta, no hay cierre que reabrir.'
+                'La caja de hoy ya est├í abierta, no hay cierre que reabrir.'
             )
 
         if self.request.user.is_authenticated:
@@ -171,7 +201,7 @@ class CierreCajaViewSet(viewsets.ModelViewSet):
         registrar_evento(
             tipo='CAJA_REABIERTA',
             actor=cajero.email if cajero else None,
-            detalle=f'Reapertura de la caja del día {hoy}',
+            detalle=f'Reapertura de la caja del d├¡a {hoy}',
             datos={'fecha': hoy.isoformat()},
         )
 
@@ -191,7 +221,7 @@ class CierreCajaViewSet(viewsets.ModelViewSet):
         return Response(output, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
-        """Calcula los totales del día, guarda el cierre y lo audita."""
+        """Calcula los totales del d├¡a, guarda el cierre y lo audita."""
         hoy = timezone.localdate()
         if CierreCaja.objects.filter(fecha_cierre=hoy).exists():
             raise serializers.ValidationError(
@@ -221,7 +251,7 @@ class CierreCajaViewSet(viewsets.ModelViewSet):
         registrar_evento(
             tipo='CIERRE_CAJA',
             actor=cajero.email if cajero else None,
-            detalle=f'Cierre de caja del día {hoy}',
+            detalle=f'Cierre de caja del d├¡a {hoy}',
             datos={
                 'id_cierre': cierre.id_cierre,
                 'total_cobrado': float(cierre.total_cobrado),
@@ -229,3 +259,5 @@ class CierreCajaViewSet(viewsets.ModelViewSet):
                 'diferencia': float(cierre.diferencia),
             },
         )
+
+

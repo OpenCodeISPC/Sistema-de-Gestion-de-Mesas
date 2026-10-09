@@ -1,4 +1,4 @@
-<nav class="sgmb-admin-nav">
+﻿<nav class="sgmb-admin-nav">
   <a routerLink="/caja" class="sgmb-admin-nav__item sgmb-admin-nav__item--active"><i class="bi bi-speedometer2" aria-hidden="true"></i>
     <span>Panel</span></a>
   <a routerLink="/mesas" class="sgmb-admin-nav__item"><i class="bi bi-grid-3x3-gap" aria-hidden="true"></i>
@@ -8,7 +8,7 @@
     <span>Productos</span></a>
   <a class="sgmb-admin-nav__item"><i class="bi bi-people" aria-hidden="true"></i> <span>Usuarios</span></a>
   <a class="sgmb-admin-nav__item"><i class="bi bi-bar-chart" aria-hidden="true"></i> <span>Reportes</span></a>
-  <a class="sgmb-admin-nav__item"><i class="bi bi-shield-check" aria-hidden="true"></i> <span>Auditoría</span></a>
+  <a class="sgmb-admin-nav__item"><i class="bi bi-shield-check" aria-hidden="true"></i> <span>AuditorÃ­a</span></a>
 </nav>
 
 <nav class="sgmb-cash-tabs">
@@ -24,7 +24,7 @@
 
     <header class="sgmb-page-header sgmb-page-header--caja">
     <div>
-      <h1>Gestión de cobros</h1>
+      <h1>GestiÃ³n de cobros</h1>
       <p>Administra los cobros pendientes y el estado de pagos.</p>
     </div>
 
@@ -34,7 +34,7 @@
         <div class="sgmb-cash-summary-card__icon sgmb-icon--red"><i class="bi bi-cash-coin" aria-hidden="true"></i>
         </div>
         <div><small>Pendientes de cobro</small><strong>{{ pendientesCount() }}</strong></div>
-        <span *ngIf="pendientesCount() > 0" class="sgmb-badge sgmb-badge--attention">Atención</span>
+        <span *ngIf="pendientesCount() > 0" class="sgmb-badge sgmb-badge--attention">AtenciÃ³n</span>
       </article>
 
       <article class="sgmb-cash-summary-card">
@@ -55,7 +55,7 @@
 
 <p *ngIf="errorCobros()" class="sgmb-mensaje sgmb-mensaje--error">{{ errorCobros() }}</p>
 <p *ngIf="cajaCerrada()" class="sgmb-mensaje sgmb-mensaje--error"><i class="bi bi-cash-stack"
-      aria-hidden="true"></i> La caja de hoy ya está cerrada. No se pueden registrar más cobros.</p>
+      aria-hidden="true"></i> La caja de hoy ya estÃ¡ cerrada. No se pueden registrar mÃ¡s cobros.</p>
   <p *ngIf="cargando()" class="sgmb-mensaje">Cargando cobros...</p>
 
   <section class="sgmb-cash-layout">
@@ -76,7 +76,7 @@
             class="sgmb-payment-row"
             [class.sgmb-payment-row--selected]="pedidoSeleccionado()?.id_pedido === pedido.id_pedido"
             (click)="seleccionarPedido(pedido)">
-<span>Mesa N° {{ numeroDeMesa(pedido.mesa) }}</span>
+<span>Mesa NÂ° {{ numeroDeMesa(pedido.mesa) }}</span>
             <span>Mozo #{{ pedido.usuario }}</span>
             <span><b class="sgmb-state {{ claseEstadoPedido(pedido.estado) }}">{{ pedido.estado }}</b></span>
             <span>{{ formatearMoneda(aNumero(pedido.total)) }}</span>
@@ -104,7 +104,7 @@
       <ng-container *ngIf="pedidoSeleccionado() as pedido; else sinSeleccion">
         <div class="sgmb-payment-detail__title">
           <h2>Detalle de cobro</h2>
-          <span>Mesa N° {{ numeroDeMesa(pedido.mesa) }}</span>
+          <span>Mesa NÂ° {{ numeroDeMesa(pedido.mesa) }}</span>
         </div>
 
         <p>Estado pedido: <em>{{ pedido.estado }}</em></p>
@@ -124,7 +124,7 @@
           <strong>Total a cobrar: <b>{{ formatearMoneda(totalACobrar()) }}</b></strong>
         </div>
 
-        <h3>Método de pago</h3>
+        <h3>MÃ©todo de pago</h3>
         <div class="sgmb-payment-methods">
           <button [class.active]="metodoPagoActivo() === 'EFECTIVO'"
             (click)="cambiarMetodoPago('EFECTIVO')">Efectivo</button>
@@ -153,9 +153,9 @@
       <ng-template #sinSeleccion>
         <div class="sgmb-payment-detail__title">
           <h2>Detalle de cobro</h2>
-          <span>—</span>
+          <span>â€”</span>
         </div>
-        <p class="sgmb-vacio">Seleccioná una mesa para ver el detalle del cobro.</p>
+        <p class="sgmb-vacio">SeleccionÃ¡ una mesa para ver el detalle del cobro.</p>
       </ng-template>
 
     </aside>
@@ -169,7 +169,7 @@
     <header class="sgmb-page-header sgmb-page-header--caja">
       <div>
         <h1>Cierre de caja</h1>
-        <p>Arqueo del turno y cierre del día.</p>
+        <p>Arqueo del turno y cierre del dÃ­a.</p>
       </div>
 
       <section class="sgmb-cash-summary">
@@ -203,7 +203,7 @@
 
       <article class="sgmb-panel sgmb-cierre-panel">
         <div class="sgmb-payment-detail__title">
-          <h2>Arqueo del día</h2>
+          <h2>Arqueo del dÃ­a</h2>
           <span>{{ resumenCaja()?.fecha }}</span>
         </div>
 
@@ -263,21 +263,22 @@
       <article class="sgmb-panel sgmb-cierre-historial">
         <h2>Historial de cierres</h2>
 
-        <div *ngIf="cierreHistorial().length === 0" class="sgmb-vacio">Todavía no se registraron cierres.</div>
+        <div *ngIf="cierreHistorial().length === 0" class="sgmb-vacio">TodavÃ­a no se registraron cierres.</div>
 
         <div class="sgmb-cierre-record sgmb-cierre-record--header">
           <span>Fecha</span>
           <span>Cajero</span>
           <span>Total cobrado</span>
           <span>Diferencia</span>
+          <span>Acciones</span>
         </div>
 
         <div *ngFor="let cierre of cierreHistorial()" class="sgmb-cierre-record">
           <span>{{ cierre.fecha_cierre }}</span>
-          <span>{{ cierre.nombre_cajero ?? '—' }}</span>
+          <span>{{ cierre.nombre_cajero ?? 'â€”' }}</span>
           <span>{{ formatearMoneda(cierre.total_cobrado) }}</span>
           <b [class.sgmb-dif--positiva]="cierre.diferencia >= 0"
-            [class.sgmb-dif--negativa]="cierre.diferencia < 0">{{ formatearMoneda(cierre.diferencia) }}</b>
+            [class.sgmb-dif--negativa]="cierre.diferencia < 0">{{ formatearMoneda(cierre.diferencia) }}</b> <span><button type="button" class="btn btn-sm btn-outline-primary" (click)="exportarPDF(cierre.id_cierre)"><i class="bi bi-file-earmark-pdf"></i> PDF</button></span>
         </div>
       </article>
 
@@ -286,3 +287,4 @@
   </section>
 
 </main>
+

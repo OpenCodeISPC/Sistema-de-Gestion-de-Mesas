@@ -37,3 +37,4 @@ zope.interface==8.6
 google-auth
 requests
 uvicorn[standard]
+reportlab==4.4.4
