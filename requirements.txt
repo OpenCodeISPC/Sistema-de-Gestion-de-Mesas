@@ -7,6 +7,7 @@ cffi==2.1.1
 channels==4.3.2
 channels_redis==4.3.0
 constantly==23.10.4
+coverage==7.16.2
 cryptography==50.0.1
 daphne==4.2.3
 Django==6.0.5
@@ -34,7 +35,3 @@ typing_extensions==4.16.0
 tzdata==2026.2
 ujson==6.0.0
 zope.interface==8.6
-google-auth
-requests
-uvicorn[standard]
-coverage

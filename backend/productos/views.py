@@ -6,6 +6,8 @@ from django.shortcuts import get_object_or_404
 from .models import Producto
 from .serializers import ProductoSerializer
 
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+
 
 class ProductoListCreateAPIView(APIView):
     
@@ -13,6 +15,13 @@ class ProductoListCreateAPIView(APIView):
     GET /api/productos/ ==> Lista todos los productos
     POST /api/productos/ ==> Crea un nvo producto (usa ICrearProductoDTO)
     """
+    
+    def get_permissions(self):
+        #si es post exigimos q sea admin
+        if self.request.method == 'POST':
+            return [IsAdminUser()]
+        #si es get q este autenticado
+        return [IsAuthenticated()]
 
     def get(self, request):
         productos = Producto.objects.all()
@@ -35,6 +44,13 @@ class ProductoDetailAPIView(APIView):
     PATCH /api/productos/<id>/  -> Actualizacion parcial (usa IActualizarProductoDTO)
     DELETE /api/productos/<id>/ -> Elimina el producto
     """
+    
+    def get_permissions(self):
+        #si modifica, elimina, exigimos q sea admin
+        if self.request.method in ['PUT', 'PATCH', 'DELETE']:
+            return [IsAdminUser()]
+        #para consulta(get), usuario autenticado
+        return [IsAuthenticated()]
 
     # Busca un producto por su ID y devuelve un error 404 si no existe.
     def get_object(self, pk):
