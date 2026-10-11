@@ -6,11 +6,20 @@
       <p>Gestiona las mesas del restaurante y sus reservas.</p>
     </div>
 
+    <!-- TABS MODIFICADOS -->
     <div class="sgmb-tabs">
-      <button type="button" class="sgmb-tab sgmb-tab--active">
+      <button type="button"
+        class="sgmb-tab" 
+        [class.sgmb-tab--active]="pestanaActiva() === 'MESAS'"
+        (click)="cambiarPestana('MESAS')">
         Mesas
       </button>
-      <button type="button" class="sgmb-tab">
+
+      <button
+        type="button"
+        class="sgmb-tab" 
+        [class.sgmb-tab--active]="pestanaActiva() === 'RESERVAS'"
+        (click)="cambiarPestana('RESERVAS')">
         Reservas
       </button>
     </div>
@@ -134,10 +143,8 @@
 
       <!-- COMPONENTE HIJO PEDIDOS -->
       @if (mesaSeleccionada()) {
-      <app-pedidos [mesaId]="mesaSeleccionada()?.id_mesa || null"
-       [numeroMesa]="mesaSeleccionada()?.numero || '01'"
-        (alCerrar)="deseleccionarMesa()"
-         (alConfirmarPedido)="marcarMesaComoOcupada($event)"
+      <app-pedidos [mesaId]="mesaSeleccionada()?.id_mesa || null" [numeroMesa]="mesaSeleccionada()?.numero || '01'"
+        (alCerrar)="deseleccionarMesa()" (alConfirmarPedido)="marcarMesaComoOcupada($event)"
         (alCerrarMesa)="marcarMesaComoLibre($event)">
       </app-pedidos>
       }

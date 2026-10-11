@@ -23,6 +23,9 @@ export class Mesas implements OnInit {
   mesas = signal<IMesa[]>([]);
   mesaSeleccionada = signal<IMesa | null>(null);
 
+  //Nvo para controlar pestañas activas
+  pestanaActiva = signal<'MESAS' | 'RESERVAS'>('MESAS')
+
   // --------------------------------------------------------------------------
   // SIGNALS COMPUTADAS (Totales para las cards de resumen)
   // --------------------------------------------------------------------------
@@ -44,7 +47,12 @@ export class Mesas implements OnInit {
   mesasPorSector = computed(() => {
     const mapa = new Map<string, IMesa[]>();
 
-    for (const mesa of this.mesas()) {
+    //1 Filtramos las mesas segun la pestaña activa
+    const mesasAMostrar = this.pestanaActiva() === 'RESERVAS'
+    ? this.mesas().filter(m => m.estado === 'RESERVADA')
+    : this.mesas();//mostramos todo
+
+    for (const mesa of mesasAMostrar) {
       const sector = mesa.ubicacion?.trim() || 'Salón Principal';
       if (!mapa.has(sector)) {
         mapa.set(sector, []);
@@ -73,6 +81,12 @@ export class Mesas implements OnInit {
 
   ngOnInit(): void {
     this.cargarMesas();
+  }
+
+  // NUEVO: Método para cambiar de pestaña
+  cambiarPestana(pestana: 'MESAS' | 'RESERVAS'): void {
+    this.pestanaActiva.set(pestana);
+    this.deseleccionarMesa(); // Cerramos el panel lateral si cambian de vista
   }
 
   // --------------------------------------------------------------------------
