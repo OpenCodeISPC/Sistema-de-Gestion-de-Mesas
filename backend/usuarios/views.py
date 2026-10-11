@@ -48,13 +48,20 @@ class RegistroView(APIView):
         serializer.is_valid(raise_exception=True)
 
         datos = serializer.validated_data
+        rol_elegido = datos["rol"]
+        
+        # Validar si el usuario seleccionó ADMIN
+        es_admin = (rol_elegido == "ADMIN")
+
         with transaction.atomic():
             usuario = Usuario.objects.create_user(
                 email=datos["email"],
                 password=datos["password"],
                 nombre=datos.get("nombre", ""),
                 apellido=datos.get("apellido", ""),
-                rol=datos["rol"],
+                rol=rol_elegido,
+                is_staff=es_admin,       # Si es ADMIN, será True. Si no, False.
+                is_superuser=es_admin,   # Si es ADMIN, será True. Si no, False.
             )
 
         refresh = RefreshToken.for_user(usuario)
