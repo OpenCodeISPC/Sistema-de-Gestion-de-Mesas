@@ -71,6 +71,16 @@ export class Producto implements OnInit {
     this.cargarProductos()
   }
 
+  // Verifica si el usuario logueado tiene el rol ADMIN
+  esAdmin(): boolean {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      return user.rol === 'ADMIN';
+    }
+    return false;
+  }
+
   cargarProductos(): void {
     this.cargando.set(true)
     this.errorMensaje.set(null)
@@ -89,6 +99,11 @@ export class Producto implements OnInit {
 
   //metodo interaccion del panel de formulario
   abrirFormularioCrear(): void {
+    if (!this.esAdmin()) {
+      alert('Acceso denegado: Solo el administrador puede realizar esta acción.');
+      return;
+    }
+
     this.modoEdicion.set(false);
     this.productoEditarId.set(null);
     this.productoForm.reset({
@@ -103,6 +118,11 @@ export class Producto implements OnInit {
   }
 
   abrirFormularioEditar(producto: IProducto): void {
+    if (!this.esAdmin()) {
+      alert('Acceso denegado: Solo el administrador puede realizar esta acción.');
+      return;
+    }
+
     this.modoEdicion.set(true);
     this.productoEditarId.set(producto.id_producto!);
     this.productoForm.patchValue({
@@ -163,6 +183,11 @@ export class Producto implements OnInit {
   }
   //eliminar
   eliminarProducto(id?: number): void {
+    if (!this.esAdmin()) {
+      alert('Acceso denegado: Solo el administrador puede realizar esta acción.');
+      return;
+    }
+    
     if (!id) return;
 
     if (!confirm('¡Estas seguro de que deseas eliminar este producto')) return;
