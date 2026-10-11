@@ -1,8 +1,9 @@
 '''
 Instalar coverage dentro de docker
-docker exec -it sgmb_backend pip install coverage
+docker exec -it sgmb_backend pip install coverage(atencion: para que sea persistente reconstruir docker)
 Ejecutar y generar reporte
 docker exec -it sgmb_backend coverage run manage.py test
+generar reporte
 docker exec -it sgmb_backend coverage html
 '''
 

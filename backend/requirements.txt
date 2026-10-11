@@ -37,4 +37,4 @@ zope.interface==8.6
 google-auth
 requests
 uvicorn[standard]
-coverage
+coverage>=7.0.0

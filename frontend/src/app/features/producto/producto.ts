@@ -37,10 +37,10 @@ export class Producto implements OnInit {
   productoForm: FormGroup = this.fb.group({
     nombre: ['', [Validators.required, Validators.maxLength(150)]],
     descripcion: [''],
-    precio: [0, [Validators.required, Validators.min(0)]],
+    precio: [null, [Validators.required, Validators.min(0)]],
     categoria: ['', [Validators.required]],
     disponibilidad: [true, [Validators.required]],
-    stock: [0, [Validators.required, Validators.min(0)]]
+    stock: [null, [Validators.required, Validators.min(0)]]
   })
 
   //signal computada: filtra auto los productos segun busqueda, categoria
@@ -94,10 +94,10 @@ export class Producto implements OnInit {
     this.productoForm.reset({
       nombre: '',
       descripcion: '',
-      precio: 0,
+      precio: null,
       categoria: '',
       disponibilidad: true,
-      stock: 0
+      stock: null
     })
     this.mostrarFormulario.set(true)
   }
