@@ -1,17 +1,4 @@
-﻿<nav class="sgmb-admin-nav">
-  <a routerLink="/caja" class="sgmb-admin-nav__item sgmb-admin-nav__item--active"><i class="bi bi-speedometer2" aria-hidden="true"></i>
-    <span>Panel</span></a>
-  <a routerLink="/mesas" class="sgmb-admin-nav__item"><i class="bi bi-grid-3x3-gap" aria-hidden="true"></i>
-    <span>Mesas</span></a>
-  <a class="sgmb-admin-nav__item"><i class="bi bi-cash-stack" aria-hidden="true"></i> <span>Reservas</span></a>
-  <a routerLink="/producto" class="sgmb-admin-nav__item"><i class="bi bi-box-seam" aria-hidden="true"></i>
-    <span>Productos</span></a>
-  <a class="sgmb-admin-nav__item"><i class="bi bi-people" aria-hidden="true"></i> <span>Usuarios</span></a>
-  <a class="sgmb-admin-nav__item"><i class="bi bi-bar-chart" aria-hidden="true"></i> <span>Reportes</span></a>
-  <a class="sgmb-admin-nav__item"><i class="bi bi-shield-check" aria-hidden="true"></i> <span>Auditoría</span></a>
-</nav>
-
-<nav class="sgmb-cash-tabs">
+﻿<nav class="sgmb-cash-tabs">
   <button (click)="cambiarTab('cobros')" [class.sgmb-cash-tabs__item--active]="tabActivo() === 'cobros'"
     class="sgmb-cash-tabs__item btn"><i class="bi bi-cash-coin" aria-hidden="true"></i> <span>Cobros</span></button>
   <button (click)="cambiarTab('cierre')" [class.sgmb-cash-tabs__item--active]="tabActivo() === 'cierre'"
@@ -82,8 +69,12 @@
             <span>{{ formatearMoneda(aNumero(pedido.total)) }}</span>
             <span><b class="sgmb-state sgmb-state--pending">Pendiente</b></span>
             <button (click)="seleccionarPedido(pedido); $event.stopPropagation()"
-              class="sgmb-action-button sgmb-action-button--green btn btn-sm">Cobrar <i class="bi bi-chevron-right"
-                aria-hidden="true"></i></button>
+              class="sgmb-action-button btn btn-sm"
+              [class.sgmb-action-button--green]="puedeCobrar(pedido)"
+              [class.sgmb-action-button--pending]="!puedeCobrar(pedido)">
+              <i class="bi" [class.bi-chevron-right]="puedeCobrar(pedido)"
+                [class.bi-hourglass-split]="!puedeCobrar(pedido)" aria-hidden="true"></i>
+              {{ puedeCobrar(pedido) ? 'Cobrar' : etiquetaEstado(pedido.estado) }}</button>
           </div>
 
         </ng-container>
@@ -107,7 +98,7 @@
           <span>Mesa N° {{ numeroDeMesa(pedido.mesa) }}</span>
         </div>
 
-        <p>Estado pedido: <em>{{ pedido.estado }}</em></p>
+        <p>Estado pedido: <em class="sgmb-state" [ngClass]="claseEstadoPedido(pedido.estado)">{{ etiquetaEstado(pedido.estado) }}</em></p>
 
         <h3>Productos del pedido</h3>
         <ul class="sgmb-products">
@@ -120,7 +111,10 @@
 
         <div class="sgmb-total-lines">
           <p>Subtotal: <b>{{ formatearMoneda(aNumero(pedido.total)) }}</b></p>
-          <p>Propina sugerida (10%): <b>{{ formatearMoneda(propinaSugerida()) }}</b></p>
+          <label class="sgmb-tip-check">
+            <input type="checkbox" [ngModel]="incluirPropina()" (ngModelChange)="incluirPropina.set($event)">
+            <span>La mesa dejó propina (10%): <b>{{ formatearMoneda(propinaSugerida()) }}</b></span>
+          </label>
           <strong>Total a cobrar: <b>{{ formatearMoneda(totalACobrar()) }}</b></strong>
         </div>
 
@@ -145,8 +139,16 @@
           liberada.</p>
 
         <div class="sgmb-detail-actions">
-          <button class="sgmb-confirm-button btn btn-success" (click)="confirmarCobro()" [disabled]="cobrando()"><i
-              class="bi bi-check-lg" aria-hidden="true"></i> &nbsp; {{ cobrando() ? 'Registrando...' : 'Confirmar cobro' }}</button>
+          <button type="button" class="sgmb-factura-button btn" (click)="exportarFactura()" [disabled]="cobrando()"
+            title="Descargar factura de la mesa"><i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> &nbsp; Factura</button>
+          <button class="sgmb-confirm-button btn" (click)="confirmarCobro()"
+            [disabled]="cobrando() || !puedeCobrarSeleccionado()"
+            [class.btn-success]="puedeCobrarSeleccionado()"
+            [class.sgmb-confirm-button--pending]="!puedeCobrarSeleccionado()">
+            <i class="bi" [class.bi-check-lg]="puedeCobrarSeleccionado()"
+              [class.bi-hourglass-split]="!puedeCobrarSeleccionado()" aria-hidden="true"></i> &nbsp;
+            {{ !puedeCobrarSeleccionado() ? etiquetaEstado(pedido.estado) : (cobrando() ? 'Registrando...' : 'Confirmar cobro') }}
+          </button>
         </div>
       </ng-container>
 

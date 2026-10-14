@@ -107,7 +107,7 @@
 
 .sgmb-cierre-record {
   display: grid;
-  grid-template-columns: 1.2fr 1.4fr 1fr 1fr;
+  grid-template-columns: 1.2fr 1.4fr 1fr 1fr 1.1fr;
   gap: 0.5rem;
   align-items: center;
   padding: 0.5rem 0;
@@ -128,4 +128,60 @@
   .sgmb-cierre-record {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+/* ---- Panel de detalle: propina y factura ---- */
+.sgmb-tip-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.sgmb-tip-check input[type="checkbox"] {
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: var(--sgmb-brown);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.sgmb-factura-button {
+  border: 1px solid var(--sgmb-brown);
+  background: var(--sgmb-bg);
+  color: var(--sgmb-brown);
+  padding: 13px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.sgmb-factura-button:hover {
+  background: var(--sgmb-brown);
+  color: #ffffff;
+}
+
+.sgmb-factura-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---- Estado "Pendiente" (pedido todavía no listo para cobrar) ---- */
+.btn.sgmb-confirm-button--pending,
+.btn.sgmb-confirm-button--pending:disabled {
+  background: #e8dccb;
+  border-color: #c9b598;
+  color: #6b5334;
+  font-weight: 600;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.sgmb-action-button.sgmb-action-button--pending {
+  background: #e8dccb;
+  color: #6b5334;
+  font-weight: 600;
+  cursor: pointer;
 }

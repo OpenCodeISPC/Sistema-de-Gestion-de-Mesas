@@ -1,10 +1,10 @@
-﻿import { Component, OnInit, inject, signal, computed } from '@angular/core';
+﻿import { Component, OnInit, inject, signal, computed, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { CajaService } from '../../services/caja.service';
 import { PedidoService } from '../../services/pedido.service';
 import { MesaService } from '../../services/mesa.service';
+import { WebsocketService } from '../../services/websocket.service';
 import { IPago, MetodoPago, ICrearPagoDTO, ICierreCaja, ICierreResumen, ICerrarCajaDTO } from '../../models/icaja';
 import { IPedido, EstadoPedido } from '../../models/ipedido';
 import { IMesa } from '../../models/imesa';
@@ -12,7 +12,7 @@ import { IMesa } from '../../models/imesa';
 @Component({
   selector: 'app-caja',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './caja.html',
   styleUrl: './caja.css',
 })
@@ -20,6 +20,7 @@ export class Caja implements OnInit {
   private cajaService = inject(CajaService);
   private pedidoService = inject(PedidoService);
   private mesaService = inject(MesaService);
+  private wsService = inject(WebsocketService);
 
   // Signals inicializadas vacías para recibir datos del backend
   pagos = signal<IPago[]>([]);
@@ -33,9 +34,12 @@ export class Caja implements OnInit {
   pedidoSeleccionado = signal<IPedido | null>(null);
   metodoPagoActivo = signal<MetodoPago>('EFECTIVO');
   importeRecibido = signal<string>('');
+  // El camarero marca si la mesa dejó propina (10%) al cobrar
+  incluirPropina = signal<boolean>(false);
 
   cobrando = signal<boolean>(false);
   cobroExitoso = signal<boolean>(false);
+  generandoFactura = signal<boolean>(false);
 
   // Tab activo del módulo caja
   tabActivo = signal<'cobros' | 'cierre'>('cobros');
@@ -59,21 +63,51 @@ export class Caja implements OnInit {
   // La caja del día ya fue cerrada: no se pueden registrar más cobros
   cajaCerrada = computed(() => this.resumenCaja()?.cerrado === true);
 
-  // Pedidos que aún no fueron cobrados (estado LISTO o ENTREGADO)
+  // Pedidos activos de las mesas: aún no cobrados (pendiente, preparación, listo o entregado)
   mesasPorCobrar = computed(() => {
-    return this.pedidos().filter(p => p.estado === 'LISTO' || p.estado === 'ENTREGADO');
+    const estadosActivos: EstadoPedido[] = ['PENDIENTE', 'PREPARACION', 'LISTO', 'ENTREGADO'];
+    return this.pedidos().filter(p => estadosActivos.includes(p.estado));
   });
+
+  // Un pedido solo se puede cobrar cuando ya está LISTO o ENTREGADO
+  puedeCobrar(pedido: IPedido | null): boolean {
+    return !!pedido && (pedido.estado === 'LISTO' || pedido.estado === 'ENTREGADO');
+  }
+
+  // ¿El pedido seleccionado está en condiciones de cobrarse?
+  puedeCobrarSeleccionado = computed(() => this.puedeCobrar(this.pedidoSeleccionado()));
 
   // 1. Tarjeta: Pendientes de cobro
   pendientesCount = computed(() => this.mesasPorCobrar().length);
 
-  // 2. Tarjeta: Cobros del turno (sumatoria de los montos registrados)
-  totalCobrado = computed(() => {
-    return this.pagos().reduce((acc, p) => acc + Number(p.monto), 0);
+  // Inicio del turno actual: la medianoche local o, si la caja de hoy ya fue
+  // cerrada, el momento del cierre (así los cobros no se acumulan de un turno a otro)
+  private inicioTurno = computed<number>(() => {
+    const inicioHoy = new Date();
+    inicioHoy.setHours(0, 0, 0, 0);
+    const cierreHora = this.resumenCaja()?.cierre?.fecha_hora;
+    if (cierreHora) {
+      const fechaCierre = new Date(cierreHora).getTime();
+      if (!Number.isNaN(fechaCierre) && fechaCierre > inicioHoy.getTime()) {
+        return fechaCierre;
+      }
+    }
+    return inicioHoy.getTime();
   });
 
-  // 3. Tarjeta: Mesas liberadas (cobros registrados en el turno)
-  mesasLiberadas = computed(() => this.pagos().length);
+  // Cobros que pertenecen al turno actual (no acumula días/turnos anteriores)
+  pagosTurno = computed(() => {
+    const desde = this.inicioTurno();
+    return this.pagos().filter((p) => new Date(p.fecha_hora).getTime() >= desde);
+  });
+
+  // 2. Tarjeta: Cobros del turno (sumatoria de los montos del turno actual)
+  totalCobrado = computed(() => {
+    return this.pagosTurno().reduce((acc, p) => acc + Number(p.monto), 0);
+  });
+
+  // 3. Tarjeta: Mesas liberadas (cobros registrados en el turno actual)
+  mesasLiberadas = computed(() => this.pagosTurno().length);
 
   // Detalle: Propina sugerida (10% del total del pedido)
   propinaSugerida = computed(() => {
@@ -81,15 +115,52 @@ export class Caja implements OnInit {
     return pedido ? Number(pedido.total) * 0.1 : 0;
   });
 
-  // Detalle: Total a cobrar (total del pedido + propina)
+  // Propina que efectivamente se cobra según la marca del camarero
+  propinaAplicada = computed(() => (this.incluirPropina() ? this.propinaSugerida() : 0));
+
+  // Detalle: Total a cobrar (total del pedido + propina aplicada)
   totalACobrar = computed(() => {
     const pedido = this.pedidoSeleccionado();
-    return pedido ? Number(pedido.total) + this.propinaSugerida() : 0;
+    return pedido ? Number(pedido.total) + this.propinaAplicada() : 0;
   });
+
+  constructor() {
+    // Escucha en tiempo real las altas/ediciones de pedidos que envía el backend
+    // para reflejarlas en "Mesas por cobrar" sin recargar la página.
+    effect(() => {
+      const evento = this.wsService.ultimoEvento();
+      if (!evento) return;
+
+      untracked(() => {
+        if (evento.type !== 'PEDIDO_CREADO' && evento.type !== 'PEDIDO_ESTADO_CAMBIADO') return;
+
+        const pedidoRecibido = evento.data as IPedido;
+        if (!pedidoRecibido || !pedidoRecibido.id_pedido) return;
+
+        this.pedidos.update(lista => {
+          const existe = lista.some(p => p.id_pedido === pedidoRecibido.id_pedido);
+          if (existe) {
+            return lista.map(p =>
+              p.id_pedido === pedidoRecibido.id_pedido ? { ...p, ...pedidoRecibido } : p
+            );
+          }
+          return [pedidoRecibido, ...lista];
+        });
+
+        // Mantiene actualizado (o limpia) el detalle si el pedido afectado estaba seleccionado
+        const seleccionado = this.pedidoSeleccionado();
+        if (seleccionado && seleccionado.id_pedido === pedidoRecibido.id_pedido) {
+          const inactivo = pedidoRecibido.estado === 'CERRADO' || pedidoRecibido.estado === 'CANCELADO';
+          this.pedidoSeleccionado.set(inactivo ? null : pedidoRecibido);
+        }
+      });
+    });
+  }
 
   ngOnInit(): void {
     this.cargarDatos();
     this.cargarCierre();
+    this.wsService.conectar();
   }
 
   cambiarTab(tab: 'cobros' | 'cierre'): void {
@@ -209,7 +280,7 @@ export class Caja implements OnInit {
     this.cargando.set(true);
     this.errorCobros.set(null);
 
-    this.cajaService.getPagos().subscribe({
+    this.cajaService.getPagosDelDia(this.fechaDeHoy()).subscribe({
       next: (pagos) => {
         this.pagos.set(pagos);
         this.cargarPedidos();
@@ -219,6 +290,14 @@ export class Caja implements OnInit {
         this.cargando.set(false);
       }
     });
+  }
+
+  // Fecha local de hoy en formato YYYY-MM-DD
+  private fechaDeHoy(): string {
+    const hoy = new Date();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    return `${hoy.getFullYear()}-${mes}-${dia}`;
   }
 
   private cargarPedidos(): void {
@@ -262,6 +341,7 @@ export class Caja implements OnInit {
   seleccionarPedido(pedido: IPedido): void {
     this.pedidoSeleccionado.set(pedido);
     this.importeRecibido.set('');
+    this.incluirPropina.set(false);
     this.cobroExitoso.set(false);
     this.errorCobros.set(null);
   }
@@ -294,6 +374,19 @@ export class Caja implements OnInit {
     return clases[estado] ?? 'sgmb-state--pending';
   }
 
+  // Nombre legible del estado para mostrar en la UI
+  etiquetaEstado(estado: EstadoPedido): string {
+    const etiquetas: Record<EstadoPedido, string> = {
+      PENDIENTE: 'Pendiente',
+      PREPARACION: 'Preparación',
+      LISTO: 'Listo',
+      ENTREGADO: 'Entregado',
+      CERRADO: 'Cerrado',
+      CANCELADO: 'Cancelado',
+    };
+    return etiquetas[estado] ?? estado;
+  }
+
   // Registra el cobro: el backend cierra el pedido y libera la mesa
   confirmarCobro(): void {
     const pedido = this.pedidoSeleccionado();
@@ -304,11 +397,16 @@ export class Caja implements OnInit {
       return;
     }
 
+    if (!this.puedeCobrar(pedido)) {
+      this.errorCobros.set('La mesa todavía no está lista para cobrar. Esperá a que el pedido esté listo.');
+      return;
+    }
+
     const dto: ICrearPagoDTO = {
       pedido: pedido.id_pedido,
       metodo_pago: this.metodoPagoActivo(),
       monto: this.totalACobrar(),
-      propina: this.propinaSugerida(),
+      propina: this.propinaAplicada(),
       importe_recibido: this.importeRecibido()
         ? Number(this.importeRecibido())
         : this.totalACobrar(),
@@ -367,6 +465,34 @@ export class Caja implements OnInit {
       error: (err: any) => {
         console.error('Error al exportar PDF', err);
         this.errorCierre.set('No se pudo generar el PDF del cierre.');
+      }
+    });
+  }
+
+  // Descarga la factura (PDF) de la mesa seleccionada, con la propina marcada
+  exportarFactura(): void {
+    const pedido = this.pedidoSeleccionado();
+    if (!pedido || this.generandoFactura()) return;
+
+    this.generandoFactura.set(true);
+    this.errorCobros.set(null);
+
+    this.pedidoService.exportarFacturaPdf(pedido.id_pedido, this.propinaAplicada()).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `factura-mesa-${this.numeroDeMesa(pedido.mesa)}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        this.generandoFactura.set(false);
+      },
+      error: (err: any) => {
+        console.error('Error al generar la factura', err);
+        this.errorCobros.set('No se pudo generar la factura.');
+        this.generandoFactura.set(false);
       }
     });
   }
