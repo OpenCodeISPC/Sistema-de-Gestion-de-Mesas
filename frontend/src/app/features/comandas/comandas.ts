@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from "@angular/router";
 import { ComandaService } from '../../services/comandas.service';
 import { WebsocketService } from '../../services/websocket.service';
 import { IComanda, EstadoComanda, SectorComanda } from '../../models/icomandas';
@@ -8,7 +7,7 @@ import { IComanda, EstadoComanda, SectorComanda } from '../../models/icomandas';
 @Component({
   selector: 'app-comandas',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './comandas.html',
   styleUrl: './comandas.css',
 })
