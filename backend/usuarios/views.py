@@ -1,10 +1,7 @@
+import logging
+
 from django.db import transaction
-from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import send_mail
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
 
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -20,9 +17,12 @@ from .serializers import (
     UsuarioSerializer,
     PasswordResetConfirmSerializer,
     PasswordResetRequestSerializer,
+    VerificarOTPSerializer,
 )
+from .otp import generar_y_enviar_otp
 
 Usuario = get_user_model()
+logger = logging.getLogger(__name__)
 
 
 # 1. Login clásico (SimpleJWT + Usuario)
@@ -117,11 +117,12 @@ class GoogleOauthView(APIView):
         )
 
 
-# 4. Solicitud de reseteo de clave
+# 4. Solicitud de código OTP para recuperar la contraseña
 class PasswordResetRequestView(APIView):
     """
     Solicitud de recuperación de contraseña.
-    Genera un token seguro y envía un correo con el enlace de restablecimiento.
+    Genera un código OTP de 6 dígitos y lo envía al correo del usuario.
+    La respuesta es siempre la misma para no revelar qué correos están registrados.
     """
     permission_classes = [AllowAny]
 
@@ -130,35 +131,44 @@ class PasswordResetRequestView(APIView):
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data["email"]
 
-        try:
-            usuario = Usuario.objects.get(email=email)
-            token = default_token_generator.make_token(usuario)
-            uid = urlsafe_base64_encode(force_bytes(usuario.pk))
-
-            reset_url = f"http://localhost:4200/recupero-password?uid={uid}&token={token}"
-
-            send_mail(
-                subject="Recuperación de Contraseña - SGMB",
-                message=f"Hola {usuario.nombre}, para restablecer tu clave ingresa a:\n{reset_url}",
-                from_email=getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@bar.com"),
-                recipient_list=[email],
-                fail_silently=True,
-            )
-            print(f"DEBUG LINK: {reset_url}")
-        except Usuario.DoesNotExist:
-            pass
+        usuario = Usuario.objects.filter(email__iexact=email, is_active=True).first()
+        if usuario:
+            try:
+                generar_y_enviar_otp(usuario)
+            except Exception:
+                logger.exception("No se pudo enviar el código OTP a %s", email)
 
         return Response(
-            {"message": "Si la cuenta existe, recibirás un enlace de recuperación en tu correo."},
+            {"message": "Si la cuenta existe, recibirás un código de verificación en tu correo."},
             status=status.HTTP_200_OK,
         )
 
 
-# 5. Confirmación de nueva contraseña
+# 5. Verificación del código OTP
+class VerificarOTPView(APIView):
+    """
+    Verifica que el código OTP sea válido sin consumirlo.
+    Permite al frontend habilitar el paso de nueva contraseña.
+    Cada código incorrecto suma un intento fallido.
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = VerificarOTPSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        return Response(
+            {"message": "Código verificado correctamente."},
+            status=status.HTTP_200_OK,
+        )
+
+
+# 6. Confirmación de nueva contraseña
 class PasswordResetConfirmView(APIView):
     """
     Confirmación de reseteo de contraseña.
-    Valida el token recibido y persiste la nueva contraseña hasheada.
+    Vuelve a validar el OTP, persiste la nueva contraseña hasheada
+    y marca el código como usado para que no pueda reutilizarse.
     """
     permission_classes = [AllowAny]
 
@@ -166,12 +176,15 @@ class PasswordResetConfirmView(APIView):
         serializer = PasswordResetConfirmSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        usuario = serializer.validated_data["user"]
+        usuario = serializer.validated_data["usuario"]
+        otp = serializer.validated_data["otp"]
         nueva_password = serializer.validated_data["new_password"]
 
         with transaction.atomic():
             usuario.set_password(nueva_password)
             usuario.save()
+            otp.usado = True
+            otp.save(update_fields=["usado"])
 
         return Response(
             {"message": "Contraseña restablecida exitosamente."},
