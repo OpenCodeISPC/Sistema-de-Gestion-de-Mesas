@@ -37,10 +37,10 @@ export class Producto implements OnInit {
   productoForm: FormGroup = this.fb.group({
     nombre: ['', [Validators.required, Validators.maxLength(150)]],
     descripcion: [''],
-    precio: [0, [Validators.required, Validators.min(0)]],
+    precio: [null, [Validators.required, Validators.min(0)]],
     categoria: ['', [Validators.required]],
     disponibilidad: [true, [Validators.required]],
-    stock: [0, [Validators.required, Validators.min(0)]]
+    stock: [null, [Validators.required, Validators.min(0)]]
   })
 
   //signal computada: filtra auto los productos segun busqueda, categoria
@@ -71,6 +71,16 @@ export class Producto implements OnInit {
     this.cargarProductos()
   }
 
+  // Verifica si el usuario logueado tiene el rol ADMIN
+  esAdmin(): boolean {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      return user.rol === 'ADMIN';
+    }
+    return false;
+  }
+
   cargarProductos(): void {
     this.cargando.set(true)
     this.errorMensaje.set(null)
@@ -89,20 +99,30 @@ export class Producto implements OnInit {
 
   //metodo interaccion del panel de formulario
   abrirFormularioCrear(): void {
+    if (!this.esAdmin()) {
+      alert('Acceso denegado: Solo el administrador puede realizar esta acción.');
+      return;
+    }
+
     this.modoEdicion.set(false);
     this.productoEditarId.set(null);
     this.productoForm.reset({
       nombre: '',
       descripcion: '',
-      precio: 0,
+      precio: null,
       categoria: '',
       disponibilidad: true,
-      stock: 0
+      stock: null
     })
     this.mostrarFormulario.set(true)
   }
 
   abrirFormularioEditar(producto: IProducto): void {
+    if (!this.esAdmin()) {
+      alert('Acceso denegado: Solo el administrador puede realizar esta acción.');
+      return;
+    }
+
     this.modoEdicion.set(true);
     this.productoEditarId.set(producto.id_producto!);
     this.productoForm.patchValue({
@@ -163,6 +183,11 @@ export class Producto implements OnInit {
   }
   //eliminar
   eliminarProducto(id?: number): void {
+    if (!this.esAdmin()) {
+      alert('Acceso denegado: Solo el administrador puede realizar esta acción.');
+      return;
+    }
+    
     if (!id) return;
 
     if (!confirm('¡Estas seguro de que deseas eliminar este producto')) return;

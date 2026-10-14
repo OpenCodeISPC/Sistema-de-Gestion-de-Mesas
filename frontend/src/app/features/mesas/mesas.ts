@@ -23,6 +23,9 @@ export class Mesas implements OnInit {
   mesas = signal<IMesa[]>([]);
   mesaSeleccionada = signal<IMesa | null>(null);
 
+  //Nvo para controlar pestañas activas
+  pestanaActiva = signal<'MESAS' | 'RESERVAS'>('MESAS')
+
   // --------------------------------------------------------------------------
   // SIGNALS COMPUTADAS (Totales para las cards de resumen)
   // --------------------------------------------------------------------------
@@ -44,7 +47,12 @@ export class Mesas implements OnInit {
   mesasPorSector = computed(() => {
     const mapa = new Map<string, IMesa[]>();
 
-    for (const mesa of this.mesas()) {
+    //1 Filtramos las mesas segun la pestaña activa
+    const mesasAMostrar = this.pestanaActiva() === 'RESERVAS'
+      ? this.mesas().filter(m => m.estado === 'RESERVADA')
+      : this.mesas();//mostramos todo
+
+    for (const mesa of mesasAMostrar) {
       const sector = mesa.ubicacion?.trim() || 'Salón Principal';
       if (!mapa.has(sector)) {
         mapa.set(sector, []);
@@ -73,6 +81,12 @@ export class Mesas implements OnInit {
 
   ngOnInit(): void {
     this.cargarMesas();
+  }
+
+  // NUEVO: Método para cambiar de pestaña
+  cambiarPestana(pestana: 'MESAS' | 'RESERVAS'): void {
+    this.pestanaActiva.set(pestana);
+    this.deseleccionarMesa(); // Cerramos el panel lateral si cambian de vista
   }
 
   // --------------------------------------------------------------------------
@@ -201,6 +215,40 @@ export class Mesas implements OnInit {
           this.cargarMesas(); // Reversión en caso de error
         }
       });
+    }
+  }
+
+  editarCapacidad(mesa: IMesa, event: Event): void {
+    event.stopPropagation()
+
+    // 1. Pedimos la nueva capacidad al usuario
+    const input = prompt(
+      `Ingrese la nueva capacidad para la Mesa ${mesa.numero}:`,
+      mesa.capacidad.toString()
+    )
+
+    // 2 Si el usuario no cancelo el prompt
+    if (input !== null) {
+      const nuevaCapacidad = parseInt(input.trim(), 10)
+
+      if (isNaN(nuevaCapacidad) || nuevaCapacidad <= 0) {
+        alert('Por favor ingrese un número válido mayor a 0.')
+        return
+      }
+
+      // 3 Actualizamos en el backend
+      this.mesaService.actualizarMesa(mesa.id_mesa, { capacidad: nuevaCapacidad } as any).subscribe({
+        next: () => {
+          this.mesas.update(lista =>
+            lista.map(m => m.id_mesa === mesa.id_mesa ? { ...m, capacidad: nuevaCapacidad } : m)
+          )
+          console.log(`Capacidad de Mesa ${mesa.numero} actualizada a ${nuevaCapacidad}`)
+        },
+        error: (err) => {
+          console.error('Error al actualizar la capacidad:', err)
+          alert('Ocurrio un error al intentar cambiar la capacidad de la mesa')
+        }
+      })
     }
   }
 }

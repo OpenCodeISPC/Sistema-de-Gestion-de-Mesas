@@ -3735,3 +3735,9 @@ button {
     width: 100%;
   }
 }
+
+.sgmb-table-card:focus-visible {
+  outline: 3px solid #0d6efd; /* Azul resaltado */
+  outline-offset: 2px;
+  box-shadow: 0 0 10px rgba(13, 110, 253, 0.5);
+}
