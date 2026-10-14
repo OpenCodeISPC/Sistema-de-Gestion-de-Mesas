@@ -1,8 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { RecuperoPasswordService } from '../../../services/recupero-password.service';
+
+/** Pasos del flujo de recupero: correo -> código OTP -> nueva contraseña. */
+type PasoRecupero = 'email' | 'codigo' | 'password';
+
+/** Validador de grupo: la contraseña y su confirmación deben coincidir. */
+const passwordsIguales = (grupo: AbstractControl): ValidationErrors | null =>
+  grupo.get('new_password')?.value === grupo.get('confirmar_password')?.value
+    ? null
+    : { passwordsDistintas: true };
 
 @Component({
   selector: 'app-recupero-password',
@@ -11,89 +21,156 @@ import { RecuperoPasswordService } from '../../../services/recupero-password.ser
   templateUrl: './recupero-password.html',
   styleUrl: './recupero-password.css',
 })
-
-
-export class RecuperoPassword implements OnInit {
+export class RecuperoPassword {
   private readonly fb = inject(FormBuilder);
   private readonly recuperoPasswordService = inject(RecuperoPasswordService);
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router)
+  private readonly router = inject(Router);
 
-  emailForm! :FormGroup;
-  confirmForm! :FormGroup;
-  isTokenMode = false;
-  uid = '';
-  token = '';
+  paso: PasoRecupero = 'email';
+  email = '';
+  cargando = false;
   mensajeExito = '';
   mensajeError = '';
 
-  ngOnInit(): void {
-    // Capturamos los query params (uid y token) de la URL si vienen del correo
-    this.route.queryParams.subscribe(params => {
-      this.uid = params['uid'];
-      this.token = params['token'];
+  // Paso 1: correo del usuario
+  emailForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+  });
 
-      if (this.uid && this.token) {
-        this.isTokenMode = true;
-      }
-    });
+  // Paso 2: código OTP de 6 dígitos
+  codigoForm = this.fb.group({
+    codigo: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
+  });
 
-    // Formulario para solicitar el correo
-    this.emailForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]]
-    });
+  // Paso 3: nueva contraseña (mismas reglas que el registro)
+  passwordForm = this.fb.group(
+    {
+      new_password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(20)]],
+      confirmar_password: ['', [Validators.required]],
+    },
+    { validators: passwordsIguales }
+  );
 
-    // Formulario para ingresar la nueva contraseña
-    this.confirmForm = this.fb.group({
-      new_password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]],
-    });
-  }
-
-  // Paso 1: Enviar correo para solicitar el link
+  // Paso 1: solicitar el código OTP
   solicitar(): void {
-    if (this.emailForm.invalid) return;
+    if (this.emailForm.invalid) {
+      this.emailForm.markAllAsTouched();
+      return;
+    }
 
-    const email = String(this.emailForm.get('email')?.value || '').trim();
-    this.mensajeExito = '';
-    this.mensajeError = '';
-
-    this.recuperoPasswordService.solicitarRecuperoPassword(this.emailForm.value).subscribe({
-      next: (res) => {
-        this.mensajeExito = res.message
-          ? `${res.message} Se envió a ${email}.`
-          : `Se envió el correo de recuperación a ${email}.`;
-        this.emailForm.reset();
-      },
-      error: (err) => {
-        this.mensajeError = err?.error?.detail || err?.error?.message || 'Ocurrió un error al procesar la solicitud.';
-      }
-    });
+    this.email = String(this.emailForm.value.email).trim();
+    this.enviarCodigo();
   }
 
-  // Paso 2: Enviar la nueva contraseña usando el uid y el token
-  restablecer(): void {
-    if (this.confirmForm.invalid) return;
+  // Reenvía el código al mismo correo sin volver al paso 1
+  reenviarCodigo(): void {
+    this.codigoForm.reset();
+    this.enviarCodigo();
+  }
 
-    this.mensajeExito = '';
-    this.mensajeError = '';
+  // Paso 2: verificar el código OTP
+  verificar(): void {
+    if (this.codigoForm.invalid) {
+      this.codigoForm.markAllAsTouched();
+      return;
+    }
+
+    this.iniciarPeticion();
+
+    this.recuperoPasswordService
+      .verificarCodigo({ email: this.email, codigo: this.codigoIngresado })
+      .subscribe({
+        next: () => {
+          this.cargando = false;
+          this.paso = 'password';
+        },
+        error: (err) => this.manejarError(err),
+      });
+  }
+
+  // Paso 3: guardar la nueva contraseña
+  restablecer(): void {
+    if (this.passwordForm.invalid) {
+      this.passwordForm.markAllAsTouched();
+      return;
+    }
+
+    this.iniciarPeticion();
 
     const payload = {
-      uid: this.uid,
-      token: this.token,
-      new_password: this.confirmForm.value.new_password
+      email: this.email,
+      codigo: this.codigoIngresado,
+      new_password: String(this.passwordForm.value.new_password),
     };
 
     this.recuperoPasswordService.restablecerPassword(payload).subscribe({
       next: (res) => {
+        this.cargando = false;
         this.mensajeExito = res.message || 'Contraseña restablecida con éxito.';
-        setTimeout(() => this.router.navigate(['/']), 1000);
-
-        this.emailForm.reset();
-
+        this.passwordForm.disable();
+        setTimeout(() => this.router.navigate(['/']), 2000);
       },
-      error: (err) => {
-        this.mensajeError = err?.error?.detail || err?.error?.token || err?.error?.uid || 'El enlace es inválido o expiró.';
-      }
+      error: (err) => this.manejarError(err),
     });
+  }
+
+  // Permite corregir el correo ingresado
+  cambiarEmail(): void {
+    this.paso = 'email';
+    this.codigoForm.reset();
+    this.passwordForm.reset();
+    this.limpiarMensajes();
+  }
+
+  /** Deja solo los números en el campo del código (máximo 6). */
+  soloNumeros(): void {
+    const control = this.codigoForm.get('codigo');
+    const limpio = String(control?.value ?? '').replace(/\D/g, '').slice(0, 6);
+    if (control?.value !== limpio) {
+      control?.setValue(limpio);
+    }
+  }
+
+  private get codigoIngresado(): string {
+    return String(this.codigoForm.value.codigo);
+  }
+
+  private enviarCodigo(): void {
+    this.iniciarPeticion();
+
+    this.recuperoPasswordService.solicitarRecuperoPassword({ email: this.email }).subscribe({
+      next: (res) => {
+        this.cargando = false;
+        this.mensajeExito = res.message || `Enviamos un código de verificación a ${this.email}.`;
+        this.paso = 'codigo';
+      },
+      error: (err) => this.manejarError(err),
+    });
+  }
+
+  private iniciarPeticion(): void {
+    this.cargando = true;
+    this.limpiarMensajes();
+  }
+
+  private limpiarMensajes(): void {
+    this.mensajeExito = '';
+    this.mensajeError = '';
+  }
+
+  /** Django REST Framework devuelve los errores como { campo: ["mensaje"] }. */
+  private manejarError(err: HttpErrorResponse): void {
+    this.cargando = false;
+
+    const errorData = err?.error ?? {};
+    const primero = (valor: unknown) => (Array.isArray(valor) ? valor[0] : valor);
+
+    this.mensajeError =
+      primero(errorData.codigo) ||
+      primero(errorData.new_password) ||
+      primero(errorData.email) ||
+      errorData.detail ||
+      errorData.message ||
+      'Ocurrió un error al procesar la solicitud.';
   }
 }
