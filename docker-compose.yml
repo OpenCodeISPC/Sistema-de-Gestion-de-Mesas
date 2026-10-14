@@ -25,7 +25,7 @@ services:
     env_file:
       - ./backend/.env.desarrollo
     ports:
-      - "27018:27017"
+      - "27016:27017"
     volumes:
       - datos_mongo_sgmb:/data/db
     healthcheck:
