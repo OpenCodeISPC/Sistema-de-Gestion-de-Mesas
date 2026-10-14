@@ -19,6 +19,7 @@ from .serializers import (
     PasswordResetRequestSerializer,
     VerificarOTPSerializer,
 )
+from .emails import enviar_bienvenida
 from .otp import generar_y_enviar_otp
 
 Usuario = get_user_model()
@@ -65,6 +66,9 @@ class RegistroView(APIView):
                 is_superuser=es_admin,   # Si es ADMIN, será True. Si no, False.
             )
 
+        # Fuera de la transacción: si el correo falla, el usuario queda registrado igual
+        enviar_bienvenida(usuario)
+
         refresh = RefreshToken.for_user(usuario)
         return Response(
             {
@@ -109,6 +113,10 @@ class GoogleOauthView(APIView):
             if created:
                 usuario.set_unusable_password()
                 usuario.save()
+
+        # Solo la primera vez que el usuario ingresa con Google
+        if created:
+            enviar_bienvenida(usuario)
 
         refresh = RefreshToken.for_user(usuario)
         return Response(

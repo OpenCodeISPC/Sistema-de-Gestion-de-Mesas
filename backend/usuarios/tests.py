@@ -14,6 +14,7 @@ URL_SOLICITAR = "/api/auth/password-reset/"
 URL_VERIFICAR = "/api/auth/password-reset/verificar/"
 URL_CONFIRMAR = "/api/auth/password-reset-confirm/"
 URL_LOGIN = "/api/auth/login/"
+URL_REGISTRO = "/api/auth/registro/"
 
 
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
@@ -202,3 +203,50 @@ class GoogleOAuthTests(APITestCase):
 
         self.assertEqual(respuesta.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("token", respuesta.data)
+
+    @patch("usuarios.serializers.id_token.verify_oauth2_token")
+    def test_bienvenida_solo_en_el_primer_ingreso_con_google(self, verificar):
+        verificar.return_value = self.PAYLOAD_GOOGLE
+
+        self.client.post(self.URL, {"token": "token-google"}, format="json")
+        self.client.post(self.URL, {"token": "token-google"}, format="json")
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ["mozo.google@gmail.com"])
+
+
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+class CorreoBienvenidaTests(APITestCase):
+    """Pruebas del correo de bienvenida al registrarse."""
+
+    DATOS_REGISTRO = {
+        "email": "cajero.nuevo@gmail.com",
+        "nombre": "Cajero",
+        "apellido": "Nuevo",
+        "rol": "CAJERO",
+        "password": "claveSegura123",
+    }
+
+    def test_registro_envia_correo_de_bienvenida(self):
+        respuesta = self.client.post(URL_REGISTRO, self.DATOS_REGISTRO, format="json")
+
+        self.assertEqual(respuesta.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ["cajero.nuevo@gmail.com"])
+        self.assertIn("Bienvenido", mail.outbox[0].subject)
+        self.assertIn("Cajero", mail.outbox[0].body)
+
+    @patch("usuarios.emails.send_mail", side_effect=Exception("Brevo no disponible"))
+    def test_si_falla_el_correo_el_registro_se_completa_igual(self, _send_mail):
+        respuesta = self.client.post(URL_REGISTRO, self.DATOS_REGISTRO, format="json")
+
+        self.assertEqual(respuesta.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(Usuario.objects.filter(email="cajero.nuevo@gmail.com").exists())
+
+    def test_registro_invalido_no_envia_correo(self):
+        datos = {**self.DATOS_REGISTRO, "password": "123"}
+
+        respuesta = self.client.post(URL_REGISTRO, datos, format="json")
+
+        self.assertEqual(respuesta.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(len(mail.outbox), 0)
