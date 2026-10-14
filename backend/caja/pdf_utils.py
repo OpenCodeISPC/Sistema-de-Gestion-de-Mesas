@@ -1,6 +1,6 @@
 ﻿# caja/pdf_utils.py
 from decimal import Decimal
-from datetime import datetime
+from datetime import datetime, date
 from io import BytesIO
 from typing import Any, Dict, List
 
@@ -18,6 +18,43 @@ from reportlab.platypus import (
     Image,
 )
 
+# Paleta institucional (misma que styles.css del frontend)
+BROWN = colors.HexColor("#8b6f47")
+BROWN_DARK = colors.HexColor("#765a38")
+BROWN_LIGHT = colors.HexColor("#a98e72")
+CREAM = colors.HexColor("#f7f1eb")
+CREAM_DARK = colors.HexColor("#f1e3d0")
+BORDER = colors.HexColor("#b79570")
+BORDER_LIGHT = colors.HexColor("#dfd2c4")
+TEXT = colors.HexColor("#161616")
+
+
+def _a_fecha_hora(valor):
+    if isinstance(valor, datetime):
+        return valor
+    if isinstance(valor, date):
+        return datetime(valor.year, valor.month, valor.day)
+    texto = str(valor or "").replace("Z", "+00:00")
+    try:
+        return datetime.fromisoformat(texto)
+    except ValueError:
+        return None
+
+
+def _format_fecha(valor) -> str:
+    fecha = _a_fecha_hora(valor)
+    return fecha.strftime("%d/%m/%Y") if fecha else str(valor or "")
+
+
+def _format_hora(valor) -> str:
+    fecha = _a_fecha_hora(valor)
+    return fecha.strftime("%H:%M") if fecha else ""
+
+
+def _format_fecha_hora(valor) -> str:
+    fecha = _a_fecha_hora(valor)
+    return fecha.strftime("%d/%m/%Y %H:%M") if fecha else str(valor or "")
+
 
 def _to_float(valor):
     if isinstance(valor, Decimal):
@@ -29,7 +66,8 @@ def _to_float(valor):
 
 
 def _format_currency(valor) -> str:
-    return f"".replace(",", "X").replace(".", ",").replace("X", ".")
+    monto = _to_float(valor)
+    return "$ " + f"{monto:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
 
 def generar_pdf_cierre(
@@ -45,8 +83,8 @@ def generar_pdf_cierre(
         leftMargin=1.5 * cm,
         topMargin=1.5 * cm,
         bottomMargin=1.5 * cm,
-        title=f"Resumen de cierre de caja - {cierre.get('fecha_cierre')}",
-        author="Sistema de Gestión de Mesas y Bares",
+        title=f"Resumen de cierre de caja - {_format_fecha(cierre.get('fecha_cierre'))}",
+        author="Sistema de Gestión de Mesas para Bares",
     )
 
     styles = getSampleStyleSheet()
@@ -55,7 +93,7 @@ def generar_pdf_cierre(
             name="Titulo",
             parent=styles["Heading1"],
             fontSize=20,
-            textColor=colors.HexColor("#1a1a1a"),
+            textColor=BROWN_DARK,
             spaceAfter=12,
         )
     )
@@ -64,7 +102,7 @@ def generar_pdf_cierre(
             name="Subtitulo",
             parent=styles["Heading2"],
             fontSize=14,
-            textColor=colors.HexColor("#2f6fed"),
+            textColor=BROWN,
             spaceAfter=10,
         )
     )
@@ -73,20 +111,21 @@ def generar_pdf_cierre(
             name="Dato",
             parent=styles["BodyText"],
             fontSize=10,
+            textColor=TEXT,
             spaceAfter=4,
         )
     )
 
     elementos: List[Any] = []
 
-    elementos.append(Paragraph("Sistema de Gestión de Mesas y Bares", styles["Titulo"]))
+    elementos.append(Paragraph("Sistema de Gestión de Mesas para Bares", styles["Titulo"]))
     elementos.append(
         Paragraph("RESUMEN DE CIERRE DE CAJA", styles["Subtitulo"])
     )
     elementos.append(Spacer(1, 0.3 * cm))
 
-    fecha_cierre = cierre.get("fecha_cierre") or cierre.get("fecha_hora") or ""
-    fecha_hora_registro = cierre.get("fecha_hora") or ""
+    fecha_cierre = _format_fecha(cierre.get("fecha_cierre") or cierre.get("fecha_hora"))
+    fecha_hora_registro = _format_fecha_hora(cierre.get("fecha_hora"))
 
     datos_cierre = [
         ["Fecha de cierre:", fecha_cierre],
@@ -98,11 +137,11 @@ def generar_pdf_cierre(
     tabla_datos.setStyle(
         TableStyle(
             [
-                ("BACKGROUND", (0, 0), (0, -1), colors.HexColor("#f7f9fc")),
-                ("TEXTCOLOR", (0, 0), (-1, -1), colors.black),
+                ("BACKGROUND", (0, 0), (0, -1), CREAM),
+                ("TEXTCOLOR", (0, 0), (-1, -1), TEXT),
                 ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
                 ("FONTSIZE", (0, 0), (-1, -1), 9),
-                ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#d8dbe2")),
+                ("GRID", (0, 0), (-1, -1), 0.5, BORDER_LIGHT),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
                 ("TOPPADDING", (0, 0), (-1, -1), 6),
             ]
@@ -125,14 +164,16 @@ def generar_pdf_cierre(
     tabla_totales.setStyle(
         TableStyle(
             [
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#2f6fed")),
+                ("BACKGROUND", (0, 0), (-1, 0), BROWN),
                 ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
                 ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
                 ("FONTSIZE", (0, 0), (-1, -1), 9),
-                ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#d8dbe2")),
+                ("GRID", (0, 0), (-1, -1), 0.5, BORDER_LIGHT),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
                 ("TOPPADDING", (0, 0), (-1, -1), 6),
-                ("BACKGROUND", (0, -1), (-1, -1), colors.HexColor("#f0f4ff")),
+                ("BACKGROUND", (0, -1), (-1, -1), CREAM_DARK),
+                ("TEXTCOLOR", (0, -1), (-1, -1), BROWN_DARK),
+                ("FONTNAME", (0, -1), (-1, -1), "Helvetica-Bold"),
             ]
         )
     )
@@ -149,11 +190,11 @@ def generar_pdf_cierre(
     tabla_arqueo.setStyle(
         TableStyle(
             [
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1f2937")),
+                ("BACKGROUND", (0, 0), (-1, 0), BROWN_DARK),
                 ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
                 ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
                 ("FONTSIZE", (0, 0), (-1, -1), 9),
-                ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#d8dbe2")),
+                ("GRID", (0, 0), (-1, -1), 0.5, BORDER_LIGHT),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
                 ("TOPPADDING", (0, 0), (-1, -1), 6),
             ]
@@ -183,31 +224,30 @@ def generar_pdf_cierre(
         ]
         filas: List[List[str]] = [cabecera]
         for pago in pagos_dia:
-            pedido_info = pago.get("pedido") or {}
-            mesa_info = pedido_info.get("mesa") or {}
             filas.append(
                 [
                     str(pago.get("id_pago") or ""),
-                    str(mesa_info.get("numero") or mesa_info.get("id_mesa") or ""),
-                    str(pedido_info.get("id_pedido") or ""),
+                    str(pago.get("numero_mesa") or ""),
+                    str(pago.get("pedido") or ""),
                     str(pago.get("metodo_pago") or ""),
-                    _format_currency(pedido_info.get("total") or 0),
+                    _format_currency(pago.get("total_pedido") or 0),
                     _format_currency(pago.get("propina") or 0),
                     _format_currency(pago.get("importe_recibido") or 0),
                     _format_currency(pago.get("monto") or 0),
                     str(pago.get("nombre_cajero") or "Sin asignar"),
-                    str(pago.get("fecha_hora") or ""),
+                    _format_fecha_hora(pago.get("fecha_hora")),
                 ]
             )
         tabla_pagos = Table(filas, repeatRows=1, colWidths=[1.3 * cm, 1.3 * cm, 1.5 * cm, 2.1 * cm, 2.0 * cm, 1.8 * cm, 2.3 * cm, 2.0 * cm, 2.8 * cm, 3.5 * cm])
         tabla_pagos.setStyle(
             TableStyle(
                 [
-                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#111827")),
+                    ("BACKGROUND", (0, 0), (-1, 0), BROWN_DARK),
                     ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
                     ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
                     ("FONTSIZE", (0, 0), (-1, -1), 7),
-                    ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#c9ced6")),
+                    ("GRID", (0, 0), (-1, -1), 0.4, BORDER_LIGHT),
+                    ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, CREAM]),
                     ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
                     ("TOPPADDING", (0, 0), (-1, -1), 4),
                 ]
@@ -218,7 +258,7 @@ def generar_pdf_cierre(
     elementos.append(Spacer(1, 1.2 * cm))
     elementos.append(
         Paragraph(
-            f"Generado el {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}",
+            f"Generado el {datetime.now().strftime('%d/%m/%Y %H:%M')}",
             styles["Dato"],
         )
     )
