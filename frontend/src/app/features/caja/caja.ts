@@ -21,7 +21,7 @@ export class Caja implements OnInit {
   private pedidoService = inject(PedidoService);
   private mesaService = inject(MesaService);
 
-  // Signals inicializadas vacÃ­as para recibir datos del backend
+  // Signals inicializadas vacías para recibir datos del backend
   pagos = signal<IPago[]>([]);
   pedidos = signal<IPedido[]>([]);
   mesas = signal<IMesa[]>([]);
@@ -37,7 +37,7 @@ export class Caja implements OnInit {
   cobrando = signal<boolean>(false);
   cobroExitoso = signal<boolean>(false);
 
-  // Tab activo del mÃ³dulo caja
+  // Tab activo del módulo caja
   tabActivo = signal<'cobros' | 'cierre'>('cobros');
 
   // ---- Estado para el Cierre de caja ----
@@ -56,10 +56,10 @@ export class Caja implements OnInit {
     return (Number.isNaN(rendido) ? 0 : rendido) - efectivoEsperado;
   });
 
-  // La caja del dÃ­a ya fue cerrada: no se pueden registrar mÃ¡s cobros
+  // La caja del día ya fue cerrada: no se pueden registrar más cobros
   cajaCerrada = computed(() => this.resumenCaja()?.cerrado === true);
 
-  // Pedidos que aÃºn no fueron cobrados (estado LISTO o ENTREGADO)
+  // Pedidos que aún no fueron cobrados (estado LISTO o ENTREGADO)
   mesasPorCobrar = computed(() => {
     return this.pedidos().filter(p => p.estado === 'LISTO' || p.estado === 'ENTREGADO');
   });
@@ -124,7 +124,7 @@ export class Caja implements OnInit {
 
     const totalRendido = Number(this.totalRendido());
     if (Number.isNaN(totalRendido) || totalRendido < 0) {
-      this.errorCierre.set('IngresÃ¡ un monto rendido vÃ¡lido.');
+      this.errorCierre.set('Ingresá un monto rendido válido.');
       return;
     }
 
@@ -182,10 +182,27 @@ export class Caja implements OnInit {
 
   formatearFechaHora(iso: string): string {
     if (!iso) return '';
-    return new Date(iso).toLocaleString('es-AR', {
-      dateStyle: 'short',
-      timeStyle: 'short',
-    });
+    const fecha = new Date(iso);
+    if (isNaN(fecha.getTime())) return iso;
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const anio = fecha.getFullYear();
+    const hora = String(fecha.getHours()).padStart(2, '0');
+    const minuto = String(fecha.getMinutes()).padStart(2, '0');
+    return `${dia}/${mes}/${anio} ${hora}:${minuto}`;
+  }
+
+  formatearFecha(iso: string): string {
+    if (!iso) return '';
+    const soloFecha = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+    if (soloFecha) {
+      return `${soloFecha[3]}/${soloFecha[2]}/${soloFecha[1]}`;
+    }
+    const fecha = new Date(iso);
+    if (isNaN(fecha.getTime())) return iso;
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    return `${dia}/${mes}/${fecha.getFullYear()}`;
   }
 
   cargarDatos(): void {
@@ -235,7 +252,7 @@ export class Caja implements OnInit {
     });
   }
 
-  // Devuelve el nÃºmero real de la mesa a partir del ID que envÃ­a el pedido
+  // Devuelve el número real de la mesa a partir del ID que envía el pedido
   numeroDeMesa(idMesa: number): number {
     const mesa = this.mesas().find(m => m.id_mesa === idMesa);
     return mesa ? mesa.numero : idMesa;
@@ -253,12 +270,13 @@ export class Caja implements OnInit {
     this.metodoPagoActivo.set(metodo);
   }
 
-  // Formatea un nÃºmero al estilo argentino (ej: $118.800)
-  formatearMoneda(valor: number): string {
-    return `$${valor.toLocaleString('es-AR')}`;
+  // Formatea un número al estilo argentino (ej: $118.800)
+  formatearMoneda(valor: number | string): string {
+    const numero = Number(valor);
+    return `$${(Number.isNaN(numero) ? 0 : numero).toLocaleString('es-AR')}`;
   }
 
-  // Convierte a nÃºmero los decimales que envÃ­a Django como string
+  // Convierte a número los decimales que envía Django como string
   aNumero(valor: string | number): number {
     return Number(valor);
   }
@@ -282,7 +300,7 @@ export class Caja implements OnInit {
     if (!pedido || this.cobrando()) return;
 
     if (this.cajaCerrada()) {
-      this.errorCobros.set('La caja de hoy ya estÃ¡ cerrada. No se pueden registrar mÃ¡s cobros.');
+      this.errorCobros.set('La caja de hoy ya está cerrada. No se pueden registrar más cobros.');
       return;
     }
 
@@ -301,7 +319,7 @@ export class Caja implements OnInit {
 
     this.cajaService.crearPago(dto).subscribe({
       next: (nuevoPago) => {
-        // AÃ±ade el cobro al historial y quita el pedido de la lista de pendientes
+        // Añade el cobro al historial y quita el pedido de la lista de pendientes
         this.pagos.update(lista => [nuevoPago, ...lista]);
         this.pedidos.update(lista => lista.filter(p => p.id_pedido !== pedido.id_pedido));
         this.cobrando.set(false);
@@ -332,7 +350,7 @@ export class Caja implements OnInit {
     if (Array.isArray(primerCampo)) return String(primerCampo[0] ?? fallback);
     return fallback;
   }
-}
+
   exportarPDF(idCierre: number): void {
     if (!idCierre) return;
     this.cajaService.exportarCierrePdf(idCierre).subscribe({
@@ -346,12 +364,13 @@ export class Caja implements OnInit {
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error al exportar PDF', err);
         this.errorCierre.set('No se pudo generar el PDF del cierre.');
       }
     });
   }
+}
 
 
 
