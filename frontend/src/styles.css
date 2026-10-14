@@ -1385,13 +1385,25 @@ button {
 .sgmb-payment-row {
   min-height: 59px;
   display: grid;
-  grid-template-columns: 1.1fr 1.1fr 1.2fr .9fr 1fr .8fr;
+  grid-template-columns:
+    minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.1fr)
+    minmax(0, 0.85fr) minmax(0, 0.95fr) minmax(0, 1.3fr);
   align-items: center;
   gap: 10px;
   padding: 5px 10px;
   border-bottom: 1px solid #e2d8ce;
   color: #888;
   font-size: 14px;
+  text-align: center;
+}
+
+.sgmb-payment-row > * {
+  min-width: 0;
+}
+
+.sgmb-payment-row .sgmb-action-button {
+  justify-self: center;
+  white-space: nowrap;
 }
 
 .sgmb-payment-row--header {
@@ -1484,7 +1496,6 @@ button {
 }
 
 .sgmb-payment-detail p em {
-  color: #72c878;
   font-style: normal;
 }
 
