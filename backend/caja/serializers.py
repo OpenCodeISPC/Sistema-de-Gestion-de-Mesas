@@ -6,6 +6,9 @@ class PagoReadSerializer(serializers.ModelSerializer):
     """Serializer para LECTURA (GET) - Devuelve datos listos para Angular."""
     numero_mesa = serializers.IntegerField(source='pedido.mesa.numero', read_only=True)
     estado_pedido = serializers.CharField(source='pedido.estado', read_only=True)
+    total_pedido = serializers.DecimalField(
+        source='pedido.total', max_digits=10, decimal_places=2, read_only=True
+    )
     nombre_cajero = serializers.SerializerMethodField()
 
     class Meta:
@@ -15,6 +18,7 @@ class PagoReadSerializer(serializers.ModelSerializer):
             'pedido',
             'numero_mesa',
             'estado_pedido',
+            'total_pedido',
             'metodo_pago',
             'monto',
             'propina',
