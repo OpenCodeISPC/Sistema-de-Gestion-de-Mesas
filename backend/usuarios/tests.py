@@ -161,3 +161,44 @@ class RecuperoPasswordOTPTests(APITestCase):
         self.assertEqual(respuesta.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("codigo", respuesta.data)
 
+
+@override_settings(GOOGLE_CLIENT_ID="cliente-de-prueba.apps.googleusercontent.com")
+class GoogleOAuthTests(APITestCase):
+    """Pruebas del inicio de sesión con Google OAuth 2.0 (Google se simula con mock)."""
+
+    URL = "/api/auth/login-oauth/"
+    PAYLOAD_GOOGLE = {
+        "email": "mozo.google@gmail.com",
+        "given_name": "Mozo",
+        "family_name": "Google",
+    }
+
+    @patch("usuarios.serializers.id_token.verify_oauth2_token")
+    def test_login_google_crea_usuario_y_tolera_desfase_de_reloj(self, verificar):
+        verificar.return_value = self.PAYLOAD_GOOGLE
+
+        respuesta = self.client.post(self.URL, {"token": "token-google"}, format="json")
+
+        self.assertEqual(respuesta.status_code, status.HTTP_200_OK)
+        self.assertIn("access", respuesta.data)
+        self.assertTrue(Usuario.objects.filter(email="mozo.google@gmail.com").exists())
+        self.assertGreater(verificar.call_args.kwargs["clock_skew_in_seconds"], 0)
+
+    @patch("usuarios.serializers.id_token.verify_oauth2_token")
+    def test_token_viejo_en_el_header_no_bloquea_el_login(self, verificar):
+        verificar.return_value = self.PAYLOAD_GOOGLE
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer token-vencido-o-invalido")
+
+        respuesta = self.client.post(self.URL, {"token": "token-google"}, format="json")
+
+        self.assertEqual(respuesta.status_code, status.HTTP_200_OK)
+
+    @patch(
+        "usuarios.serializers.id_token.verify_oauth2_token",
+        side_effect=ValueError("Token used too early"),
+    )
+    def test_token_google_invalido_devuelve_400_con_mensaje(self, _verificar):
+        respuesta = self.client.post(self.URL, {"token": "token-google"}, format="json")
+
+        self.assertEqual(respuesta.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("token", respuesta.data)

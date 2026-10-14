@@ -42,6 +42,7 @@ class RegistroView(APIView):
     Crea el registro de forma atómica y emite tokens JWT para auto-login inmediato.
     """
     permission_classes = [AllowAny]
+    authentication_classes = []
 
     def post(self, request):
         serializer = RegistroSerializer(data=request.data)
@@ -83,6 +84,9 @@ class GoogleOauthView(APIView):
     Verifica el ID Token y genera credenciales JWT propias de la aplicación.
     """
     permission_classes = [AllowAny]
+    # Endpoint público: no se lee el header Authorization, así un token viejo
+    # guardado en el navegador no provoca un 401 antes de iniciar sesión.
+    authentication_classes = []
 
     def post(self, request):
         serializer = GoogleOAuthSerializer(data=request.data)
@@ -125,6 +129,7 @@ class PasswordResetRequestView(APIView):
     La respuesta es siempre la misma para no revelar qué correos están registrados.
     """
     permission_classes = [AllowAny]
+    authentication_classes = []
 
     def post(self, request):
         serializer = PasswordResetRequestSerializer(data=request.data)
@@ -152,6 +157,7 @@ class VerificarOTPView(APIView):
     Cada código incorrecto suma un intento fallido.
     """
     permission_classes = [AllowAny]
+    authentication_classes = []
 
     def post(self, request):
         serializer = VerificarOTPSerializer(data=request.data)
@@ -171,6 +177,7 @@ class PasswordResetConfirmView(APIView):
     y marca el código como usado para que no pueda reutilizarse.
     """
     permission_classes = [AllowAny]
+    authentication_classes = []
 
     def post(self, request):
         serializer = PasswordResetConfirmSerializer(data=request.data)

@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
@@ -9,6 +11,12 @@ from google.auth.transport import requests as google_requests
 from .otp import validar_otp
 
 Usuario = get_user_model()
+logger = logging.getLogger(__name__)
+
+# Tolerancia (en segundos) ante pequeñas diferencias de reloj entre Google y el servidor.
+# Sin esta tolerancia, si el reloj local está apenas atrasado, Google emite tokens
+# "del futuro" y la verificación falla con "Token used too early".
+GOOGLE_CLOCK_SKEW_SEGUNDOS = 10
 
 
 # 1. Serializer de lectura de usuario
@@ -83,12 +91,15 @@ class GoogleOAuthSerializer(serializers.Serializer):
             google_info = id_token.verify_oauth2_token(
                 value,
                 google_requests.Request(),
-                client_id
+                client_id,
+                clock_skew_in_seconds=GOOGLE_CLOCK_SKEW_SEGUNDOS,
             )
             return google_info
+        except serializers.ValidationError:
+            raise
         except Exception as e:
-            print(str(e))
-            raise serializers.ValidationError(f"El token de Google es inválido o ha expirado.{str(e)}")
+            logger.warning("Token de Google rechazado: %s", e)
+            raise serializers.ValidationError("El token de Google es inválido o ha expirado.")
         
 
 # 5. Serializers para Recupero de Contraseña
