@@ -266,3 +266,160 @@ def generar_pdf_cierre(
     doc.build(elementos)
     buffer.seek(0)
     return buffer
+
+
+def generar_factura_pedido(
+    numero_mesa,
+    mozo: str,
+    fecha_hora,
+    detalles: List[Dict[str, Any]],
+    subtotal,
+    propina,
+    total,
+) -> BytesIO:
+    """Genera el PDF de la factura/detalle de consumo de una mesa.
+
+    `detalles` es una lista de dicts con las claves:
+    cantidad, nombre, precio_unitario y subtotal.
+    """
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=1.5 * cm,
+        leftMargin=1.5 * cm,
+        topMargin=1.5 * cm,
+        bottomMargin=1.5 * cm,
+        title=f"Factura - Mesa {numero_mesa}",
+        author="Sistema de Gestión de Mesas para Bares",
+    )
+
+    styles = getSampleStyleSheet()
+    styles.add(
+        ParagraphStyle(
+            name="TituloFactura",
+            parent=styles["Heading1"],
+            fontSize=20,
+            textColor=BROWN_DARK,
+            spaceAfter=6,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
+            name="SubtituloFactura",
+            parent=styles["Heading2"],
+            fontSize=16,
+            textColor=BROWN,
+            spaceAfter=12,
+            alignment=1,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
+            name="DatoFactura",
+            parent=styles["BodyText"],
+            fontSize=10,
+            textColor=TEXT,
+            spaceAfter=4,
+        )
+    )
+
+    elementos: List[Any] = []
+
+    elementos.append(Paragraph("Sistema de Gestión de Mesas para Bares", styles["TituloFactura"]))
+    elementos.append(Paragraph("FACTURA", styles["SubtituloFactura"]))
+    elementos.append(Spacer(1, 0.3 * cm))
+
+    datos = [
+        ["Mesa N°:", str(numero_mesa or "-")],
+        ["Mozo:", mozo or "Sin asignar"],
+        ["Fecha:", _format_fecha_hora(fecha_hora)],
+    ]
+    tabla_datos = Table(datos, colWidths=[4 * cm, 11.5 * cm])
+    tabla_datos.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (0, -1), CREAM),
+                ("TEXTCOLOR", (0, 0), (-1, -1), TEXT),
+                ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, -1), 9),
+                ("GRID", (0, 0), (-1, -1), 0.5, BORDER_LIGHT),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                ("TOPPADDING", (0, 0), (-1, -1), 6),
+            ]
+        )
+    )
+    elementos.append(tabla_datos)
+    elementos.append(Spacer(1, 0.6 * cm))
+
+    cabecera = ["Cant.", "Producto", "P. unitario", "Subtotal"]
+    filas: List[List[str]] = [cabecera]
+    if detalles:
+        for detalle in detalles:
+            filas.append(
+                [
+                    str(detalle.get("cantidad") or ""),
+                    str(detalle.get("nombre") or ""),
+                    _format_currency(detalle.get("precio_unitario") or 0),
+                    _format_currency(detalle.get("subtotal") or 0),
+                ]
+            )
+    else:
+        filas.append(["", "Sin productos cargados", "", ""])
+
+    tabla_detalle = Table(filas, repeatRows=1, colWidths=[1.5 * cm, 8.5 * cm, 2.75 * cm, 2.75 * cm])
+    tabla_detalle.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), BROWN_DARK),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, -1), 9),
+                ("GRID", (0, 0), (-1, -1), 0.4, BORDER_LIGHT),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, CREAM]),
+                ("ALIGN", (0, 0), (0, -1), "CENTER"),
+                ("ALIGN", (2, 0), (-1, -1), "RIGHT"),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+                ("TOPPADDING", (0, 0), (-1, -1), 5),
+            ]
+        )
+    )
+    elementos.append(tabla_detalle)
+    elementos.append(Spacer(1, 0.5 * cm))
+
+    totales_rows = [["Subtotal", _format_currency(subtotal)]]
+    if _to_float(propina) > 0:
+        totales_rows.append(["Propina (10%)", _format_currency(propina)])
+    totales_rows.append(["TOTAL A COBRAR", _format_currency(total)])
+
+    tabla_totales = Table(totales_rows, colWidths=[6 * cm, 9.5 * cm], hAlign="RIGHT")
+    tabla_totales.setStyle(
+        TableStyle(
+            [
+                ("FONTSIZE", (0, 0), (-1, -1), 11),
+                ("ALIGN", (0, 0), (-1, -1), "RIGHT"),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
+                ("TOPPADDING", (0, 0), (-1, -1), 7),
+                ("LINEBELOW", (0, 0), (-1, -2), 0.5, BORDER_LIGHT),
+                ("BACKGROUND", (0, -1), (-1, -1), CREAM_DARK),
+                ("TEXTCOLOR", (0, -1), (-1, -1), BROWN_DARK),
+                ("FONTNAME", (0, -1), (-1, -1), "Helvetica-Bold"),
+            ]
+        )
+    )
+    elementos.append(tabla_totales)
+
+    elementos.append(Spacer(1, 1.2 * cm))
+    elementos.append(
+        Paragraph("Gracias por su visita.", styles["DatoFactura"])
+    )
+    elementos.append(
+        Paragraph(
+            f"Emitido el {datetime.now().strftime('%d/%m/%Y %H:%M')} - Comprobante no fiscal.",
+            styles["DatoFactura"],
+        )
+    )
+
+    doc.build(elementos)
+    buffer.seek(0)
+    return buffer
