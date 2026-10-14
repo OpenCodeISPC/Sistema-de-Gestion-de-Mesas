@@ -115,7 +115,10 @@
 
               <!-- En mesas.html -->
               <div class="sgmb-table-actions" (click)="$event.stopPropagation()">
-                <button type="button" [attr.aria-label]="'Editar mesa ' + mesa.numero">
+                <button type="button"
+                        [attr.aria-label]="'Editar mesa ' + mesa.numero"
+                        (click)="editarCapacidad(mesa, $event)"
+                        title="Cambiar capacidad">
                   <i class="bi bi-pencil-square" aria-hidden="true"></i>
                 </button>
 
