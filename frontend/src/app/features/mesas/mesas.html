@@ -8,17 +8,12 @@
 
     <!-- TABS MODIFICADOS -->
     <div class="sgmb-tabs">
-      <button type="button"
-        class="sgmb-tab" 
-        [class.sgmb-tab--active]="pestanaActiva() === 'MESAS'"
+      <button type="button" class="sgmb-tab" [class.sgmb-tab--active]="pestanaActiva() === 'MESAS'"
         (click)="cambiarPestana('MESAS')">
         Mesas
       </button>
 
-      <button
-        type="button"
-        class="sgmb-tab" 
-        [class.sgmb-tab--active]="pestanaActiva() === 'RESERVAS'"
+      <button type="button" class="sgmb-tab" [class.sgmb-tab--active]="pestanaActiva() === 'RESERVAS'"
         (click)="cambiarPestana('RESERVAS')">
         Reservas
       </button>
@@ -98,7 +93,8 @@
             @for (mesa of grupo.mesas; track mesa.id_mesa) {
             <article class="sgmb-table-card" [ngClass]="getCardClass(mesa.estado)"
               [class.border-primary]="mesaSeleccionada()?.id_mesa === mesa.id_mesa" (click)="seleccionarMesa(mesa)"
-              style="cursor: pointer;">
+              (keyup.enter)="seleccionarMesa(mesa)" tabindex="0" role="button"
+              [attr.aria-label]="'Seleccionar mesa ' + mesa.numero" style="cursor: pointer;">
 
               <div class="sgmb-table-status">
                 <i class="bi" [ngClass]="getIconClass(mesa.estado)" aria-hidden="true"></i>
