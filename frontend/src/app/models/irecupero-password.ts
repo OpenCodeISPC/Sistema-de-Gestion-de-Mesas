@@ -1,4 +1,4 @@
-// PASO 1: SOLICITAR RECUPERACIÓN DE CONTRASEÑA
+// PASO 1: SOLICITAR CÓDIGO OTP POR CORREO
 
 export interface IRecuperoPassword {
    email: string;
@@ -9,10 +9,14 @@ export interface IRecuperoPasswordResponse {
     detail?:string;
 }
 
-// PASO 2: CONFIRMAR RECUPERACIÓN DE CONTRASEÑA
-export interface IRecuperoPasswordConfirm {
-    uid: string;
-    token: string;
+// PASO 2: VERIFICAR CÓDIGO OTP
+export interface IVerificarOtp {
+    email: string;
+    codigo: string;
+}
+
+// PASO 3: CONFIRMAR NUEVA CONTRASEÑA
+export interface IRecuperoPasswordConfirm extends IVerificarOtp {
     new_password: string;
 }
 
