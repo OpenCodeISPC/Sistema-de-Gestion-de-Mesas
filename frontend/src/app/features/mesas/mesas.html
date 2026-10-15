@@ -91,15 +91,20 @@
           <div class="sgmb-table-grid">
 
             @for (mesa of grupo.mesas; track mesa.id_mesa) {
-            <article class="sgmb-table-card" [ngClass]="getCardClass(mesa.estado)"
-              [class.border-primary]="mesaSeleccionada()?.id_mesa === mesa.id_mesa" (click)="seleccionarMesa(mesa)"
-              (keyup.enter)="seleccionarMesa(mesa)" tabindex="0" role="button"
-              [attr.aria-label]="'Seleccionar mesa ' + mesa.numero" style="cursor: pointer;">
+            <article class="sgmb-table-card"
+              [ngClass]="getCardClass(mesa.estado)"
+              [class.sgmb-table-card--blinking]="mesa.estado === 'LISTO'"
+              [class.border-primary]="mesaSeleccionada()?.id_mesa === mesa.id_mesa"
+              (click)="seleccionarMesa(mesa)"
+              (keyup.enter)="seleccionarMesa(mesa)"
+              tabindex="0" role="button"
+              [attr.aria-label]="'Seleccionar mesa ' + mesa.numero" 
+              style="cursor: pointer;">
 
               <div class="sgmb-table-status">
                 <i class="bi" [ngClass]="getIconClass(mesa.estado)" aria-hidden="true"></i>
               </div>
-
+              
               <div class="sgmb-table-info">
                 <strong>Mesa {{ mesa.numero < 10 ? '0' + mesa.numero : mesa.numero }}</strong>
                     <small>Capacidad: {{ mesa.capacidad }}</small>

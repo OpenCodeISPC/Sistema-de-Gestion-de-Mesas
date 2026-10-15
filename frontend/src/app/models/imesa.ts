@@ -1,4 +1,4 @@
-export type EstadoMesa = 'LIBRE' | 'OCUPADA' | 'RESERVADA' | 'CERRADA';
+export type EstadoMesa = 'LIBRE' | 'OCUPADA' | 'RESERVADA' | 'CERRADA' | 'LISTO';
 
 export interface IMesa {
   id_mesa: number;
