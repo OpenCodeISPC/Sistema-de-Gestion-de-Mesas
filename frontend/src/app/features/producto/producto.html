@@ -170,8 +170,9 @@
         <p>{{ modoEdicion() ? 'Modifica los datos del producto' : 'Completá los datos del nuevo producto'}}</p>
       </div>
 
-      <button type="button" class="sgmb-product-form-close" title="Cerrar" (click)="cerrarFormulario()">
-        <i class="bi bi-x-lg" aria-hidden="true"></i>
+      <button type="button" class="sgmb-product-form-close d-flex align-items-center justify-content-center"
+        title="Cerrar" (click)="cerrarFormulario()">
+        <i class="bi bi-x fs-4" aria-hidden="true"></i>
       </button>
 
     </div>
@@ -210,15 +211,9 @@
           Precio Unitario
         </label>
 
-        <input
-         id="precio"
-         type="number" 
-         min="0.01" 
-         step="0.01" 
-         required formControlName="precio" 
-         placeholder="Ingrese precio"
-         class="form-control"
-         [class.is-invalid]="productoForm.get('precio')?.invalid && productoForm.get('precio')?.touched">
+        <input id="precio" type="number" min="0.01" step="0.01" required formControlName="precio"
+          placeholder="Ingrese precio" class="form-control"
+          [class.is-invalid]="productoForm.get('precio')?.invalid && productoForm.get('precio')?.touched">
 
         @if (productoForm.get('precio')?.invalid && productoForm.get('precio')?.touched) {
         <div class="invalid-feedback d-block text-danger small mt-1">
@@ -282,14 +277,9 @@
           Cantidad (Stock)
         </label>
 
-        <input 
-        id="cantidad" 
-        type="number" 
-        min="0.01" 
-        required formControlName="stock" 
-        placeholder="Ingrese cantidad"
-        class="form-control"
-        [class.is-invalid]="productoForm.get('stock')?.invalid && productoForm.get('stock')?.touched">
+        <input id="cantidad" type="number" min="0.01" required formControlName="stock" placeholder="Ingrese cantidad"
+          class="form-control"
+          [class.is-invalid]="productoForm.get('stock')?.invalid && productoForm.get('stock')?.touched">
 
         @if (productoForm.get('stock')?.invalid && productoForm.get('stock')?.touched) {
         <div class="invalid-feedback d-block text-danger small mt-1">
@@ -302,7 +292,7 @@
 
       <div class="sgmb-product-form-actions">
 
-        <button type="button" class="sgmb-product-button sgmb-product-button--cancel btn btn-outline-secondary"
+        <button type="button" class="sgmb-product-button sgmb-product-button--cancel btn btn-outline-marr"
           (click)="cerrarFormulario()">
           Cancelar
         </button>
