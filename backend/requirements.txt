@@ -40,3 +40,4 @@ requests
 uvicorn[standard]
 reportlab==4.4.4
 coverage>=7.0.0
+django-anymail
