@@ -238,7 +238,26 @@ def generar_pdf_cierre(
                     _format_fecha_hora(pago.get("fecha_hora")),
                 ]
             )
-        tabla_pagos = Table(filas, repeatRows=1, colWidths=[1.3 * cm, 1.3 * cm, 1.5 * cm, 2.1 * cm, 2.0 * cm, 1.8 * cm, 2.3 * cm, 2.0 * cm, 2.8 * cm, 3.5 * cm])
+        tabla_pagos = Table(
+            filas,
+            repeatRows=1,
+            # Anchos pensados para que el contenido de 7pt entre sin solaparse y
+            # la suma sea <= 18 cm (ancho util de A4 con margenes de 1.5 cm):
+            # "Metodo" se ensancha (TRANSFERENCIA ~2.1 cm) y "Fecha/hora" se
+            # reduce, evitando que el metodo pise la columna "Total pedido".
+            colWidths=[
+                1.2 * cm,
+                0.85 * cm,
+                1.05 * cm,
+                2.7 * cm,
+                1.7 * cm,
+                1.7 * cm,
+                2.15 * cm,
+                2.0 * cm,
+                2.2 * cm,
+                2.2 * cm,
+            ],
+        )
         tabla_pagos.setStyle(
             TableStyle(
                 [
@@ -250,6 +269,8 @@ def generar_pdf_cierre(
                     ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, CREAM]),
                     ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
                     ("TOPPADDING", (0, 0), (-1, -1), 4),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 3),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 3),
                 ]
             )
         )
@@ -387,26 +408,34 @@ def generar_factura_pedido(
     elementos.append(tabla_detalle)
     elementos.append(Spacer(1, 0.5 * cm))
 
-    totales_rows = [["Subtotal", _format_currency(subtotal)]]
+    totales_rows = [["Subtotal", "", "", _format_currency(subtotal)]]
     if _to_float(propina) > 0:
-        totales_rows.append(["Propina (10%)", _format_currency(propina)])
-    totales_rows.append(["TOTAL A COBRAR", _format_currency(total)])
+        totales_rows.append(["Propina (10%)", "", "", _format_currency(propina)])
+    totales_rows.append(["TOTAL A COBRAR", "", "", _format_currency(total)])
 
-    tabla_totales = Table(totales_rows, colWidths=[6 * cm, 9.5 * cm], hAlign="RIGHT")
-    tabla_totales.setStyle(
-        TableStyle(
-            [
-                ("FONTSIZE", (0, 0), (-1, -1), 11),
-                ("ALIGN", (0, 0), (-1, -1), "RIGHT"),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
-                ("TOPPADDING", (0, 0), (-1, -1), 7),
-                ("LINEBELOW", (0, 0), (-1, -2), 0.5, BORDER_LIGHT),
-                ("BACKGROUND", (0, -1), (-1, -1), CREAM_DARK),
-                ("TEXTCOLOR", (0, -1), (-1, -1), BROWN_DARK),
-                ("FONTNAME", (0, -1), (-1, -1), "Helvetica-Bold"),
-            ]
-        )
+    # Se replica la geometria de `tabla_detalle` (mismos colWidths y hAlign) y se
+    # fusionan las celdas del concepto, de modo que el bloque de totales coincida
+    # en ancho y posicion con la tabla de detalle (los montos quedan alineados
+    # bajo la columna "Subtotal").
+    estilos_totales = [
+        ("FONTSIZE", (0, 0), (-1, -1), 11),
+        ("ALIGN", (0, 0), (-1, -1), "RIGHT"),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
+        ("TOPPADDING", (0, 0), (-1, -1), 7),
+        ("LINEBELOW", (0, 0), (-1, -2), 0.5, BORDER_LIGHT),
+        ("BACKGROUND", (0, -1), (-1, -1), CREAM_DARK),
+        ("TEXTCOLOR", (0, -1), (-1, -1), BROWN_DARK),
+        ("FONTNAME", (0, -1), (-1, -1), "Helvetica-Bold"),
+    ]
+    for fila in range(len(totales_rows)):
+        estilos_totales.append(("SPAN", (0, fila), (2, fila)))
+
+    tabla_totales = Table(
+        totales_rows,
+        colWidths=[1.5 * cm, 8.5 * cm, 2.75 * cm, 2.75 * cm],
+        hAlign="CENTER",
     )
+    tabla_totales.setStyle(TableStyle(estilos_totales))
     elementos.append(tabla_totales)
 
     elementos.append(Spacer(1, 1.2 * cm))
