@@ -142,6 +142,15 @@ export class Pedidos implements OnInit {
   // Métodos para agregar productos dinámicamente desde el selector
   abrirSelectorProducto(categoria: 'barra' | 'cocina'): void {
     this.categoriaEnSeleccion.set(categoria);
+
+    // Damos tiempo a que Angular renderice el @if antes de enfocar
+    setTimeout(() => {
+      const selectId = categoria === 'barra' ? 'selectBarra' : 'selectCocina';
+      const elemento = document.getElementById(selectId);
+      if (elemento) {
+        elemento.focus();
+      }
+    }, 50);
   }
 
   seleccionarProducto(producto: IProducto): void {

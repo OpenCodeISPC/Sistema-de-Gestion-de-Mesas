@@ -2866,7 +2866,7 @@ button {
    ========================================================= */
 
 .sgmb-order-add {
-  margin: 10px 12px;
+  margin: 8px 0 10px;
 
   padding: 6px 10px;
 
@@ -3640,7 +3640,7 @@ button {
 /* Cancelar */
 
 .sgmb-product-button--cancel {
-  border: 1px solid #cdbdab;
+  border: 1px solid #5e1d0a;
 
   background: white;
 
@@ -3649,7 +3649,7 @@ button {
 
 
 .sgmb-product-button--cancel:hover {
-  background: #f4ece3;
+  background: #ff1100;
 }
 
 
@@ -3666,6 +3666,37 @@ button {
 
 .sgmb-product-button--save:hover {
   background: var(--sgmb-green-dark);
+}
+
+
+/* =======================================================================
+Animación de titilado suave para mesas en estado LISTO
+========================================================================== */
+@keyframes titilar-mesa {
+  0%, 100% {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    border-color: #ff9800;
+    box-shadow: 0 0 18px 6px rgba(255, 152, 0, 0.8);
+    transform: scale(1.02);
+  }
+}
+
+/* Clase dinámicamente aplicada */
+.sgmb-table-card--blinking {
+  animation: titilar-mesa 1.2s infinite ease-in-out;
+  background-color: #fffde7 !important;
+  border: 2px solid #ffc107 !important;
+}
+
+/* Color para la etiqueta (badge) en estado LISTO */
+.sgmb-status--warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
 }
 
 
@@ -3741,3 +3772,4 @@ button {
   outline-offset: 2px;
   box-shadow: 0 0 10px rgba(13, 110, 253, 0.5);
 }
+

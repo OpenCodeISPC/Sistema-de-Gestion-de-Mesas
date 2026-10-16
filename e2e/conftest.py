@@ -39,7 +39,7 @@ def _iniciar_sesion_por_api(page: Page, rol: str) -> dict:
     evitando acoplar esos tests al formulario de login. El Login en si se prueba
     mediante la interfaz en tests/test_auth.py.
     """
-    page.goto(APP_URL)
+    page.goto(APP_URL, wait_until="domcontentloaded")
     respuesta = page.request.post(
         LOGIN_ENDPOINT,
         data={"email": CREDENCIALES[rol], "password": PASSWORD},

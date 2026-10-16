@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "channels",
+    "anymail",
     # Mis aplicaciones locales
     'productos',
     'mesas',
@@ -178,9 +179,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Configuración de email para desarrollo (imprime el mail en la consola de Django)
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = "noreply@sgmb.com"
+# =====================================
+# EMAIL (consola por defecto, Brevo via API HTTP con django-anymail)
+# =====================================
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "SGMB <noreply@sgmb.com>")
+ANYMAIL = {
+    "BREVO_API_KEY": os.getenv("BREVO_API_KEY", ""),
+}
+
+# =====================================
+# OTP - RECUPERO DE CONTRASEÑA
+# =====================================
+OTP_EXPIRACION_MINUTOS = int(os.getenv("OTP_EXPIRACION_MINUTOS", 10))
+OTP_MAX_INTENTOS = 5
+OTP_REENVIO_SEGUNDOS = 60
 
 
 # Internationalization

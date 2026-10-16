@@ -6,6 +6,9 @@ import { MesaService } from '../../services/mesa.service';
 import { WebsocketService } from '../../services/websocket.service';
 import { Pedidos } from './pedidos/pedidos';
 
+import { forkJoin } from 'rxjs';
+import { PedidoService } from '../../services/pedido.service';
+
 @Component({
   selector: 'app-mesas',
   standalone: true,
@@ -16,6 +19,7 @@ import { Pedidos } from './pedidos/pedidos';
 export class Mesas implements OnInit {
   private readonly mesaService = inject(MesaService);
   private readonly wsService = inject(WebsocketService);
+  private readonly pedidoService = inject(PedidoService)
 
   // --------------------------------------------------------------------------
   // SIGNALS DE ESTADO
@@ -67,14 +71,50 @@ export class Mesas implements OnInit {
   });
 
   constructor() {
-    // Suscripción a eventos de cambio de estado de mesas por WebSockets
     effect(() => {
       const evento = this.wsService.ultimoEvento();
       if (!evento) return;
 
+      // 1. Escuchar cambios de estado directos en MESAS
       if (evento.type === 'MESA_CAMBIO_ESTADO' && evento.data) {
         const mesaActualizada: IMesa = evento.data;
-        this.actualizarMesaEnLista(mesaActualizada);
+
+        this.mesas.update(lista =>
+          lista.map(m => {
+            if (m.id_mesa === mesaActualizada.id_mesa) {
+              // Si la mesa localmente ya está en 'LISTO' y llega 'OCUPADA', conservamos 'LISTO'
+              return m.estado === 'LISTO' && mesaActualizada.estado === 'OCUPADA'
+                ? m
+                : mesaActualizada;
+            }
+            return m;
+          })
+        );
+      }
+
+      // 2. Escuchar cambios de estado en PEDIDOS (WebSockets)
+      if ((evento.type === 'PEDIDO_ESTADO_CAMBIADO' || evento.type === 'PEDIDO_CREADO') && evento.data) {
+        const pedido = evento.data;
+
+        const idMesa = typeof pedido.mesa === 'object'
+          ? (pedido.mesa?.id_mesa || pedido.mesa?.id)
+          : (pedido.mesa || pedido.mesa_id);
+
+        if (idMesa) {
+          const idNum = Number(idMesa);
+
+          if (pedido.estado === 'LISTO') {
+            // Cambiamos visualmente el estado de la mesa a 'LISTO'
+            this.mesas.update(lista =>
+              lista.map(m => m.id_mesa === idNum ? { ...m, estado: 'LISTO' as EstadoMesa } : m)
+            );
+          } else if (pedido.estado === 'CERRADO' || pedido.estado === 'CANCELADO') {
+            // Liberamos la mesa cuando el pedido se cierra o se cancela
+            this.mesas.update(lista =>
+              lista.map(m => m.id_mesa === idNum ? { ...m, estado: 'LIBRE' as EstadoMesa } : m)
+            );
+          }
+        }
       }
     });
   }
@@ -93,9 +133,28 @@ export class Mesas implements OnInit {
   // CARGA Y ACTUALIZACIÓN DE DATOS
   // --------------------------------------------------------------------------
   cargarMesas(): void {
-    this.mesaService.getMesas().subscribe({
-      next: (data) => this.mesas.set(data),
-      error: (err) => console.error('Error al cargar mesas:', err)
+    // Consultamos Mesas y Pedidos en paralelo al cargar la pantalla
+    forkJoin({
+      mesas: this.mesaService.getMesas(),
+      pedidos: this.pedidoService.getPedidos()
+    }).subscribe({
+      next: ({ mesas, pedidos }) => {
+        // Buscamos los IDs de las mesas que tienen un pedido en estado 'LISTO'
+        const idsMesasListas = new Set(
+          pedidos
+            .filter(p => p.estado === 'LISTO')
+            .map(p => typeof p.mesa === 'object' ? (p.mesa as any).id_mesa : p.mesa)
+        );
+
+        // Decoramos las mesas asignándole 'LISTO' a las correspondientes
+        const mesasDecoradas = mesas.map(m => ({
+          ...m,
+          estado: idsMesasListas.has(m.id_mesa) ? ('LISTO' as EstadoMesa) : m.estado
+        }));
+
+        this.mesas.set(mesasDecoradas);
+      },
+      error: (err) => console.error('Error al cargar mesas y pedidos:', err)
     });
   }
 
@@ -159,6 +218,7 @@ export class Mesas implements OnInit {
       case 'LIBRE': return 'sgmb-table-card--available';
       case 'OCUPADA': return 'sgmb-table-card--occupied';
       case 'RESERVADA': return 'sgmb-table-card--reserved';
+      case 'LISTO': return 'sgmb-table-card--blinking';
       default: return 'sgmb-table-card--available';
     }
   }
@@ -168,6 +228,7 @@ export class Mesas implements OnInit {
       case 'LIBRE': return 'sgmb-status--green';
       case 'OCUPADA': return 'sgmb-status--red';
       case 'RESERVADA': return 'sgmb-status--orange';
+      case 'LISTO': return 'sgmb-status--warning';
       default: return 'sgmb-status--green';
     }
   }
@@ -177,6 +238,7 @@ export class Mesas implements OnInit {
       case 'LIBRE': return 'bi-check-lg';
       case 'OCUPADA': return 'bi-x-lg';
       case 'RESERVADA': return 'bi-calendar-event';
+      case 'LISTO': return 'bi-bell-fill';
       default: return 'bi-check-lg';
     }
   }

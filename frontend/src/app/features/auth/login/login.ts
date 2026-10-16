@@ -223,6 +223,8 @@ export class Login implements OnInit {
 
           err?.error?.detail ||
 
+          err?.error?.token?.[0] ||
+
           'Error al autenticar con Google en el servidor.';
 
       },
