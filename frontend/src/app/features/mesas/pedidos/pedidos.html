@@ -59,7 +59,7 @@
       @if (categoriaEnSeleccion() === 'barra') {
       <div class="mt-2 p-2 bg-light rounded border">
         <label class="form-label small fw-bold">Seleccionar producto:</label>
-        <select class="form-select form-select-sm" #selectBarra
+        <select id="selectBarra" class="form-select form-select-sm" #selectBarra
           (change)="seleccionarProducto(selectBarra.value ? productosParaAgregar()[+selectBarra.value] : null!)">
           <option value="">-- Elige un bebida --</option>
           @for (prod of productosParaAgregar(); track prod.id_producto; let i = $index) {
@@ -131,7 +131,7 @@
       @if (categoriaEnSeleccion() === 'cocina') {
       <div class="mt-2 p-2 bg-light rounded border">
         <label class="form-label small fw-bold">Seleccionar producto:</label>
-        <select class="form-select form-select-sm" #selectCocina
+        <select id="selectCocina" class="form-select form-select-sm" #selectCocina
           (change)="seleccionarProducto(selectCocina.value ? productosParaAgregar()[+selectCocina.value] : null!)">
           <option value="">-- Elige un plato --</option>
           @for (prod of productosParaAgregar(); track prod.id_producto; let i = $index) {
