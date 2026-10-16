@@ -7,12 +7,11 @@
   <div class="sgmb-page-header">
 
     <div>
-      <h1>Productos</h1>
+      <h1 data-testid="productos-titulo">Productos</h1>
       <p>Administración de productos del restaurante</p>
     </div>
 
-    <button type="button" class="sgmb-product-add-button btn"
-     (click)="abrirFormularioCrear()">
+    <button type="button" class="sgmb-product-add-button btn" data-testid="productos-agregar" (click)="abrirFormularioCrear()">
       + Agregar producto
     </button>
 
@@ -35,13 +34,12 @@
 
         <span class="sgmb-product-search__icon"><i class="bi bi-search" aria-hidden="true"></i></span>
 
-        <input type="text" placeholder="Buscar producto..." class="form-control"
-         [value]="busqueda()" (input)="onBusquedaChange($event)">
+        <input type="text" placeholder="Buscar producto..." class="form-control" data-testid="productos-buscar" [value]="busqueda()"
+          (input)="onBusquedaChange($event)">
 
       </div>
 
-      <select class="sgmb-product-filter form-select" [value]="categoriaFiltro()"
-       (change)="onCategoriaChange($event)">
+      <select class="sgmb-product-filter form-select" data-testid="productos-filtro-categoria" [value]="categoriaFiltro()" (change)="onCategoriaChange($event)">
         <option value="">Todas las categorías</option>
         <option value="cocina">Cocina</option>
         <option value="barra">Barra</option>
@@ -60,7 +58,7 @@
       <div class="alert alert-danger m-3">{{errorMensaje()}}</div>
       } @else {
 
-      <table class="sgmb-product-table table table-hover align-middle mb-0">
+      <table class="sgmb-product-table table table-hover align-middle mb-0" data-testid="productos-tabla">
 
         <thead>
 
@@ -79,7 +77,7 @@
 
         <tbody>
           @for (prod of productosPaginados(); track prod.id_producto) {
-          <tr>
+          <tr data-testid="producto-fila">
             <td>{{ prod.id_producto}}</td>
             <td><strong>{{prod.nombre}}</strong> </td>
             <td>{{prod.descripcion || 'Sin descripcion'}}</td>
@@ -95,12 +93,12 @@
 
               <div class="sgmb-product-actions">
                 <button type="button" class="sgmb-product-action sgmb-product-action--edit btn btn-sm p-0"
-                  title="Modificar" (click)="abrirFormularioEditar(prod)">
+                  data-testid="producto-editar" title="Modificar" (click)="abrirFormularioEditar(prod)">
                   ✎
                 </button>
 
                 <button type="button" class="sgmb-product-action sgmb-product-action--delete btn btn-sm p-0"
-                  title="Eliminar" (click)="eliminarProducto(prod.id_producto)">
+                  data-testid="producto-eliminar" title="Eliminar" (click)="eliminarProducto(prod.id_producto)">
                   <i class="bi bi-trash3" aria-hidden="true"></i>
                 </button>
               </div>
@@ -108,7 +106,7 @@
           </tr>
           } @empty {
           <tr>
-            <td colspan="7" class="text-center py-4">No se encontraron productos</td>
+            <td colspan="7" class="text-center py-4" data-testid="productos-vacio">No se encontraron productos</td>
           </tr>
           }
         </tbody>
@@ -124,40 +122,33 @@
 
     <div class="sgmb-product-footer">
 
-      <span>
+      <span data-testid="productos-contador">
         Mostrando {{productosPaginados().length}} de {{ productosFiltrados().length}} productos
       </span>
 
       @if (totalPaginas() > 1) {
       <div class="sgmb-product-pagination btn-group">
-      
+
         <!--Boton anterio-->
-        <button type="button"
-         class="btn btn-outline-secondary"
-         [disabled]="paginaActual() === 1"
-         (click)="cambiarPagina(paginaActual() - 1)">
+        <button type="button" class="btn btn-outline-secondary" [disabled]="paginaActual() === 1"
+          (click)="cambiarPagina(paginaActual() - 1)">
 
           <i class="bi bi-chevron-left" aria-hidden="true"></i>
         </button>
-      
+
         <!--pagina numerica-->
-       @for (pag of paginasArray(); track pag) {
-        <button type="button"
-        class="btn"
-        [class.btn-primary]="paginaActual() === pag"
-        [class.btn-outline-secondary]="paginaActual() !== pag"
-        (click)="cambiarPagina(pag)">
+        @for (pag of paginasArray(); track pag) {
+        <button type="button" class="btn" [class.btn-primary]="paginaActual() === pag"
+          [class.btn-outline-secondary]="paginaActual() !== pag" (click)="cambiarPagina(pag)">
           {{pag}}
         </button>
-       }
-       <!--boton siguiente-->
-        <button type="button"
-        class="btn btn-outline-secondary"
-        [disabled]="paginaActual() === totalPaginas()"
-        (click)="cambiarPagina(paginaActual() + 1)">
+        }
+        <!--boton siguiente-->
+        <button type="button" class="btn btn-outline-secondary" [disabled]="paginaActual() === totalPaginas()"
+          (click)="cambiarPagina(paginaActual() + 1)">
           <i class="bi bi-chevron-right" aria-hidden="true"></i>
         </button>
-      
+
       </div>
       }
 
@@ -171,144 +162,163 @@
        ===================================================== -->
   @if (mostrarFormulario()) {
   <section class="sgmb-product-form-panel">
-  
+
     <div class="sgmb-product-form-header">
-  
+
       <div>
-        <h2>{{ modoEdicion() ? 'Editar producto' : 'Agregar producto'}}</h2>
+        <h2 data-testid="producto-form-titulo">{{ modoEdicion() ? 'Editar producto' : 'Agregar producto'}}</h2>
         <p>{{ modoEdicion() ? 'Modifica los datos del producto' : 'Completá los datos del nuevo producto'}}</p>
       </div>
-  
-      <button type="button" class="sgmb-product-form-close" title="Cerrar"
-       (click)="cerrarFormulario()">
-        <i class="bi bi-x-lg" aria-hidden="true"></i>
+
+      <button type="button" class="sgmb-product-form-close d-flex align-items-center justify-content-center"
+        data-testid="producto-form-cerrar" title="Cerrar" (click)="cerrarFormulario()">
+        <i class="bi bi-x fs-4" aria-hidden="true"></i>
       </button>
-  
+
     </div>
-  
-  
-    <form [formGroup]="productoForm" (ngSubmit)="guardarProducto()" class="sgmb-product-form">
-  
-        <!-- NOMBRE -->
-        <div class="sgmb-product-field">
-        
-          <label for="nombre">
-            Nombre
-          </label>
-        
-          <input id="nombre" type="text" formControlName="nombre" placeholder="Nombre del producto"
-           class="form-control">
-        
-        </div>
-  
-  
+
+
+    <form [formGroup]="productoForm" (ngSubmit)="guardarProducto()" class="sgmb-product-form" data-testid="producto-form">
+
+      <!-- NOMBRE -->
+      <div class="sgmb-product-field">
+
+        <label for="nombre">
+          Nombre
+        </label>
+
+        <input id="nombre" type="text" formControlName="nombre" placeholder="Nombre del producto" class="form-control" data-testid="producto-input-nombre">
+
+      </div>
+
+
       <!-- DESCRIPCIÓN -->
       <div class="sgmb-product-field">
-  
+
         <label for="descripcion">
           Descripción
         </label>
-  
+
         <textarea id="descripcion" rows="3" formControlName="descripcion" placeholder="Descripción del producto"
-         class="form-control"></textarea>
-  
+          class="form-control" data-testid="producto-input-descripcion"></textarea>
+
       </div>
-  
-  
-      <!-- PRECIO -->
+
+
+      <!-- PRECIO UNITARIO (Permite 0, bloquea nulos/vacíos y negativos) -->
       <div class="sgmb-product-field">
-  
         <label for="precio">
           Precio Unitario
         </label>
-  
-        <input id="precio" type="number" min="0" step="0.01" formControlName="precio"
-         placeholder="0.00" class="form-control">
-  
+
+        <input
+         id="precio"
+         type="number"
+         min="0.01"
+         step="0.01"
+         required formControlName="precio"
+         placeholder="Ingrese precio"
+         class="form-control"
+         data-testid="producto-input-precio"
+         [class.is-invalid]="productoForm.get('precio')?.invalid && productoForm.get('precio')?.touched">
+
+        @if (productoForm.get('precio')?.invalid && productoForm.get('precio')?.touched) {
+        <div class="invalid-feedback d-block text-danger small mt-1">
+          El precio es obligatorio y no puede ser negativo.
+        </div>
+        }
       </div>
-  
-  
+
+
       <!-- CATEGORÍA -->
       <div class="sgmb-product-field">
-  
+
         <label for="categoria">
           Categoría
         </label>
-  
-        <select id="categoria" formControlName="categoria" class="form-select">
-  
+
+        <select id="categoria" formControlName="categoria" class="form-select" data-testid="producto-input-categoria">
+
           <option value="">
             Seleccionar categoría
           </option>
-  
+
           <option value="cocina">
             Cocina
           </option>
-  
+
           <option value="barra">
             Barra
           </option>
-  
+
         </select>
-  
+
       </div>
-  
-  
+
+
       <!-- DISPONIBILIDAD -->
-  
+
       <div class="sgmb-product-field">
-  
+
         <label for="disponibilidad">
           Disponibilidad
         </label>
-  
-        <select id="disponibilidad" formControlName="disponibilidad" class="form-select">
-  
+
+        <select id="disponibilidad" formControlName="disponibilidad" class="form-select" data-testid="producto-input-disponibilidad">
+
           <option value="true">
             Disponible
           </option>
-  
+
           <option value="false">
             No disponible
           </option>
-  
+
         </select>
-  
+
       </div>
-  
-  
-      <!--Cantidad-->
-  
+
+      <!-- CANTIDAD / STOCK (Permite 0, bloquea nulos/vacíos y negativos) -->
       <div class="sgmb-product-field">
-  
         <label for="cantidad">
           Cantidad (Stock)
         </label>
-  
-        <input id="cantidad" type="number" min="0" formControlName="stock"
-         placeholder="Ingrese cantidad" class="form-control">
-  
+
+        <input
+        id="cantidad"
+        type="number"
+        min="0.01"
+        required formControlName="stock"
+        placeholder="Ingrese cantidad"
+        class="form-control"
+        data-testid="producto-input-stock"
+        [class.is-invalid]="productoForm.get('stock')?.invalid && productoForm.get('stock')?.touched">
+
+        @if (productoForm.get('stock')?.invalid && productoForm.get('stock')?.touched) {
+        <div class="invalid-feedback d-block text-danger small mt-1">
+          La cantidad es obligatoria y no puede ser negativa.
+        </div>
+        }
       </div>
-  
-  
+
       <!-- BOTONES -->
-  
+
       <div class="sgmb-product-form-actions">
-  
+
         <button type="button" class="sgmb-product-button sgmb-product-button--cancel btn btn-outline-secondary"
-        (click)="cerrarFormulario()">
+          data-testid="producto-cancelar" (click)="cerrarFormulario()">
           Cancelar
         </button>
-  
+
         <button type="submit" class="sgmb-product-button sgmb-product-button--save btn btn-success"
-        [disabled]="productoForm.invalid">
+          data-testid="producto-guardar" [disabled]="productoForm.invalid">
           {{ modoEdicion() ? 'Actualizar producto' : 'Guardar producto'}}
         </button>
-  
+
       </div>
-  
+
     </form>
-  
+
   </section>
   }
 

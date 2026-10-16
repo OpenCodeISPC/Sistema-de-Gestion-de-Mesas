@@ -4,6 +4,7 @@
    Bootstrap Icons se importa desde npm.
    ========================================================= */
 @import "bootstrap-icons/font/bootstrap-icons.css";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 /* Los estilos sgmb siguen definiendo la identidad visual del sistema.
    Bootstrap aporta estructura y componentes; sgmb tiene prioridad visual. */
@@ -60,7 +61,7 @@ body {
 body {
   background: var(--sgmb-bg);
   color: var(--sgmb-black);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: 'Inter', sans-serif;
 }
 
 button,
@@ -107,7 +108,6 @@ button {
   color: var(--sgmb-white);
   text-decoration: none;
 
-  font-family: Arial, sans-serif;
   font-size: 23px;
   font-weight: bold;
 
@@ -136,7 +136,6 @@ button {
   color: var(--sgmb-white);
   text-decoration: none;
 
-  font-family: Arial, sans-serif;
   font-size: 15px;
   font-weight: 600;
 
@@ -185,7 +184,6 @@ button {
   background: transparent;
   color: white;
 
-  font-family: Arial, sans-serif;
   font-size: 14px;
   font-weight: 600;
 
@@ -241,7 +239,6 @@ button {
 
   color: #81705b;
 
-  font-family: Arial, sans-serif;
 }
 
 
@@ -406,14 +403,12 @@ button {
 
 .sgmb-welcome h1 {
   margin: 0;
-  font-family: Arial, sans-serif;
   font-size: clamp(48px, 5vw, 82px);
   font-weight: 400;
 }
 
 .sgmb-welcome p {
   margin: 12px 0 65px;
-  font-family: Arial, sans-serif;
   font-size: 21px;
 }
 
@@ -455,18 +450,17 @@ button {
 .sgmb-dashboard-card p {
   margin: 0;
   min-height: 65px;
-  font-family: Arial, sans-serif;
   font-size: 17px;
   line-height: 1.35;
 }
 
 .sgmb-dashboard-card button {
-  width: 90%;
+  width: 50%;
   margin-top: auto;
   border: 0;
+  border-radius: 8px;
   color: white;
   padding: 12px;
-  font-family: Arial, sans-serif;
   font-size: 16px;
 }
 
@@ -551,6 +545,7 @@ button {
   color: var(--sgmb-brown);
   font-size: 42px;
   line-height: 1;
+  font-weight: bold;
 }
 
 .sgmb-page-header p {
@@ -616,7 +611,6 @@ button {
 
   padding: 9px 25px;
 
-  font-family: Georgia, "Times New Roman", serif;
   font-size: 15px;
 
   cursor: pointer;
@@ -879,6 +873,8 @@ button {
    --------------------------------------------------------- */
 
 .sgmb-sector h3 {
+  text-align: left;
+  
   margin: 0 0 10px;
 
   color: var(--sgmb-brown);
@@ -1389,13 +1385,25 @@ button {
 .sgmb-payment-row {
   min-height: 59px;
   display: grid;
-  grid-template-columns: 1.1fr 1.1fr 1.2fr .9fr 1fr .8fr;
+  grid-template-columns:
+    minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.1fr)
+    minmax(0, 0.85fr) minmax(0, 0.95fr) minmax(0, 1.3fr);
   align-items: center;
   gap: 10px;
   padding: 5px 10px;
   border-bottom: 1px solid #e2d8ce;
   color: #888;
   font-size: 14px;
+  text-align: center;
+}
+
+.sgmb-payment-row > * {
+  min-width: 0;
+}
+
+.sgmb-payment-row .sgmb-action-button {
+  justify-self: center;
+  white-space: nowrap;
 }
 
 .sgmb-payment-row--header {
@@ -1488,7 +1496,6 @@ button {
 }
 
 .sgmb-payment-detail p em {
-  color: #72c878;
   font-style: normal;
 }
 
@@ -1775,7 +1782,6 @@ button {
 
   text-decoration: none;
 
-  font-family: Georgia, "Times New Roman", serif;
   font-size: 16px;
 
   transition: .2s ease;
@@ -1830,7 +1836,6 @@ button {
 
   color: #9a7d5c;
 
-  font-family: Georgia, "Times New Roman", serif;
 
   font-size: 36px;
   font-weight: bold;
@@ -1866,7 +1871,6 @@ button {
 
   color: #9a7d5c;
 
-  font-family: Georgia, "Times New Roman", serif;
   font-size: 16px;
 
   cursor: pointer;
@@ -1927,7 +1931,6 @@ button {
 .sgmb-order-column__header h2 {
   margin: 0;
 
-  font-family: Arial, sans-serif;
 
   font-size: 18px;
 }
@@ -2096,8 +2099,6 @@ button {
 
   color: #877d75;
 
-  font-family: Arial, sans-serif;
-
   font-size: 12px;
 }
 
@@ -2111,8 +2112,6 @@ button {
   padding: 4px 9px;
 
   border-radius: 4px;
-
-  font-family: Arial, sans-serif;
 
   font-size: 10px;
   font-weight: bold;
@@ -2145,8 +2144,6 @@ button {
   margin-top: 4px;
 
   color: #8b817a;
-
-  font-family: Arial, sans-serif;
 
   font-size: 11px;
 }
@@ -2182,8 +2179,6 @@ button {
   border-radius: 4px;
 
   color: white;
-
-  font-family: Arial, sans-serif;
 
   font-size: 13px;
   font-weight: bold;
@@ -2312,8 +2307,6 @@ button {
 
   color: #977654;
 
-  font-family: Georgia, "Times New Roman", serif;
-
   font-size: 25px;
   font-weight: bold;
 }
@@ -2337,8 +2330,6 @@ button {
 
   color: #ffffff;
 
-  font-family: Georgia, "Times New Roman", serif;
-
   font-size: 15px;
   font-weight: bold;
 
@@ -2360,8 +2351,6 @@ button {
   padding: 0 25px;
 
   color: #555;
-
-  font-family: Georgia, "Times New Roman", serif;
 
   font-size: 17px;
 
@@ -2416,8 +2405,6 @@ button {
 
   color: #ffffff;
 
-  font-family: Georgia, "Times New Roman", serif;
-
   font-size: 15px;
   font-weight: bold;
 
@@ -2433,40 +2420,28 @@ button {
   gap: 45px;
 }
 
-
 .sgmb-role-grid button {
   height: 68px;
-
-  border: 1px solid #cbbba9;
-
-  border-radius: 0;
-
+  border: 1px solid var(--sgmb-border);
+  border-radius: 6px; 
   background: #ffffff;
-
-  color: #c9c4bf;
-
-  font-family: Georgia, "Times New Roman", serif;
-
+  color: var(--sgmb-brown-dark); 
+  font-weight: 600;
   cursor: pointer;
-
-  transition: .2s ease;
+  transition: all 0.2s ease;
 }
-
 
 .sgmb-role-grid button:hover {
+  background: var(--sgmb-brown); 
   border-color: var(--sgmb-brown);
-
-  color: var(--sgmb-brown);
+  color: #ffffff; 
 }
 
-
-.sgmb-role-grid__item--active {
-  background: #a97f58 !important;
-
-  border-color: #a97f58 !important;
-
-  color: #ffffff !important;
-
+.sgmb-role-grid .sgmb-role-grid__item--active,
+.sgmb-role-grid button.active {
+  background: var(--sgmb-brown-dark) !important; 
+  border-color: var(--sgmb-brown-dark) !important;
+  color: #ffffff !important; 
   font-weight: bold;
 }
 
@@ -2488,9 +2463,8 @@ button {
 
   color: #ffffff;
 
-  font-family: Georgia, "Times New Roman", serif;
-
   font-size: 15px;
+
   font-weight: bold;
 
   cursor: pointer;
@@ -2513,9 +2487,8 @@ button {
 
   color: #9a7958;
 
-  font-family: Georgia, "Times New Roman", serif;
-
   font-size: 14px;
+
   font-weight: bold;
 }
 
@@ -2563,8 +2536,6 @@ button {
   margin: 0 auto 30px;
 
   color: #927b63;
-
-  font-family: Georgia, "Times New Roman", serif;
 
   font-size: 16px;
 
@@ -2685,13 +2656,13 @@ button {
   display: grid;
   place-items: center;
 
-  border: 1px solid var(--sgmb-border);
+  border: 0px solid var(--sgmb-border);
   border-radius: 5px;
 
-  background: white;
+  background: transparent;
   color: var(--sgmb-brown);
 
-  font-size: 21px;
+  font-size: 24px;
   line-height: 1;
 }
 
@@ -2728,8 +2699,8 @@ button {
 
   border: 0;
 
-  font-family: Georgia, "Times New Roman", serif;
   font-size: 18px;
+
   font-weight: bold;
 
   text-align: left;
@@ -2895,7 +2866,7 @@ button {
    ========================================================= */
 
 .sgmb-order-add {
-  margin: 10px 12px;
+  margin: 8px 0 10px;
 
   padding: 6px 10px;
 
@@ -2903,7 +2874,6 @@ button {
 
   background: white;
 
-  font-family: Georgia, "Times New Roman", serif;
   font-size: 13px;
 
   cursor: pointer;
@@ -2979,9 +2949,8 @@ button {
 
   color: white;
 
-  font-family: Georgia, "Times New Roman", serif;
-
   font-size: 15px;
+
   font-weight: bold;
 
   cursor: pointer;
@@ -3097,8 +3066,8 @@ button {
   background: var(--sgmb-brown);
   color: white;
 
-  font-family: Arial, sans-serif;
   font-size: 14px;
+
   font-weight: 600;
 
   cursor: pointer;
@@ -3191,7 +3160,6 @@ button {
 
   color: var(--sgmb-black);
 
-  font-family: Arial, sans-serif;
   font-size: 14px;
 }
 
@@ -3219,8 +3187,6 @@ button {
   padding: 0 12px;
 
   color: #76665b;
-
-  font-family: Arial, sans-serif;
 
   outline: none;
 }
@@ -3252,7 +3218,6 @@ button {
 
   background: #fffdfb;
 
-  font-family: Arial, sans-serif;
 }
 
 
@@ -3421,8 +3386,6 @@ button {
 
   color: #999;
 
-  font-family: Arial, sans-serif;
-
   font-size: 13px;
 }
 
@@ -3521,8 +3484,6 @@ button {
 
   color: #999;
 
-  font-family: Arial, sans-serif;
-
   font-size: 13px;
 }
 
@@ -3601,8 +3562,6 @@ button {
 
   color: #5e5145;
 
-  font-family: Arial, sans-serif;
-
   font-size: 14px;
 
   outline: none;
@@ -3670,9 +3629,8 @@ button {
 
   padding: 0 18px;
 
-  font-family: Arial, sans-serif;
-
   font-size: 14px;
+  
   font-weight: 600;
 
   cursor: pointer;
@@ -3682,7 +3640,7 @@ button {
 /* Cancelar */
 
 .sgmb-product-button--cancel {
-  border: 1px solid #cdbdab;
+  border: 1px solid #5e1d0a;
 
   background: white;
 
@@ -3691,7 +3649,7 @@ button {
 
 
 .sgmb-product-button--cancel:hover {
-  background: #f4ece3;
+  background: #ff1100;
 }
 
 
@@ -3708,6 +3666,37 @@ button {
 
 .sgmb-product-button--save:hover {
   background: var(--sgmb-green-dark);
+}
+
+
+/* =======================================================================
+Animación de titilado suave para mesas en estado LISTO
+========================================================================== */
+@keyframes titilar-mesa {
+  0%, 100% {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    border-color: #ff9800;
+    box-shadow: 0 0 18px 6px rgba(255, 152, 0, 0.8);
+    transform: scale(1.02);
+  }
+}
+
+/* Clase dinámicamente aplicada */
+.sgmb-table-card--blinking {
+  animation: titilar-mesa 1.2s infinite ease-in-out;
+  background-color: #fffde7 !important;
+  border: 2px solid #ffc107 !important;
+}
+
+/* Color para la etiqueta (badge) en estado LISTO */
+.sgmb-status--warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
 }
 
 
@@ -3777,3 +3766,10 @@ button {
     width: 100%;
   }
 }
+
+.sgmb-table-card:focus-visible {
+  outline: 3px solid #0d6efd; /* Azul resaltado */
+  outline-offset: 2px;
+  box-shadow: 0 0 10px rgba(13, 110, 253, 0.5);
+}
+

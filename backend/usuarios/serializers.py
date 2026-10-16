@@ -1,15 +1,22 @@
+import logging
+
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_decode
-from django.utils.encoding import force_str
 from django.conf import settings
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 
+from .otp import validar_otp
+
 Usuario = get_user_model()
+logger = logging.getLogger(__name__)
+
+# Tolerancia (en segundos) ante pequeñas diferencias de reloj entre Google y el servidor.
+# Sin esta tolerancia, si el reloj local está apenas atrasado, Google emite tokens
+# "del futuro" y la verificación falla con "Token used too early".
+GOOGLE_CLOCK_SKEW_SEGUNDOS = 10
 
 
 # 1. Serializer de lectura de usuario
@@ -38,14 +45,30 @@ class RegistroSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
     def create(self, validated_data):
-        return Usuario.objects.create_user(**validated_data)
+        password = validated_data.pop("password")
+        user = Usuario(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+
+    #def validate_rol(self,value):
+       # roles_validos = {k for k, _ in Usuario.ROLES}
+        #if value not in roles_validos:
+            #raise serializers.ValidationError("El rol seleccionado no es válido.")
+        #return value
 
 
 # 3. Serializer para Login JWT con usuario incluido
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
-        data["user"] = UsuarioSerializer(self.user).data
+
+        user = self.user
+        roles_validos = {k for k, _ in Usuario.ROLES}
+        if user.rol not in roles_validos:
+            raise serializers.ValidationError("El rol del usuario no es válido.")
+
+        data["user"] = UsuarioSerializer(user).data
         return data
 
 
@@ -68,12 +91,15 @@ class GoogleOAuthSerializer(serializers.Serializer):
             google_info = id_token.verify_oauth2_token(
                 value,
                 google_requests.Request(),
-                client_id
+                client_id,
+                clock_skew_in_seconds=GOOGLE_CLOCK_SKEW_SEGUNDOS,
             )
             return google_info
+        except serializers.ValidationError:
+            raise
         except Exception as e:
-            print(str(e))
-            raise serializers.ValidationError(f"El token de Google es inválido o ha expirado.{str(e)}")
+            logger.warning("Token de Google rechazado: %s", e)
+            raise serializers.ValidationError("El token de Google es inválido o ha expirado.")
         
 
 # 5. Serializers para Recupero de Contraseña
@@ -84,27 +110,32 @@ class PasswordResetRequestSerializer(serializers.Serializer):
         return value.lower().strip()
 
 
-class PasswordResetConfirmSerializer(serializers.Serializer):
-    uid = serializers.CharField(required=True)
-    token = serializers.CharField(required=True)
-    new_password = serializers.CharField(
-        write_only=True, 
-        required=True, 
-        validators=[validate_password]
+class VerificarOTPSerializer(serializers.Serializer):
+    """Valida que el código OTP ingresado corresponda al email y esté vigente."""
+    email = serializers.EmailField(required=True)
+    codigo = serializers.RegexField(
+        r"^\d{6}$",
+        required=True,
+        error_messages={"invalid": "El código debe tener 6 dígitos."},
     )
 
     def validate(self, attrs):
-        uid_b64 = attrs.get('uid')
-        token = attrs.get('token')
+        email = attrs["email"].strip()
+        usuario = Usuario.objects.filter(email__iexact=email, is_active=True).first()
+        otp = validar_otp(usuario, attrs["codigo"]) if usuario else None
 
-        try:
-            uid = force_str(urlsafe_base64_decode(uid_b64))
-            user = Usuario.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, Usuario.DoesNotExist):
-            raise serializers.ValidationError({"uid": "Identificador de usuario inválido."})
+        if otp is None:
+            raise serializers.ValidationError({"codigo": "El código es inválido o expiró."})
 
-        if not default_token_generator.check_token(user, token):
-            raise serializers.ValidationError({"token": "El token de recuperación es inválido o expiró."})
-
-        attrs['user'] = user
+        attrs["usuario"] = usuario
+        attrs["otp"] = otp
         return attrs
+
+
+class PasswordResetConfirmSerializer(VerificarOTPSerializer):
+    """Además del OTP, valida la nueva contraseña con los validadores de Django."""
+    new_password = serializers.CharField(
+        write_only=True,
+        required=True,
+        validators=[validate_password]
+    )

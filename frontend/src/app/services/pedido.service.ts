@@ -56,4 +56,13 @@ export class PedidoService {
     return this.http.delete<void>(`${this.apiUrl}${id}/`)
   }
 
+  // Descarga la factura (PDF) del pedido con la propina indicada
+  exportarFacturaPdf(idPedido: number, propina: number): Observable<Blob> {
+    const params = new HttpParams().set('propina', propina.toString())
+    return this.http.get(`${this.apiUrl}${idPedido}/factura/`, {
+      params,
+      responseType: 'blob',
+    })
+  }
+
 }

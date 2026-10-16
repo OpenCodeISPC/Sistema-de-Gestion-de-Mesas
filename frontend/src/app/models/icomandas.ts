@@ -1,42 +1,44 @@
+// src/app/models/icomandas.ts
 
-
-// Definimos los estados para que coincidan con las tres columnas de tu HTML
 export type EstadoComanda = 'PENDIENTE' | 'PREPARACION' | 'LISTO';
-
-// Definimos los sectores para el switch superior
 export type SectorComanda = 'COCINA' | 'BARRA';
 
-// Interfaz para cada plato o ítem dentro de un pedido
 export interface IDetalleComanda {
   id_detalle?: number;
-  producto_nombre: string; 
-  comentario?: string;     
+  id_detalle_pedido?: number;
+  producto_nombre?: string;
+  producto?: { nombre: string };
+  cantidad?: number;
+  comentario?: string;
+  observaciones?: string;
 }
 
-// Interfaz principal de la comanda
 export interface IComanda {
   id_comanda?: number;
-  numero_mesa: number;
-  numero_pedido: number;
+  id_pedido?: number;
+  numero_mesa?: number;
+  mesa?: number | string;
+  numero_pedido?: number;
   tiempo_espera?: string;
   estado: EstadoComanda;
+  estado_cocina?:EstadoComanda;
+  estado_barra?:EstadoComanda;
   sector: SectorComanda;
   cliente?: string;
-  creado_en?: string; // Timestamp en formato ISO enviado por Django
+  creado_en?: string;
+  fecha_hora?: string;
   detalles?: IDetalleComanda[];
 }
 
-// DTO para crear una nueva comanda
 export interface ICrearComandaDTO {
   numero_mesa: number;
   sector: SectorComanda;
   detalles: IDetalleComanda[];
-  
 }
 
-// DTO para actualizar una comanda (ej. al moverla de "Pendiente" a "Preparación")
 export interface IActualizarComandaDTO {
   estado?: EstadoComanda;
+  estado_cocina?: EstadoComanda;
+  estao_barra?: EstadoComanda;
   numero_mesa?: number;
-  
 }

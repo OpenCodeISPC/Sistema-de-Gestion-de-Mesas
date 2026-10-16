@@ -1,5 +1,6 @@
 import { Component, inject, signal, computed, effect, input, output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 import { IPedido, IDetallePedido, EstadoPedido } from '../../../models/ipedido';
 import { IProducto } from '../../../models/iproducto';
@@ -17,12 +18,15 @@ export class Pedidos implements OnInit {
   private readonly pedidoService = inject(PedidoService);
   private readonly productoService = inject(ProductoService);
   private readonly wsService = inject(WebsocketService);
+  private readonly router = inject(Router)
 
   // INPUTS / OUTPUTS (comunicación con el padre: Mesas)
   mesaId = input<number | null>(null);
   numeroMesa = input<number | string>('01');
   alCerrar = output<void>();
   alAgregarProducto = output<string>();
+  alConfirmarPedido = output<number>();
+  alCerrarMesa = output<number>();
 
   // Signals de estado
   pedidoActual = signal<IPedido | null>(null);
@@ -138,6 +142,15 @@ export class Pedidos implements OnInit {
   // Métodos para agregar productos dinámicamente desde el selector
   abrirSelectorProducto(categoria: 'barra' | 'cocina'): void {
     this.categoriaEnSeleccion.set(categoria);
+
+    // Damos tiempo a que Angular renderice el @if antes de enfocar
+    setTimeout(() => {
+      const selectId = categoria === 'barra' ? 'selectBarra' : 'selectCocina';
+      const elemento = document.getElementById(selectId);
+      if (elemento) {
+        elemento.focus();
+      }
+    }, 50);
   }
 
   seleccionarProducto(producto: IProducto): void {
@@ -198,61 +211,92 @@ export class Pedidos implements OnInit {
       return;
     }
 
-    const detallesPayload = detalles
-      .filter(d => d.producto && d.producto.id_producto !== undefined)
-      .map(d => ({
-        producto: d.producto.id_producto!,
-        cantidad: d.cantidad,
-        precio_unitario: d.precio_unitario,
-        subtotal: d.subtotal,
-        observaciones: d.observaciones
-      }));
+    // 1. Mapeo estricto de detalles para el PedidoWriteSerializer de Django
+    const detallesPayload = detalles.map(d => {
+      // Garantizamos obtener el ID entero del producto sin importar la variante de la propiedad
+      const idProducto = d.producto.id_producto || (d.producto as any).id;
 
+      return {
+        producto: Number(idProducto),
+        cantidad: d.cantidad,
+        precio_unitario: Number(d.precio_unitario || d.producto.precio),
+        subtotal: Number(d.subtotal || (d.cantidad * d.producto.precio)),
+        observaciones: d.observaciones || ''
+      };
+    });
+
+    // 2. Si el pedido YA EXISTE (Actualización)
     if (pedido) {
       const payload = {
-        estado: 'PREPARACION' as EstadoPedido,
-        total: this.totalCalculado(),
+        mesa: Number(this.mesaId()!),
+        estado: pedido.estado || ('PENDIENTE' as EstadoPedido),
+        total: Number(this.totalCalculado()),
         detalles: detallesPayload
       };
 
-      this.pedidoService.actualizarPedido(pedido.id_pedido, payload).subscribe({
+      console.log('📌 Enviando actualización de pedido:', JSON.stringify(payload, null, 2));
+
+      this.pedidoService.actualaizarEstadoOParcial(pedido.id_pedido, payload).subscribe({
         next: (pedidoActualizado) => {
           this.pedidoActual.set(pedidoActualizado);
-          console.log('Pedido actualizado correctamente');
+          console.log('✅ Pedido actualizado correctamente');
+          if (this.mesaId()) {
+            this.alConfirmarPedido.emit(this.mesaId()!);
+          }
         },
-        error: (err) => console.error('Error al actualizar pedido:', err)
+        error: (err) => console.error('❌ Error al actualizar pedido:', err)
       });
+
+      // 3. Si es un PEDIDO NUEVO (Creación)
     } else if (this.mesaId()) {
       const payload = {
-        mesa: this.mesaId()!,
+        mesa: Number(this.mesaId()!),
         usuario: 1,
         estado: 'PENDIENTE' as EstadoPedido,
-        total: this.totalCalculado(),
+        total: Number(this.totalCalculado()),
         detalles: detallesPayload
       };
+
+      console.log('📌 Enviando creación de pedido nuevo:', JSON.stringify(payload, null, 2));
 
       this.pedidoService.crearPedido(payload).subscribe({
         next: (nuevoPedido) => {
           this.pedidoActual.set(nuevoPedido);
-          console.log('Pedido creado correctamente');
+          console.log('✅ Pedido creado correctamente');
+          if (this.mesaId()) {
+            this.alConfirmarPedido.emit(this.mesaId()!);
+          }
         },
-        error: (err) => console.error('Error al crear pedido:', err)
+        error: (err) => console.error('❌ Error al crear pedido:', err)
       });
     }
   }
 
   cerrarMesa(): void {
     const pedido = this.pedidoActual();
-    if (!pedido) return;
+    const idMesa = this.mesaId();
 
-    if (confirm(`¿Desea cerrar la comanda y pasar a cobro de la Mesa ${this.numeroMesa()}?`)) {
-      this.pedidoService.actualaizarEstadoOParcial(pedido.id_pedido, { estado: 'CERRADO' }).subscribe({
-        next: () => {
-          this.limpiarPanel();
-          this.cerrarPanel();
-        },
-        error: (err) => console.error('Error al cerrar mesa:', err)
-      });
+    if (!pedido || !idMesa) return;
+
+    // VALIDACIÓN: Comprueba que el estado del pedido esté en 'LISTO'
+    // (o que tanto barra como cocina hayan completado su parte)
+    const comandasFinalizadas =
+      pedido.estado === 'LISTO' ||
+      ((pedido as any).estado_barra === 'LISTO' && (pedido as any).estado_cocina === 'LISTO')
+
+    if (!comandasFinalizadas) {
+      alert('No se puede cerrar la mesa: El pedido aún no esta LISTO en barra/cocina')
+      return
+    }
+
+    // 2. REDIRECCIÓN A CAJA (Manteniendo el estado LISTO para procesar el pago)
+    if (confirm(`¿Desea ir a Caja a cobrar la Mesa ${this.numeroMesa()}?`)) {
+      this.alCerrarMesa.emit(idMesa);
+      this.limpiarPanel();
+      this.cerrarPanel();
+
+      // Navega a la caja conservando el pedido en estado LISTO
+      this.router.navigate(['/caja']);
     }
   }
 }

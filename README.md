@@ -1,109 +1,268 @@
+
 # Sistema de Gestión de Mesas para Bares (SGMB)
 
-## Descripción General
-El Sistema de Gestión de Mesas para Bares (SGMB) es una aplicación web responsiva diseñada para optimizar la administración de mesas, comandas y la atención al cliente en tiempo real dentro de bares y restaurantes. El sistema prioriza una interfaz clara, rápida e intuitiva, optimizada para dispositivos móviles y tablets utilizados exclusivamente por el personal de salón (mozos).
+## Descripción del proyecto
 
-## Grupo: OpenCode
-* Cabrera Milagros Magaly
-* Casarino Mariano
-* Minoldo Aldo Alejandro
-* Minoldo Nicolas Federico
-* Moreno Juan Ignacio
+El Sistema de Gestión de Mesas para Bares (SGMB) es una aplicación web diseñada para facilitar la administración de un establecimiento gastronómico. Permite gestionar mesas, pedidos, preparación de productos, stock, pagos y cierres de caja desde una plataforma centralizada.
 
----
+El sistema busca mejorar la organización del trabajo, agilizar la atención al cliente y facilitar el seguimiento de las operaciones realizadas por el personal.
 
-## Problemática que Resuelve y Público Objetivo
+## Problemática
 
-### Problemática
-En establecimientos gastronómicos pequeños y medianos, la gestión manual o con sistemas obsoletos genera:
-* Errores frecuentes en la toma de pedidos y desorganización al coordinar las solicitudes entre salón y los centros de preparación.
-* Demoras en la atención y falta de visibilidad del estado de las mesas en tiempo real.
-* Inconvenientes y lentitud al calcular las cuentas finales de los consumos.
+La administración manual de mesas, pedidos y pagos puede generar demoras, errores de registro y dificultades para coordinar las tareas entre el salón, la cocina, la barra y la caja.
 
-### Público Objetivo
-Bares y restaurantes pequeños o medianos, enfocándose en el mozo como el usuario único que interactúa con la aplicación de salón.
+SGMB busca centralizar estas operaciones y ofrecer información actualizada para mejorar la coordinación y el control del establecimiento.
 
----
+## Público objetivo
 
-## Alcance Definido (Scope)
+El sistema está orientado a bares y establecimientos gastronómicos que necesitan organizar sus operaciones diarias mediante una herramienta digital.
 
-### Incluido (MVP - Producto Mínimo Viable)
-* **Autenticación Externa:** Sistema de registro e inicio de sesión integrando proveedores externos mediante OAuth (Google y GitHub).
-* **Gestión de Mesas:** Visualización interactiva mediante un mapa con estados dinámicos (Libre, Ocupada, Reservada) y cálculo automatizado del consumo acumulado.
-* **Gestión de Pedidos:** Alta, consulta y asociación de productos a una mesa en base a la disponibilidad en tiempo real controlada por stock en la base de datos (si el stock es cero, el producto no se visualiza).
-* **Bifurcación de Pedidos:** División automática de las comandas confirmadas hacia Barra (bebidas) o Cocina (comidas) en estado inicial Pendiente, pasando luego a En preparación y Listo.
-* **Segunda Pantalla para el Mozo:** Mapa de monitoreo secundario que notifica de forma asíncrona cuándo un pedido está listo para ser retirado.
-* **Reportes y Auditoría:** Generación y descarga de resúmenes de consumo en formatos PDF y CSV.
-* **Despliegue Local homogeneizado:** Configuración y empaquetamiento de todas las tecnologías para ejecutarse mediante contenedores Docker.
+Entre sus usuarios se encuentran administradores, mozos, personal de cocina y cajeros, con permisos diferenciados según sus responsabilidades.
 
-### Excluido explícitamente
-* Integración con pasarelas de pago online externas (MercadoPago, Stripe, entre otras).
-* Facturación electrónica obligatoria y conexión directa con impresoras térmicas de hardware.
+## Funcionalidades principales
 
----
+### Autenticación y gestión de usuarios
 
-## Stack Tecnológico Confirmado
+- Inicio de sesión mediante autenticación con JWT.
+- Integración con Google OAuth 2.0.
+- Recuperación de acceso mediante códigos OTP enviados por correo electrónico.
+- Control de acceso basado en roles (RBAC).
+- Roles contemplados: `ADMIN`, `MOZO`, `CAJERO` y `COCINA`.
+
+### Gestión de mesas
+
+- Visualización de las mesas del establecimiento.
+- Identificación del estado de cada mesa.
+- Administración de mesas ocupadas, libres, reservadas y cerradas.
+- Actualización de información en tiempo real mediante WebSockets.
+
+### Gestión de pedidos
+
+- Registro y administración de pedidos.
+- Seguimiento del estado de preparación.
+- Coordinación entre el salón, la cocina y la barra.
+- Gestión de productos y stock.
+
+### Cocina y barra
+
+- Visualización de pedidos pendientes.
+- Organización de pedidos mediante un tablero Kanban.
+- Seguimiento de los estados `PENDIENTE`, `EN PREPARACIÓN` y `LISTO`.
+
+### Caja y pagos
+
+- Registro de pagos.
+- Cálculo de propinas del 10 %.
+- Liberación automática de la mesa según el flujo de cierre implementado.
+- Generación de comprobantes en PDF.
+- Apertura, cierre y reapertura de caja.
+- Generación de reportes de caja en PDF.
+
+### Auditoría
+
+- Registro de operaciones relevantes del sistema.
+- Almacenamiento de eventos de auditoría en MongoDB.
+- Procesamiento asíncrono de los registros.
+- Exposición de una API para consultar la auditoría mediante `/api/auditoria`.
+- Manejo de fallos de auditoría para reducir su impacto sobre la operación principal.
+
+## Tecnologías utilizadas
 
 ### Frontend
-* **Framework:** Angular 
-* **Lenguajes:** HTML semántico, CSS, TypeScript
-* **Librería de Diseño:** Bootstrap
-* **Enfoque UX:** Interfaz adaptativa optimizada para tablets y celulares, con actualización por eventos.
 
-### Backend y API
-* **Framework Principal:** Django y Django REST Framework (Python)
-* **Comunicación en Tiempo Real:** Django Channels y WebSockets para la sincronización inmediata del estado de los pedidos.
+- Angular 20.
+- Componentes standalone.
+- Signals para la gestión reactiva del estado.
+- Comunicación con el backend mediante API REST.
+- WebSockets para actualizaciones en tiempo real.
 
-### Base de Datos y Almacenamiento
-* **Relacional (PostgreSQL):** Base de datos principal y fuente de verdad del sistema. Almacena las entidades transaccionales esenciales: Mesas, Productos con control de stock, Pedidos y Usuarios.
-* **No Relacional (MongoDB):** Base de datos secundaria dedicada al almacenamiento distribuido de logs de eventos, historial de acciones, auditoría del sistema y datos analíticos independientes.
+### Backend
 
----
+- Python.
+- Django 6.0.
+- Django REST Framework.
+- Django Channels para comunicación mediante WebSockets.
+- Uvicorn y Daphne como componentes del entorno de ejecución ASGI.
 
-## Arquitectura del Sistema y Distribución de Datos
-El sistema implementa una arquitectura desacoplada estructurada en tres capas principales:
+### Bases de datos y servicios
 
-1. **Capa de Cliente (Frontend):** Aplicación SPA en Angular ejecutada en dispositivos móviles o tablets que consume servicios y se comunica bidireccionalmente mediante WebSockets.
-2. **Capa de Lógica de Negocio (Backend):** Servidor API REST en Django que expone endpoints seguros y gestiona conexiones duplex concurrentes a través de Django Channels.
-3. **Capa de Persistencia Distribuidora:** Separación responsiva de datos:
-   * Las operaciones de lectura/escritura operativas impactan directamente en PostgreSQL.
-   * Las actividades críticas generan registros automáticos de auditoría (logs) que se asientan asíncronamente en MongoDB de forma no relacional.
+- PostgreSQL 16: almacenamiento de datos relacionales.
+- MongoDB 7: almacenamiento de registros de auditoría.
+- Redis: soporte para la comunicación y gestión de canales en tiempo real.
+- Docker y Docker Compose: ejecución y coordinación de los servicios.
 
----
+### Herramientas adicionales
 
-## Modelo de Trabajo y Sistema de Branching (Git)
-El proyecto se desarrolla bajo el marco de trabajo ágil Scrum, estructurado en Sprints de 3 semanas con ceremonias de planificación, retrospectiva y sincronizaciones internas periódicas (Dailys). 
+- Git y GitHub para el control de versiones.
+- ReportLab para la generación de documentos PDF.
+- Scripts de automatización para la actualización del entorno.
 
-Para garantizar la estabilidad del código en el repositorio de GitHub, se implementa una estrategia estricta de ramificación:
+## Arquitectura del sistema
 
-### Ramas Estables
-* `main`: Aloja el código de producción completamente testeado y representa las versiones oficiales de entrega del producto.
-* `development`: Rama base de integración diaria. Es el punto donde se unifican los avances desarrollados por el equipo.
-* `release`: Rama intermedia para la estabilización. Se crea previo a una entrega para la corrección de errores menores y ajustes finales antes de integrarse a `main`.
+El proyecto organiza sus responsabilidades en capas para separar la interfaz de usuario, la lógica de negocio y el almacenamiento de información.
 
-### Ramas de Trabajo Individual
-Cada desarrollador trabaja de forma aislada en su entorno local partiendo desde `development` utilizando su propia rama nominal:
-* `rama-aldo`
-* `rama-nicolas`
-* `rama-mili`
-* `rama-mariano`
-* `rama-juan`
+### Frontend
 
-*Nota:* Están prohibidos los commits directos sobre las ramas `main` o `development`. Toda integración requiere obligatoriamente la creación de un Pull Request (PR) y la aprobación mediante revisión de código (Code Review) por parte de otro miembro del equipo.
+Desarrollado con Angular, se encarga de mostrar las interfaces, gestionar la interacción con los usuarios y comunicarse con el backend.
 
----
+### Backend
 
-## Plan de Gestión de las Comunicaciones
-El equipo establece canales y herramientas específicas para mantener la sincronización y la transparencia en el avance:
-* **Sincronización Sincrónica:** Reuniones de Planificación y Retrospectiva cada 3 semanas vía Google Meet o Discord. Reuniones de sincronización corta (Dailys) dos veces por semana a través de chats grupales.
-* **Gestión de Tareas:** Implementación de un tablero ágil digital en GitHub Projects estructurado en columnas de estado: To Do, In Progress, Testing y Done.
-* **Comunicación Externa:** Consultas técnicas canalizadas durante las clases virtuales institucionales y entregas formales realizadas mediante el Aula Virtual al cierre de cada Sprint.
+Desarrollado con Django REST Framework, centraliza la lógica de negocio, valida las solicitudes y aplica las reglas de acceso correspondientes.
 
----
+### Persistencia y servicios
+
+PostgreSQL almacena los datos relacionales, mientras que MongoDB se utiliza para los registros de auditoría. Redis participa en la infraestructura de comunicación en tiempo real.
+
+## Estructura del proyecto
+
+El repositorio contiene los componentes necesarios para el desarrollo y la ejecución de la aplicación.
+
+- `frontend/`: aplicación desarrollada con Angular.
+- `backend/`: aplicación desarrollada con Django.
+- Archivos de configuración de Docker y Docker Compose.
+- Scripts de automatización del entorno.
+- Archivos de documentación del proyecto.
+
+La estructura interna de cada directorio organiza los componentes, servicios, modelos, vistas, configuraciones y pruebas correspondientes a cada tecnología.
+
+## Requisitos previos
+
+Para ejecutar el proyecto localmente se necesita:
+
+- Git.
+- Docker.
+- Docker Compose.
+- Un navegador web actualizado.
+
+También se recomienda contar con un editor de código y las herramientas necesarias para trabajar con Angular y Django si se desea desarrollar o modificar la aplicación fuera de los contenedores.
+
+## Instalación y ejecución
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/OpenCodeISPC/Sistema-de-Gestion-de-Mesas.git
+cd Sistema-de-Gestion-de-Mesas
+```
+
+### 2. Iniciar el entorno
+
+El proyecto incluye un script de actualización del entorno llamado `actualizar-entorno.sh`.
+
+Para ejecutarlo:
+
+```bash
+./actualizar-entorno.sh
+```
+
+El script contempla opciones para confirmar operaciones y conservar datos existentes. Antes de utilizarlo, se recomienda revisar las opciones disponibles y las acciones que realiza sobre los contenedores y volúmenes.
+
+**Importante:** recrear o eliminar un volumen de PostgreSQL puede provocar la pérdida de los datos almacenados. Antes de ejecutar operaciones destructivas, realizar una copia de seguridad si se necesita conservar la información.
+
+### 3. Ejecución mediante Docker Compose
+
+También es posible iniciar los servicios mediante Docker Compose, utilizando el archivo de configuración incluido en el repositorio.
+
+```bash
+docker compose up --build
+```
+
+Para detener los servicios:
+
+```bash
+docker compose down
+```
+
+Antes de iniciar la aplicación, verificar que las variables de entorno y los servicios requeridos estén configurados correctamente.
+
+### 4. Acceso a la aplicación
+
+Una vez que los servicios estén iniciados, las direcciones locales documentadas para el entorno de desarrollo son:
+
+- Frontend: `http://localhost:4200`
+- Backend: `http://localhost:8000`
+- API: `http://localhost:8000/api`
+
+El panel de administración de Django se encuentra en la ruta habitual `/admin/`, siempre que esté habilitado en la configuración del proyecto.
+
+## Configuración y seguridad
+
+Las credenciales y los datos sensibles deben gestionarse mediante variables de entorno o mecanismos de configuración apropiados para cada ambiente.
+
+No se deben publicar contraseñas, claves secretas, tokens ni credenciales reales en el repositorio.
+
+En particular, se recomienda verificar:
+
+- La configuración de las credenciales de las bases de datos.
+- Las claves utilizadas para JWT y Django.
+- Las credenciales de integración con Google OAuth 2.0.
+- La configuración del servicio de correo electrónico para los códigos OTP.
+- La asignación de permisos según el rol del usuario.
+- La protección de las operaciones administrativas en el backend.
+
+Los usuarios no deben poder asignarse privilegios administrativos simplemente modificando una solicitud desde el frontend. La autorización debe validarse en el servidor.
+
+## Pruebas
+
+El proyecto contiene archivos de pruebas asociados al frontend y al backend.
+
+Las pruebas deben utilizarse para verificar el comportamiento de las funcionalidades y detectar errores antes de integrar cambios.
+
+Se recomienda documentar en esta sección:
+
+- Los comandos específicos para ejecutar las pruebas de Angular.
+- Los comandos específicos para ejecutar las pruebas de Django.
+- Los requisitos de configuración necesarios para las pruebas.
+- Los casos de prueba implementados y sus resultados.
+
+Los comandos deben coincidir con la configuración real del proyecto y con las herramientas de testing utilizadas por el equipo.
+
+## Control de versiones y trabajo colaborativo
+
+El proyecto utiliza Git para el control de versiones y GitHub como plataforma de alojamiento del repositorio.
+
+El desarrollo se organiza mediante ramas para facilitar el trabajo colaborativo, separar las funcionalidades y reducir los conflictos de integración.
+
+### Reglas de trabajo
+
+- No realizar commits directamente sobre `main` o `development`.
+- Desarrollar las tareas en ramas de trabajo.
+- Integrar los cambios mediante Pull Requests (PR).
+- Realizar una revisión de código (Code Review) antes de integrar los cambios.
+- Mantener las ramas actualizadas para reducir conflictos.
+
+### Flujo de trabajo propuesto
+
+1. Crear una rama de trabajo a partir de `development`.
+2. Implementar la funcionalidad o corrección asignada.
+3. Registrar los cambios mediante commits descriptivos.
+4. Abrir un Pull Request hacia `development`.
+5. Revisar el código y corregir las observaciones.
+6. Integrar los cambios una vez aprobados.
+7. Actualizar `main` cuando corresponda generar una versión estable.
+
+Los nombres de las ramas y las convenciones de commits deben respetar los acuerdos establecidos por el equipo.
 
 ## Definition of Done (DoD)
-Para que un requerimiento o tarea técnica se considere formalmente finalizado, debe cumplir con las siguientes directrices de calidad:
-1. **Funcionalidad:** El código debe resolver la necesidad planteada, estar libre de errores de compilación y no generar conflictos de integración con la rama `development`.
-2. **Estándares de Código:** Respetar el principio de responsabilidad única (SRP) y modularidad en componentes de Angular. En Django, seguir las convenciones de modelos y documentar mediante docstrings.
-3. **Validación de Interfaz:** Control responsive comprobado en resoluciones móviles y tablets prioritarias.
-4. **Documentación:** El avance técnico debe verse reflejado en la Wiki interna o en los manuales técnicos correspondientes antes de cerrar la tarea.
+
+Un requerimiento técnico se considera finalizado cuando cumple los criterios aplicables siguientes:
+
+1. **Funcionalidad:** el código resuelve el requerimiento y no presenta errores de compilación ni conflictos de integración.
+2. **Estándares de desarrollo:** se respeta el principio de responsabilidad única (SRP), se mantienen componentes modulares en Angular y se siguen las convenciones utilizadas en Django REST Framework.
+3. **Responsividad:** se comprueba el funcionamiento de la interfaz en resoluciones móviles, tablets y escritorio cuando la tarea afecta a la interfaz.
+4. **Pruebas:** se ejecutan las pruebas correspondientes y se verifican los casos principales de la funcionalidad modificada.
+5. **Integración:** se comprueba que los cambios no afecten negativamente a las funcionalidades existentes.
+6. **Revisión de código:** los cambios se integran mediante Pull Request y cuentan con la revisión requerida por el equipo.
+7. **Documentación:** se actualiza la documentación interna y el `CHANGELOG.md` cuando corresponde.
+
+## Equipo de desarrollo
+
+El proyecto **Sistema de Gestión de Mesas para Bares (SGMB)** es desarrollado por el equipo de trabajo de OpenCodeISPC.
+
+### Integrantes
+
+- Cabrera Milagros Magaly
+- Casarino Mariano
+- Minoldo Aldo Alejandro
+- Minoldo Nicolas Federico
+- Moreno Juan Ignacio

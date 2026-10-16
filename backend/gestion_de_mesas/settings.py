@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "channels",
+    "anymail",
     # Mis aplicaciones locales
     'productos',
     'mesas',
@@ -55,14 +56,19 @@ ASGI_APPLICATION = "gestion_de_mesas.asgi.application"
 
 REDIS_HOST = os.getenv("REDIS_HOST", "redis")
 REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
+
 # Configuración de Channel Layers (usando Redis en Docker)
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [
-                (REDIS_HOST, REDIS_PORT)
-            ],  # Asegúrate de tener el contenedor de Redis corriendo en este puerto
+                {
+                    "address": f"redis://{REDIS_HOST}:{REDIS_PORT}",
+                    "socket_timeout": 20,
+                    "socket_connect_timeout": 5,
+                }
+            ],
         },
     },
 }
@@ -108,9 +114,9 @@ WSGI_APPLICATION = "gestion_de_mesas.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.getenv("DB_NAME", "sgmb_db"),
-        "USER": os.getenv("DB_USER", "sgmb_user"),
-        "PASSWORD": os.getenv("DB_PASSWORD", "1234"),
+        "NAME": os.environ["DB_NAME"],
+        "USER": os.environ["DB_USER"],
+        "PASSWORD": os.environ["DB_PASSWORD"],
         "HOST": os.getenv("DB_HOST", "localhost"),
         "PORT": os.getenv("DB_PORT", "5434"),
     }
@@ -119,7 +125,7 @@ DATABASES = {
 # Configuración MongoDB
 MONGO_URI = os.getenv(
     "MONGO_URI",
-    "mongodb://sgmb_user:1234@localhost:27018/sgmb_mongo_db?authSource=admin",
+    "mongodb://sgmb_user:1234@localhost:27016/sgmb_mongo_db?authSource=admin",
 )
 MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "sgmb_mongo_db")
 
@@ -161,6 +167,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 6,
+        },
     },
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
@@ -170,9 +179,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Configuración de email para desarrollo (imprime el mail en la consola de Django)
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = "noreply@sgmb.com"
+# =====================================
+# EMAIL (consola por defecto, Brevo via API HTTP con django-anymail)
+# =====================================
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "SGMB <noreply@sgmb.com>")
+ANYMAIL = {
+    "BREVO_API_KEY": os.getenv("BREVO_API_KEY", ""),
+}
+
+# =====================================
+# OTP - RECUPERO DE CONTRASEÑA
+# =====================================
+OTP_EXPIRACION_MINUTOS = int(os.getenv("OTP_EXPIRACION_MINUTOS", 10))
+OTP_MAX_INTENTOS = 5
+OTP_REENVIO_SEGUNDOS = 60
 
 
 # Internationalization

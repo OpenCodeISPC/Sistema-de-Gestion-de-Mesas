@@ -53,3 +53,35 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 - Se completan todas las vistas de django corresponde a cada app
 - Se completan los codigos de los servicios, models, ts para angular
 - Se agrega jwt para login
+
+### [0.3.0] - 2026-10-15
+
+- Se corrige tablero Kanban para mejorar el flujo de trabajo y adecuarlo a testing
+
+### [1.0.0] - 2026-10-15
+
+### Added
+
+- Suite de pruebas E2E con Playwright y patron Page Object Model (`e2e/`) para los flujos criticos de Login (parametrizado) y CRUD de Productos.
+- Comando de gestion `seed_e2e` que crea los usuarios de prueba (admin, mozo, cajero, cocina).
+- Atributos `data-testid` en las pantallas de Login, Dashboard y Productos para localizadores estables.
+- Trazabilidad US/TC y evidencia de fallo en `e2e/README.md` y `e2e/evidencias/`.
+- Suite de tests del backend(DRF PostgresSQL)
+- *** Cumplimiento de Requerimientos (AUT-BE)**
+- AUT-BE-01: Framework de Pruebas y Arquitectura
+- AUT-BE-03: Reporte de Cobertura (Coverage)
+- AUT-BE-04: Cobertura de Flujo Completo (CRUD)
+- AUT-BE-05: Autenticación, Autorización y Roles
+- AUT-BE-06: Validaciones Negativas y Edge Cases
+- Colecciones de Postman y Newman
+- *** Cumplimiento de Requerimientos (AUT-API)**
+- AUT-API-01: Estructura de la Colección y Entornos (Environment Variables)
+- AUT-API-02: Automatización de Autenticación JWT y Captura de Tokens
+- Informe de Accesibilidad: resultados de axe-core y Lighthouse
+- *** 1. Auditoría Automática (Lighthouse y axe-core)**
+- *** 2. Revisión Manual (Checklist WCAG 2.2)**
+- *** 3. Bugs Reportados**
+
+### Changed
+
+- `docker-compose.yml`: el arranque del backend ejecuta `seed_e2e` para poblar los usuarios de prueba.

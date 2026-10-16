@@ -16,13 +16,14 @@ from .serializers import MesaSerializer
 @receiver(post_save, sender=Mesa)
 def notificar_cambio_mesa(sender, instance, created, **kwargs):
     channel_layer = get_channel_layer()
-    
-    #Emite al mismo grupo que ya escucha Angular por ws://localhost:8000/ws/pedidos/ 
+
     async_to_sync(channel_layer.group_send)(
-        'pedidos_group',
+        'comandas',
         {
-            'type': 'emitir_evento', # Ejecuta el método emitir_evento del PedidoConsumer
-            'event_type': 'MESA_CAMBIO_ESTADO',
-            'data': MesaSerializer(instance).data
+            'type': 'comanda_event',
+            'evento': {
+                'type': 'MESA_CAMBIO_ESTADO',
+                'data': MesaSerializer(instance).data
+            }
         }
     )

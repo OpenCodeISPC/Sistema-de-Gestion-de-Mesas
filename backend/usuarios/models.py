@@ -27,7 +27,9 @@ donde se requiere autenticación mediante correo electrónico y control de acces
 
 
 from django.db import models
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.utils import timezone
 
 from .managers import UsuarioManager
 
@@ -67,3 +69,46 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.nombre} - {self.apellido} - {self.email}"
+
+
+class CodigoOTP(models.Model):
+    """
+    Código de un solo uso (OTP) para el recupero de contraseña.
+
+    El código de 6 dígitos nunca se guarda en texto plano: se almacena
+    hasheado con el mismo mecanismo que usa Django para las contraseñas.
+    Cada código vence por tiempo, por cantidad de intentos fallidos
+    o al ser utilizado.
+    """
+
+    usuario = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        related_name="codigos_otp"
+    )
+    codigo_hash = models.CharField(max_length=128)
+    creado_en = models.DateTimeField(auto_now_add=True)
+    expira_en = models.DateTimeField()
+    intentos = models.PositiveSmallIntegerField(default=0)
+    usado = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = "codigos_otp"
+        ordering = ["-creado_en"]
+        verbose_name = "Código OTP"
+        verbose_name_plural = "Códigos OTP"
+
+    def __str__(self):
+        return f"OTP {self.usuario.email} - usado: {self.usado}"
+
+    def esta_vigente(self, max_intentos):
+        """Indica si el código todavía puede utilizarse."""
+        return (
+            not self.usado
+            and self.intentos < max_intentos
+            and timezone.now() < self.expira_en
+        )
+
+    def coincide(self, codigo):
+        """Compara el código ingresado contra el hash almacenado."""
+        return check_password(codigo, self.codigo_hash)

@@ -6,11 +6,15 @@
       <p>Gestiona las mesas del restaurante y sus reservas.</p>
     </div>
 
+    <!-- TABS MODIFICADOS -->
     <div class="sgmb-tabs">
-      <button type="button" class="sgmb-tab sgmb-tab--active">
+      <button type="button" class="sgmb-tab" [class.sgmb-tab--active]="pestanaActiva() === 'MESAS'"
+        (click)="cambiarPestana('MESAS')">
         Mesas
       </button>
-      <button type="button" class="sgmb-tab">
+
+      <button type="button" class="sgmb-tab" [class.sgmb-tab--active]="pestanaActiva() === 'RESERVAS'"
+        (click)="cambiarPestana('RESERVAS')">
         Reservas
       </button>
     </div>
@@ -87,14 +91,20 @@
           <div class="sgmb-table-grid">
 
             @for (mesa of grupo.mesas; track mesa.id_mesa) {
-            <article class="sgmb-table-card" [ngClass]="getCardClass(mesa.estado)"
-              [class.border-primary]="mesaSeleccionada()?.id_mesa === mesa.id_mesa" (click)="seleccionarMesa(mesa)"
+            <article class="sgmb-table-card"
+              [ngClass]="getCardClass(mesa.estado)"
+              [class.sgmb-table-card--blinking]="mesa.estado === 'LISTO'"
+              [class.border-primary]="mesaSeleccionada()?.id_mesa === mesa.id_mesa"
+              (click)="seleccionarMesa(mesa)"
+              (keyup.enter)="seleccionarMesa(mesa)"
+              tabindex="0" role="button"
+              [attr.aria-label]="'Seleccionar mesa ' + mesa.numero" 
               style="cursor: pointer;">
 
               <div class="sgmb-table-status">
                 <i class="bi" [ngClass]="getIconClass(mesa.estado)" aria-hidden="true"></i>
               </div>
-
+              
               <div class="sgmb-table-info">
                 <strong>Mesa {{ mesa.numero < 10 ? '0' + mesa.numero : mesa.numero }}</strong>
                     <small>Capacidad: {{ mesa.capacidad }}</small>
@@ -104,12 +114,22 @@
                 {{ mesa.estado | titlecase }}
               </span>
 
+              <!-- En mesas.html -->
               <div class="sgmb-table-actions" (click)="$event.stopPropagation()">
-                <button type="button" [attr.aria-label]="'Editar mesa ' + mesa.numero">
+                <button type="button"
+                        [attr.aria-label]="'Editar mesa ' + mesa.numero"
+                        (click)="editarCapacidad(mesa, $event)"
+                        title="Cambiar capacidad">
                   <i class="bi bi-pencil-square" aria-hidden="true"></i>
                 </button>
-                <button type="button" [attr.aria-label]="'Más opciones mesa ' + mesa.numero">
-                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+
+                <!-- BOTÓN DE ACCIÓN RESERVADA / LIBRE -->
+                <button type="button" (click)="toggleReservaMesa(mesa, $event)"
+                  [attr.aria-label]="(mesa.estado === 'RESERVADA' ? 'Liberar reserva mesa ' : 'Reservar mesa ') + mesa.numero"
+                  [title]="mesa.estado === 'RESERVADA' ? 'Quitar reserva' : 'Marcar como Reservada'">
+                  <i class="bi"
+                    [ngClass]="mesa.estado === 'RESERVADA' ? 'bi-calendar-x text-danger' : 'bi-calendar-check text-warning'"
+                    aria-hidden="true"></i>
                 </button>
               </div>
 
@@ -128,7 +148,8 @@
       <!-- COMPONENTE HIJO PEDIDOS -->
       @if (mesaSeleccionada()) {
       <app-pedidos [mesaId]="mesaSeleccionada()?.id_mesa || null" [numeroMesa]="mesaSeleccionada()?.numero || '01'"
-        (alCerrar)="deseleccionarMesa()">
+        (alCerrar)="deseleccionarMesa()" (alConfirmarPedido)="marcarMesaComoOcupada($event)"
+        (alCerrarMesa)="marcarMesaComoLibre($event)">
       </app-pedidos>
       }
 
