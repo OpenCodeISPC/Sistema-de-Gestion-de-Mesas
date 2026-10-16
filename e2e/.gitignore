@@ -1,0 +1,13 @@
+# Artefactos de Playwright (traces, videos, screenshots)
+artifacts/
+
+# Reportes generados (HTML/JUnit) - se regeneran con cada corrida
+reports/
+
+# Entorno virtual y cache de Python
+.venv/
+venv/
+.env
+__pycache__/
+*.pyc
+.pytest_cache/

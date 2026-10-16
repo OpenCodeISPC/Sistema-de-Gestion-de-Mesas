@@ -10,7 +10,7 @@
 
     >
 
-      <h1>Iniciar Sesión</h1>
+      <h1 data-testid="login-titulo">Iniciar Sesión</h1>
 
 
 
@@ -18,13 +18,13 @@
 
       @if (mensajeExito) {
 
-        <div class="alert alert-success" role="alert">{{ mensajeExito }}</div>
+        <div class="alert alert-success" role="alert" data-testid="login-exito">{{ mensajeExito }}</div>
 
       }
 
       @if (mensajeError) {
 
-        <div class="alert alert-danger" role="alert">{{ mensajeError }}</div>
+        <div class="alert alert-danger" role="alert" data-testid="login-error">{{ mensajeError }}</div>
 
       }
 
@@ -44,7 +44,7 @@
 
           <input
 
-            id="username"
+            id="username" data-testid="login-email"
 
             type="email"
 
@@ -106,7 +106,7 @@
 
           <input
 
-            id="password"
+            id="password" data-testid="login-password"
 
             type="password"
 
@@ -184,7 +184,7 @@
 
           <button
 
-            type="submit"
+            type="submit" data-testid="login-submit"
 
             [disabled]="cargando"
 

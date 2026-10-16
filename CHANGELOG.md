@@ -57,3 +57,16 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 ### [1.0.0] - 2026-10-15
 
 - Se corrige tablero Kanban para mejorar el flujo de trabajo y adecuarlo a testing
+
+### [1.1.0] - 2026-10-15
+
+### Added
+
+- Suite de pruebas E2E con Playwright y patron Page Object Model (`e2e/`) para los flujos criticos de Login (parametrizado) y CRUD de Productos.
+- Comando de gestion `seed_e2e` que crea los usuarios de prueba (admin, mozo, cajero, cocina).
+- Atributos `data-testid` en las pantallas de Login, Dashboard y Productos para localizadores estables.
+- Trazabilidad US/TC y evidencia de fallo en `e2e/README.md` y `e2e/evidencias/`.
+
+### Changed
+
+- `docker-compose.yml`: el arranque del backend ejecuta `seed_e2e` para poblar los usuarios de prueba.

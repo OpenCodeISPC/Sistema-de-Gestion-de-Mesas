@@ -1,0 +1,6 @@
+# Suite E2E - Sprint 4 (Verificacion y Validacion de Programas)
+# Playwright + pytest-playwright + Page Object Model (POM)
+pytest>=8.2,<9
+pytest-playwright>=0.5.2
+pytest-html>=4.1
+playwright>=1.47
