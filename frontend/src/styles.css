@@ -2866,7 +2866,7 @@ button {
    ========================================================= */
 
 .sgmb-order-add {
-  margin: 10px 12px;
+  margin: 8px 0 10px;
 
   padding: 6px 10px;
 
@@ -3640,7 +3640,7 @@ button {
 /* Cancelar */
 
 .sgmb-product-button--cancel {
-  border: 1px solid #cdbdab;
+  border: 1px solid #5e1d0a;
 
   background: white;
 
@@ -3649,7 +3649,7 @@ button {
 
 
 .sgmb-product-button--cancel:hover {
-  background: #f4ece3;
+  background: #ff1100;
 }
 
 
