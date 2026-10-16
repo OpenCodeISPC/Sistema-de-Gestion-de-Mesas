@@ -125,7 +125,7 @@ DATABASES = {
 # Configuración MongoDB
 MONGO_URI = os.getenv(
     "MONGO_URI",
-    "mongodb://sgmb_user:1234@localhost:27018/sgmb_mongo_db?authSource=admin",
+    "mongodb://sgmb_user:1234@localhost:27016/sgmb_mongo_db?authSource=admin",
 )
 MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "sgmb_mongo_db")
 
