@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { environments } from '../../environments/environments';
 
 
 export interface EventoWebSocket<T = any> {
@@ -11,7 +12,7 @@ export interface EventoWebSocket<T = any> {
 })
 export class WebsocketService {
   private socket?: WebSocket
-  private readonly wsUrl = 'ws://localhost:8000/ws/comandas/'; //url de django channels
+  private readonly wsUrl = `${environments.wsUrl}/ws/comandas/`; //url de django channels
   private intencionalDesconexion = false;
 
   //signal para exponer el ultimo evento recibido a la app

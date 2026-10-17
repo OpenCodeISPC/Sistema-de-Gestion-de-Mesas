@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { IComanda, ICrearComandaDTO, IActualizarComandaDTO } from '../models/icomandas';
+import { environments } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +10,7 @@ import { IComanda, ICrearComandaDTO, IActualizarComandaDTO } from '../models/ico
 export class ComandaService {
 
   // ruta exacta de tu backend Django/Python
-  private apiUrl = 'http://localhost:8000/api/comandas/';
+  private apiUrl = `${environments.apiUrl}/api/comandas/`;
 
   private http = inject(HttpClient);
 

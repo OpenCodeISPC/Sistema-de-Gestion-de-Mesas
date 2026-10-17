@@ -8,6 +8,7 @@ import {
   ICierreResumen,
   ICerrarCajaDTO,
 } from '../models/icaja';
+import { environments } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
@@ -15,8 +16,8 @@ import {
 export class CajaService {
 
   // ruta exacta de tu backend Django/Python
-  private pagosUrl = 'http://localhost:8000/api/pagos/';
-  private cierresUrl = 'http://localhost:8000/api/cierres/';
+  private pagosUrl = `${environments.apiUrl}/api/pagos/`;
+  private cierresUrl = `${environments.apiUrl}/api/cierres/`;
 
   private http = inject(HttpClient);
 
