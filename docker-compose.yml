@@ -2,17 +2,19 @@ services:
   postgres_nuevo_proyecto:
     image: postgres:16
     container_name: sgmb_postgres
+    env_file:
+      - ./backend/.env.desarrollo
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-sgmb_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-1234}
       POSTGRES_DB: ${POSTGRES_DB:-sgmb_db}
     ports:
       - "5434:5432"
     volumes:
       - datos_postgres_sgmb:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-sgmb_db}" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sgmb_user} -d ${POSTGRES_DB:-sgmb_db}" ]
       interval: 10s
       timeout: 5s
       retries: 5

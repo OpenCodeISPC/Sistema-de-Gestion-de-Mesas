@@ -9,13 +9,14 @@ import {
   IPatchMesaDTO,
   EstadoMesa
 } from '../models/imesa';
+import { environments } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MesaService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8000/api/mesas/';
+  private readonly apiUrl = `${environments.apiUrl}/api/mesas/`;
 
   /**
    * Obtiene la lista de mesas con la opción de filtrar por estado

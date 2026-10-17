@@ -2,13 +2,14 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Observable, catchError, throwError} from 'rxjs';
 import {ILoginRequest,ILoginResponse,IRefreshTokenRequest,IOauthRequest,IRefreshTokenResponse} from '../models/ilogin';
+import { environments } from '../../environments/environments';
 
 @Injectable({
     providedIn: 'root',
 })
 export class LoginService {
     private readonly http = inject(HttpClient);
-    private readonly apiUrl = 'http://localhost:8000/api/auth/'; //url de django
+    private readonly apiUrl = `${environments.apiUrl}/api/auth/`; //url de django
 
     login(data:ILoginRequest): Observable<ILoginResponse> {
         return this.http.post<ILoginResponse>(`${this.apiUrl}login/`, data);

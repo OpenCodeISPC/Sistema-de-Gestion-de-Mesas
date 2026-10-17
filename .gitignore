@@ -45,6 +45,7 @@ backend/static/frontend/*
 *.dump
 *.sql
 *.json
+!frontend/vercel.json
 *.tar
 *.gz
 
