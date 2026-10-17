@@ -167,6 +167,22 @@ También es posible iniciar los servicios mediante Docker Compose, utilizando el
 docker compose up --build
 ```
 
+Si el backend reinicia continuamente y sus logs muestran
+`password authentication failed for user "sgmb_user"`, el volumen de
+PostgreSQL fue creado con credenciales anteriores. La corrección conserva los
+datos existentes y crea el usuario esperado por Django:
+
+```powershell
+docker exec sgmb_postgres psql -U postgres -d postgres -c "CREATE ROLE sgmb_user LOGIN PASSWORD '1234';"
+docker exec sgmb_postgres psql -U postgres -d postgres -c "ALTER ROLE sgmb_user CREATEDB;"
+docker compose up -d backend
+```
+
+En una instalación nueva, `docker-compose.yml` toma las credenciales de
+`backend/.env.desarrollo` para que PostgreSQL y Django utilicen el mismo
+usuario desde el primer arranque. No se debe ejecutar `docker compose down -v`
+salvo que se acepte perder los datos persistidos.
+
 Para detener los servicios:
 
 ```bash

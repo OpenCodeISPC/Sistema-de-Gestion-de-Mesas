@@ -22,6 +22,7 @@ Credenciales de prueba (mismas que documenta e2e/README.md):
 
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
+from productos.models import Producto
 
 Usuario = get_user_model()
 
@@ -68,5 +69,22 @@ class Command(BaseCommand):
                     f"Usuario {accion}: {usuario.email} (rol {usuario.rol})"
                 )
             )
+
+        producto, creado = Producto.objects.get_or_create(
+            nombre="Bebida E2E",
+            defaults={
+                "descripcion": "Producto de barra para pruebas E2E.",
+                "precio": 1000,
+                "stock": 50,
+                "categoria": "BARRA",
+                "disponibilidad": True,
+            },
+        )
+        producto.categoria = "BARRA"
+        producto.stock = max(producto.stock, 50)
+        producto.disponibilidad = True
+        producto.save(update_fields=["categoria", "stock", "disponibilidad", "actualizado_en"])
+        accion = "creado" if creado else "actualizado"
+        self.stdout.write(self.style.SUCCESS(f"Producto E2E {accion}: {producto.nombre}"))
 
         self.stdout.write(self.style.SUCCESS("SEED E2E listo."))
