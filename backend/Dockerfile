@@ -19,12 +19,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt /app/
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
+    
 
 # Copiar el resto del código del backend
 COPY . /app/
 
 # Puerto expuesto por Django
 EXPOSE 8000
+
+# Recolectá los estáticos en Dockerfile, para que se vea bien Render
+RUN python manage.py collectstatic --noinput
 
 # Comando de arranque para producción en Render usando el puerto dinámico + migrate
 CMD ["sh", "-c", "python manage.py migrate && gunicorn gestion_de_mesas.wsgi:application --bind 0.0.0.0:$PORT"]
