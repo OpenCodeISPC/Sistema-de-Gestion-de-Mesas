@@ -25,3 +25,6 @@ COPY . /app/
 
 # Puerto expuesto por Django
 EXPOSE 8000
+
+# Comando de arranque para producción en Render usando el puerto dinámico
+CMD ["sh", "-c", "gunicorn gestion_de_mesas.wsgi:application --bind 0.0.0.0:$PORT"]
