@@ -65,6 +65,24 @@ class PagoWriteSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {'monto': 'El monto del cobro debe ser mayor a 0.'}
             )
+
+        # En efectivo, el importe recibido es el dinero entregado por el cliente:
+        # debe alcanzar a cubrir el total a cobrar (monto). En tarjeta o
+        # transferencia el importe recibido no aplica.
+        metodo_pago = attrs.get('metodo_pago', 'EFECTIVO')
+        importe_recibido = attrs.get('importe_recibido')
+        if (
+            metodo_pago == 'EFECTIVO'
+            and importe_recibido is not None
+            and importe_recibido < monto
+        ):
+            raise serializers.ValidationError(
+                {
+                    'importe_recibido': (
+                        'El importe recibido debe ser mayor o igual al total a cobrar.'
+                    )
+                }
+            )
         return attrs
 
 

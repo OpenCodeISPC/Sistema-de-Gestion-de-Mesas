@@ -77,6 +77,21 @@ class PagoApiTests(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_importe_recibido_menor_al_total_400(self):
+        response = self.client.post(
+            '/api/pagos/',
+            {**self.pago_data, 'importe_recibido': 1000},
+            format='json',
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # El cobro no se registra: el pedido sigue LISTO y la mesa OCUPADA
+        self.pedido.refresh_from_db()
+        self.assertEqual(self.pedido.estado, 'LISTO')
+
+        self.mesa.refresh_from_db()
+        self.assertEqual(self.mesa.estado, 'OCUPADA')
+
     def test_listar_pagos(self):
         Pago.objects.create(
             pedido=self.pedido,

@@ -121,4 +121,24 @@ describe('Caja', () => {
     component.incluirPropina.set(true);
     expect(component.totalACobrar()).toBe(1100);
   });
+
+  it('debería rechazar el cobro en efectivo si el importe recibido es menor al total a cobrar', () => {
+    const pedido: IPedido = {
+      id_pedido: 1,
+      fecha_hora: '2026-09-13T17:00:00-03:00',
+      estado: 'LISTO',
+      total: 1000,
+      mesa: 1,
+      usuario: 1,
+      detalles: [],
+    };
+
+    component.pedidoSeleccionado.set(pedido);
+    component.metodoPagoActivo.set('EFECTIVO');
+    component.importeRecibido.set('500');
+
+    component.confirmarCobro();
+
+    expect(component.errorCobros()).toContain('importe recibido');
+  });
 });
