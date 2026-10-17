@@ -1,4 +1,4 @@
-<main class="sgmb-page sgmb-mesas">
+<main class="sgmb-page sgmb-mesas" data-testid="mesas-page">
 
   <header class="sgmb-page-header">
     <div>
@@ -92,6 +92,9 @@
 
             @for (mesa of grupo.mesas; track mesa.id_mesa) {
             <article class="sgmb-table-card"
+              data-testid="mesa-card"
+              [attr.data-mesa-numero]="mesa.numero"
+              [attr.data-mesa-estado]="mesa.estado"
               [ngClass]="getCardClass(mesa.estado)"
               [class.sgmb-table-card--blinking]="mesa.estado === 'LISTO'"
               [class.border-primary]="mesaSeleccionada()?.id_mesa === mesa.id_mesa"
@@ -110,7 +113,7 @@
                     <small>Capacidad: {{ mesa.capacidad }}</small>
               </div>
 
-              <span class="sgmb-status" [ngClass]="getBadgeClass(mesa.estado)">
+              <span data-testid="mesa-estado" class="sgmb-status" [ngClass]="getBadgeClass(mesa.estado)">
                 {{ mesa.estado | titlecase }}
               </span>
 

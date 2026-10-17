@@ -16,6 +16,7 @@ import pytest
 from playwright.sync_api import Page
 
 from pages.login_page import LoginPage
+from pages.mesas_page import MesasPage
 from pages.productos_page import ProductosPage
 
 APP_URL = os.getenv("E2E_BASE_URL", "http://localhost:4200")
@@ -98,3 +99,10 @@ def productos_como_mozo(page: Page, app_url: str) -> ProductosPage:
     """Productos autenticado con el rol MOZO (rol sin permisos de gestion)."""
     _iniciar_sesion_por_api(page, "mozo")
     return ProductosPage(page, app_url).abrir()
+
+
+@pytest.fixture
+def mesas_como_mozo(page: Page, app_url: str) -> MesasPage:
+    """Mesas autenticado con el rol MOZO para flujos de salón."""
+    _iniciar_sesion_por_api(page, "mozo")
+    return MesasPage(page, app_url).abrir()
