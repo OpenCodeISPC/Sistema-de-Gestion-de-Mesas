@@ -22,9 +22,12 @@ e2e/
 │   ├── base_page.py            #   Navegacion comun
 │   ├── login_page.py           #   HU-LOGIN
 │   ├── dashboard_page.py       #   Pantalla post-login
+│   ├── mesas_page.py           #   HU-MESAS / RF01-RF02
+│   ├── pedido_page.py          #   HU-MESAS / RF05
 │   └── productos_page.py       #   HU-PROD / HU-PROD-PERM
 ├── tests/                      # Casos de prueba (sin selectores ni esperas)
 │   ├── test_auth.py            #   Auth   -> TC-L-07, TC-L-08 (clase TestAuth)
+│   ├── test_mesas_pedidos.py   #   Mesas y pedidos -> TC-L-04/TC-L-05
 │   ├── test_productos_crud.py  #   Producto -> TC-L-01..03
 │   └── test_productos_permisos.py  # Producto -> TC-L-26
 ├── reports/                    # reporte.html (generado, no versionado)
@@ -62,7 +65,17 @@ Page Object destino, Page Objects sin aserciones y tests sin selectores.
    | CAJERO | cajero@sgmb.com  | Password123   |
    | COCINA | cocina@sgmb.com  | Password123   |
 
-3. **Python 3.11+** en el host (los servicios del front consumen
+3. **Datos iniciales del salón y catálogo**:
+
+   ```bash
+   docker exec -i sgmb_backend python manage.py seed_mesas
+   ```
+
+   El flujo de mesas selecciona automáticamente la primera mesa en estado
+   `LIBRE`. Para agregar el pedido debe existir al menos un producto activo de
+   categoría `BARRA` en el catálogo.
+
+4. **Python 3.11+** en el host (los servicios del front consumen
    `http://localhost:8000`, por eso la suite corre en el host y no en un
    contenedor).
 
@@ -93,8 +106,12 @@ Opcional: copiar `.env.example` a `.env` para sobreescribir URLs o contrasena.
 pytest
 
 # Solo un archivo / test
-pytest tests/test_login.py
+pytest tests/test_auth.py
 pytest tests/test_productos_crud.py::test_crear_producto
+
+# Flujo de mesas y toma de pedidos
+pytest tests/test_mesas_pedidos.py
+pytest tests/test_mesas_pedidos.py::test_mozo_abre_mesa_y_confirma_pedido
 ```
 
 Las URLs y credenciales se leen de variables de entorno (`E2E_BASE_URL`,
@@ -102,7 +119,18 @@ Las URLs y credenciales se leen de variables de entorno (`E2E_BASE_URL`,
 
 ---
 
-## 3. Evidencias (reporte y artefactos)
+## 4. Flujo E2E: gestión de mesas y toma de pedidos
+
+El test `test_mesas_pedidos.py::test_mozo_abre_mesa_y_confirma_pedido`
+automatiza el flujo de un usuario `MOZO`: selecciona una mesa `LIBRE`, abre el
+comandero digital, agrega un producto de `BARRA`, confirma el pedido y verifica
+que la mesa quede `Ocupada`. El caso cubre `RF01`, `RF02` y `RF05`, con
+trazabilidad a `TC-L-04` / `TC-L-05`.
+
+El flujo utiliza `MesasPage` y `PedidoPage` para encapsular selectores,
+navegación y esperas, manteniendo el test sin selectores ni detalles técnicos.
+
+## 5. Evidencias (reporte y artefactos)
 
 Configurado en `pytest.ini`; se generan automaticamente al correr pytest:
 
@@ -114,7 +142,7 @@ Configurado en `pytest.ini`; se generan automaticamente al correr pytest:
 
 ---
 
-## 4. Trazabilidad (US del Backlog / TC de la Planilla)
+## 6. Trazabilidad (US del Backlog / TC de la Planilla)
 
 Los codigos `USxx` provienen del **Product Backlog** y los `TC-L-xx` de la
 **Planilla de Test Cases** del equipo.
@@ -129,6 +157,7 @@ Los codigos `USxx` provienen del **Product Backlog** y los `TC-L-xx` de la
 | US13         | Ver grilla/tabla de productos.                           | (sin TC propio) | `test_productos_crud.py::test_listar_y_buscar_producto` |
 | US11         | Como administrador, editar un producto.                  | TC-L-02       | `test_productos_crud.py::test_editar_producto` |
 | US12         | Como administrador, eliminar un producto.                | TC-L-03       | `test_productos_crud.py::test_eliminar_producto` |
+| HU-MESAS     | Como mozo, abrir una mesa libre y registrar un pedido.     | TC-L-04/TC-L-05 | `test_mesas_pedidos.py::test_mozo_abre_mesa_y_confirma_pedido` |
 | HU-BUG#07    | Usuarios sin permisos no pueden crear productos.         | TC-L-26       | `test_productos_permisos.py::test_mozo_no_deberia_ver_controles_de_gestion` |
 | HU-BUG#07    | Usuarios sin permisos no pueden crear productos.         | TC-L-26       | `test_productos_permisos.py::test_mozo_al_intentar_agregar_recibe_acceso_denegado` |
 
@@ -142,7 +171,7 @@ Los codigos `USxx` provienen del **Product Backlog** y los `TC-L-xx` de la
 
 ---
 
-## 5. Defecto detectado (evidencia de fallo)
+## 7. Defecto detectado (evidencia de fallo)
 
 `test_mozo_no_deberia_ver_controles_de_gestion` (asociado a **TC-L-26 /
 HU-BUG#07**) detecta un defecto real y se marca como **`xfail(strict=True)`**:

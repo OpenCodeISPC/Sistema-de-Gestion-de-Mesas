@@ -402,6 +402,17 @@ export class Caja implements OnInit {
       return;
     }
 
+    // En efectivo, el importe recibido debe alcanzar para cubrir el total a cobrar
+    if (this.metodoPagoActivo() === 'EFECTIVO') {
+      const recibido = Number(this.importeRecibido());
+      if (Number.isNaN(recibido) || recibido < this.totalACobrar()) {
+        this.errorCobros.set(
+          `El importe recibido (${this.formatearMoneda(recibido)}) debe ser mayor o igual al total a cobrar (${this.formatearMoneda(this.totalACobrar())}).`
+        );
+        return;
+      }
+    }
+
     const dto: ICrearPagoDTO = {
       pedido: pedido.id_pedido,
       metodo_pago: this.metodoPagoActivo(),

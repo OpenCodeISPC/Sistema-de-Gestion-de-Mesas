@@ -9,6 +9,7 @@ import {
   IPatchPedidoDTO,
   EstadoPedido
 } from '../models/ipedido';
+import { environments } from '../../environments/environments';
 
 
 
@@ -17,7 +18,7 @@ import {
 })
 export class PedidoService {
   private readonly http = inject(HttpClient)
-  private readonly apiUrl = 'http://localhost:8000/api/pedidos/'
+  private readonly apiUrl = `${environments.apiUrl}/api/pedidos/`
 
   //permite filtrar opcionalmente por estado o por nro id de mesa
   getPedidos(estado?: EstadoPedido, mesaId?: number): Observable<IPedido[]> {

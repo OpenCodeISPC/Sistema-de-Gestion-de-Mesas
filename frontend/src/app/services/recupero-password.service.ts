@@ -8,6 +8,7 @@ import {
     IRecuperoPasswordConfirm,
     IRecuperoPasswordConfirmResponse
 } from '../models/irecupero-password';
+import { environments } from '../../environments/environments';
 
 @Injectable({
     providedIn: 'root',
@@ -15,7 +16,7 @@ import {
 
 export class RecuperoPasswordService {
     private readonly http = inject(HttpClient);
-    private readonly apiUrl = 'http://localhost:8000/api/auth/'; //url de django
+    private readonly apiUrl = `${environments.apiUrl}/api/auth/`; //url de django
 
     // Paso 1: el backend genera el código OTP y lo envía al correo
     solicitarRecuperoPassword(data:IRecuperoPassword): Observable<IRecuperoPasswordResponse> {
