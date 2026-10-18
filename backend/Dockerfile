@@ -28,4 +28,4 @@ COPY . /app/
 EXPOSE 8000
 
 # Comando de arranque para producción en Render usando el puerto dinámico + migrate + collectstatic
-CMD ["sh", "-c", "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn gestion_de_mesas.wsgi:application --bind 0.0.0.0:$PORT"]
+CMD ["sh", "-c", "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn gestion_de_mesas.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT"]
