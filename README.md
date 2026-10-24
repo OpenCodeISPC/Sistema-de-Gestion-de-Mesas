@@ -161,7 +161,14 @@ El script contempla opciones para confirmar operaciones y conservar datos existe
 
 ### 3. Ejecución mediante Docker Compose
 
-También es posible iniciar los servicios mediante Docker Compose, utilizando el archivo de configuración incluido en el repositorio.
+**IMPORTANTE:** Configuración de variables de entorno
+Antes de levantar los servicios por primera vez, es obligatorio crear el archivo de variables de entorno para el backend. Sin este archivo, el contenedor no podrá iniciar:
+
+Navegar a la carpeta backend/.
+
+Duplicar el archivo .env.example y renombrarlo como .env.desarrollo
+
+Una vez configurado, iniciar los servicios mediante Docker Compose:
 
 ```bash
 docker compose up --build
