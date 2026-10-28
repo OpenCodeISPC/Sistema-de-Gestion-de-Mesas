@@ -143,7 +143,7 @@ class ProductoAPITests(APITestCase):
         # Assert
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    # --- TESTS DE VERBOS HTTP NO PERMITIDOS (405) ---
+    # --- TESTS DE VERBOS HTTP NO PERMITIDOS (405) -------
 
     def test_12_metodo_no_permitido_put_en_lista_405(self):
         # Arrange
