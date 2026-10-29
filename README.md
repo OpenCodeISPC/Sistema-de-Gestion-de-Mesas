@@ -1,142 +1,104 @@
-
 # Sistema de Gestión de Mesas para Bares (SGMB)
 
-## Descripción del proyecto
+SGMB es una aplicación web para centralizar la operación diaria de un bar: gestión de mesas, pedidos, comandas, productos, pagos y cierres de caja. El sistema está pensado para facilitar la coordinación entre el salón, la cocina, la barra y la caja.
 
-El Sistema de Gestión de Mesas para Bares (SGMB) es una aplicación web diseñada para facilitar la administración de un establecimiento gastronómico. Permite gestionar mesas, pedidos, preparación de productos, stock, pagos y cierres de caja desde una plataforma centralizada.
+## Objetivo
 
-El sistema busca mejorar la organización del trabajo, agilizar la atención al cliente y facilitar el seguimiento de las operaciones realizadas por el personal.
-
-## Problemática
-
-La administración manual de mesas, pedidos y pagos puede generar demoras, errores de registro y dificultades para coordinar las tareas entre el salón, la cocina, la barra y la caja.
-
-SGMB busca centralizar estas operaciones y ofrecer información actualizada para mejorar la coordinación y el control del establecimiento.
-
-## Público objetivo
-
-El sistema está orientado a bares y establecimientos gastronómicos que necesitan organizar sus operaciones diarias mediante una herramienta digital.
-
-Entre sus usuarios se encuentran administradores, mozos, personal de cocina y cajeros, con permisos diferenciados según sus responsabilidades.
+Reducir los errores y las demoras asociados a la gestión manual de un establecimiento gastronómico mediante una plataforma que organiza la información y permite consultar los cambios de los pedidos en tiempo real.
 
 ## Funcionalidades principales
 
-### Autenticación y gestión de usuarios
+### Usuarios y autenticación
+- Registro e inicio de sesión.
+- Autenticación mediante JWT.
+- Integración con Google OAuth.
+- Recuperación de contraseña mediante código OTP por correo electrónico.
+- Protección de rutas del frontend y acceso según el rol del usuario.
 
-- Inicio de sesión mediante autenticación con JWT.
-- Integración con Google OAuth 2.0.
-- Recuperación de acceso mediante códigos OTP enviados por correo electrónico.
-- Control de acceso basado en roles (RBAC).
-- Roles contemplados: `ADMIN`, `MOZO`, `CAJERO` y `COCINA`.
+Los roles contemplados por el sistema son `ADMIN`, `MOZO`, `CAJERO` y `COCINA`.
 
-### Gestión de mesas
+### Mesas y pedidos
+- Visualización y gestión de mesas.
+- Registro de pedidos asociados a una mesa.
+- Consulta de los productos y detalles de cada pedido.
+- Seguimiento de los estados de los pedidos.
+- Actualización de información mediante WebSockets.
 
-- Visualización de las mesas del establecimiento.
-- Identificación del estado de cada mesa.
-- Administración de mesas ocupadas, libres, reservadas y cerradas.
-- Actualización de información en tiempo real mediante WebSockets.
+### Comandas de cocina y barra
+- Visualización de pedidos en un tablero Kanban.
+- Organización por estados: `PENDIENTE`, `PREPARACION` y `LISTO`.
+- Alternancia entre los sectores Cocina y Barra.
+- Actualización de las comandas sin depender de consultas repetidas desde la interfaz.
 
-### Gestión de pedidos
-
-- Registro y administración de pedidos.
-- Seguimiento del estado de preparación.
-- Coordinación entre el salón, la cocina y la barra.
-- Gestión de productos y stock.
-
-### Cocina y barra
-
-- Visualización de pedidos pendientes.
-- Organización de pedidos mediante un tablero Kanban.
-- Seguimiento de los estados `PENDIENTE`, `EN PREPARACIÓN` y `LISTO`.
+### Productos y stock
+- Administración del catálogo de productos.
+- Registro de precios, disponibilidad, categoría y stock.
+- Uso de productos en los pedidos.
 
 ### Caja y pagos
-
-- Registro de pagos.
-- Cálculo de propinas del 10 %.
-- Liberación automática de la mesa según el flujo de cierre implementado.
-- Generación de comprobantes en PDF.
+- Registro de pagos y métodos de pago.
+- Registro de propinas.
 - Apertura, cierre y reapertura de caja.
-- Generación de reportes de caja en PDF.
+- Consulta de información de los pagos.
+- Exportación de cierres de caja a PDF.
 
 ### Auditoría
-
 - Registro de operaciones relevantes del sistema.
 - Almacenamiento de eventos de auditoría en MongoDB.
-- Procesamiento asíncrono de los registros.
-- Exposición de una API para consultar la auditoría mediante `/api/auditoria`.
-- Manejo de fallos de auditoría para reducir su impacto sobre la operación principal.
+- Consulta de registros mediante los endpoints de la aplicación.
 
-## Tecnologías utilizadas
+## Tecnologías
 
-### Frontend
+| Área | Tecnologías |
+|---|---|
+| Frontend | Angular 20, TypeScript, componentes standalone y Signals |
+| Backend | Python 3.12, Django 6, Django REST Framework |
+| Autenticación | JWT, Google OAuth |
+| Comunicación en tiempo real | Django Channels, WebSockets y Redis |
+| Base de datos relacional | PostgreSQL 16 |
+| Auditoría | MongoDB 7 |
+| Servidor ASGI | Uvicorn |
+| Documentos PDF | ReportLab |
+| Entorno local | Docker y Docker Compose |
+| Pruebas E2E | Playwright con Python y patrón Page Object Model |
 
-- Angular 20.
-- Componentes standalone.
-- Signals para la gestión reactiva del estado.
-- Comunicación con el backend mediante API REST.
-- WebSockets para actualizaciones en tiempo real.
+## Arquitectura general
 
-### Backend
+La aplicación se organiza en tres partes principales:
 
-- Python.
-- Django 6.0.
-- Django REST Framework.
-- Django Channels para comunicación mediante WebSockets.
-- Uvicorn y Daphne como componentes del entorno de ejecución ASGI.
+- **Frontend:** interfaz desarrollada con Angular. Se ocupa de mostrar la información y permitir la interacción del personal.
+- **Backend:** API desarrollada con Django REST Framework. Procesa las solicitudes, aplica reglas de negocio y gestiona los datos.
+- **Persistencia y servicios:** PostgreSQL almacena los datos operativos; MongoDB se utiliza para los registros de auditoría; Redis sirve de soporte para la comunicación en tiempo real con Django Channels.
 
-### Bases de datos y servicios
+Para las actualizaciones de las comandas, el backend comunica los cambios al frontend mediante WebSockets. Angular recibe esos eventos y actualiza la interfaz para que el personal pueda ver el estado de los pedidos.
 
-- PostgreSQL 16: almacenamiento de datos relacionales.
-- MongoDB 7: almacenamiento de registros de auditoría.
-- Redis: soporte para la comunicación y gestión de canales en tiempo real.
-- Docker y Docker Compose: ejecución y coordinación de los servicios.
+## Estructura del repositorio
 
-### Herramientas adicionales
+```text
+.
+├── backend/                 # API Django, modelos, servicios y pruebas
+├── frontend/                # Aplicación Angular
+├── e2e/                     # Pruebas end-to-end con Playwright
+├── docker-compose.yml       # Servicios para el entorno local
+├── actualizar-entorno.sh   # Script de actualización del entorno Docker
+├── CHANGELOG.md             # Registro de cambios
+├── README-SCRIPT.md         # Guía complementaria del script
+└── requirements.txt         # Dependencias Python del repositorio
+```
 
-- Git y GitHub para el control de versiones.
-- ReportLab para la generación de documentos PDF.
-- Scripts de automatización para la actualización del entorno.
-
-## Arquitectura del sistema
-
-El proyecto organiza sus responsabilidades en capas para separar la interfaz de usuario, la lógica de negocio y el almacenamiento de información.
-
-### Frontend
-
-Desarrollado con Angular, se encarga de mostrar las interfaces, gestionar la interacción con los usuarios y comunicarse con el backend.
-
-### Backend
-
-Desarrollado con Django REST Framework, centraliza la lógica de negocio, valida las solicitudes y aplica las reglas de acceso correspondientes.
-
-### Persistencia y servicios
-
-PostgreSQL almacena los datos relacionales, mientras que MongoDB se utiliza para los registros de auditoría. Redis participa en la infraestructura de comunicación en tiempo real.
-
-## Estructura del proyecto
-
-El repositorio contiene los componentes necesarios para el desarrollo y la ejecución de la aplicación.
-
-- `frontend/`: aplicación desarrollada con Angular.
-- `backend/`: aplicación desarrollada con Django.
-- Archivos de configuración de Docker y Docker Compose.
-- Scripts de automatización del entorno.
-- Archivos de documentación del proyecto.
-
-La estructura interna de cada directorio organiza los componentes, servicios, modelos, vistas, configuraciones y pruebas correspondientes a cada tecnología.
+Dentro del backend, las aplicaciones principales incluyen usuarios, mesas, pedidos, comandas, productos, caja y auditoría. En el frontend, las pantallas y servicios se organizan por funcionalidad.
 
 ## Requisitos previos
 
-Para ejecutar el proyecto localmente se necesita:
+Para ejecutar el entorno local se necesita:
 
 - Git.
-- Docker.
-- Docker Compose.
+- Docker Desktop o Docker Engine con Docker Compose.
 - Un navegador web actualizado.
 
-También se recomienda contar con un editor de código y las herramientas necesarias para trabajar con Angular y Django si se desea desarrollar o modificar la aplicación fuera de los contenedores.
+Para ejecutar las pruebas E2E fuera de Docker, también se necesita Python 3.11 o superior.
 
-## Instalación y ejecución
+## Instalación y ejecución local
 
 ### 1. Clonar el repositorio
 
@@ -145,147 +107,236 @@ git clone https://github.com/OpenCodeISPC/Sistema-de-Gestion-de-Mesas.git
 cd Sistema-de-Gestion-de-Mesas
 ```
 
-### 2. Iniciar el entorno
+### 2. Crear el archivo de configuración
 
-El proyecto incluye un script de actualización del entorno llamado `actualizar-entorno.sh`.
+Antes de iniciar Docker Compose, es obligatorio crear `backend/.env.desarrollo` a partir del archivo de ejemplo incluido en el repositorio.
 
-Para ejecutarlo:
+Desde la raíz del proyecto:
 
+**Linux, macOS o Git Bash**
 ```bash
-./actualizar-entorno.sh
+cp backend/.env.desarrollo.example backend/.env.desarrollo
 ```
 
-El script contempla opciones para confirmar operaciones y conservar datos existentes. Antes de utilizarlo, se recomienda revisar las opciones disponibles y las acciones que realiza sobre los contenedores y volúmenes.
+**Windows PowerShell**
+```powershell
+Copy-Item backend/.env.desarrollo.example backend/.env.desarrollo
+```
 
-**Importante:** recrear o eliminar un volumen de PostgreSQL puede provocar la pérdida de los datos almacenados. Antes de ejecutar operaciones destructivas, realizar una copia de seguridad si se necesita conservar la información.
+Abrí `backend/.env.desarrollo` y completá los valores necesarios para el entorno local. En particular, revisá que las credenciales de PostgreSQL coincidan entre `POSTGRES_PASSWORD` y `DB_PASSWORD`, y configurá los datos de conexión de MongoDB y las claves requeridas por Django.
 
-### 3. Ejecución mediante Docker Compose
+El archivo de ejemplo contiene campos que pueden estar vacíos y sirve como plantilla: copiarlo no reemplaza la revisión de su contenido. No publiques el archivo `backend/.env.desarrollo` ni agregues credenciales reales al repositorio.
 
-**IMPORTANTE:** Configuración de variables de entorno
-Antes de levantar los servicios por primera vez, es obligatorio crear el archivo de variables de entorno para el backend. Sin este archivo, el contenedor no podrá iniciar:
+### 3. Iniciar los servicios
 
-Navegar a la carpeta backend/.
-
-Duplicar el archivo .env.example y renombrarlo como .env.desarrollo
-
-Una vez configurado, iniciar los servicios mediante Docker Compose:
+Con Docker en ejecución, desde la raíz del proyecto ejecutá:
 
 ```bash
 docker compose up --build
 ```
 
-Si el backend reinicia continuamente y sus logs muestran
-`password authentication failed for user "sgmb_user"`, el volumen de
-PostgreSQL fue creado con credenciales anteriores. La corrección conserva los
-datos existentes y crea el usuario esperado por Django:
+El archivo `docker-compose.yml` inicia los siguientes servicios:
 
-```powershell
-docker exec sgmb_postgres psql -U postgres -d postgres -c "CREATE ROLE sgmb_user LOGIN PASSWORD '1234';"
-docker exec sgmb_postgres psql -U postgres -d postgres -c "ALTER ROLE sgmb_user CREATEDB;"
-docker compose up -d backend
+- PostgreSQL.
+- MongoDB.
+- Redis.
+- Backend Django.
+- Frontend Angular.
+
+Al iniciar, el backend ejecuta las migraciones y los comandos de carga inicial `seed_mesas` y `seed_e2e`. Estos comandos preparan datos de ejemplo para el entorno de desarrollo y las pruebas.
+
+Para iniciar los servicios en segundo plano:
+
+```bash
+docker compose up --build -d
 ```
 
-En una instalación nueva, `docker-compose.yml` toma las credenciales de
-`backend/.env.desarrollo` para que PostgreSQL y Django utilicen el mismo
-usuario desde el primer arranque. No se debe ejecutar `docker compose down -v`
-salvo que se acepte perder los datos persistidos.
+Para consultar el estado de los contenedores:
 
-Para detener los servicios:
+```bash
+docker compose ps
+```
+
+Para revisar los logs del backend:
+
+```bash
+docker logs -f sgmb_backend
+```
+
+### 4. Acceder a la aplicación
+
+Con los servicios iniciados, las direcciones locales son:
+
+- **Frontend Angular:** http://localhost:4200
+- **Backend Django:** http://localhost:8000
+- **Administración de Django:** http://localhost:8000/admin/
+
+La API está organizada bajo `/api/`, incluyendo las rutas de autenticación bajo `/api/auth/`.
+
+### 5. Detener los servicios
 
 ```bash
 docker compose down
 ```
 
-Antes de iniciar la aplicación, verificar que las variables de entorno y los servicios requeridos estén configurados correctamente.
+Este comando detiene y elimina los contenedores, pero conserva los volúmenes de datos.
 
-### 4. Acceso a la aplicación
+**Advertencia:** no ejecutes `docker compose down -v` salvo que quieras eliminar también los volúmenes y aceptes perder los datos persistidos localmente.
 
-Una vez que los servicios estén iniciados, las direcciones locales documentadas para el entorno de desarrollo son:
+## Actualizar el entorno
 
-- Frontend: `http://localhost:4200`
-- Backend: `http://localhost:8000`
-- API: `http://localhost:8000/api`
+El repositorio incluye `actualizar-entorno.sh` para ayudar a preparar el entorno local después de descargar cambios. La guía complementaria se encuentra en [`README-SCRIPT.md`](README-SCRIPT.md).
 
-El panel de administración de Django se encuentra en la ruta habitual `/admin/`, siempre que esté habilitado en la configuración del proyecto.
+Desde Git Bash y la raíz del proyecto:
 
-## Configuración y seguridad
+```bash
+bash actualizar-entorno.sh
+```
 
-Las credenciales y los datos sensibles deben gestionarse mediante variables de entorno o mecanismos de configuración apropiados para cada ambiente.
+El script comprueba que Docker esté en ejecución y que exista `backend/.env.desarrollo`. Según la opción elegida, puede recrear el volumen de PostgreSQL.
 
-No se deben publicar contraseñas, claves secretas, tokens ni credenciales reales en el repositorio.
+Opciones disponibles:
 
-En particular, se recomienda verificar:
+```bash
+bash actualizar-entorno.sh --conservar
+bash actualizar-entorno.sh --si
+```
 
-- La configuración de las credenciales de las bases de datos.
-- Las claves utilizadas para JWT y Django.
-- Las credenciales de integración con Google OAuth 2.0.
-- La configuración del servicio de correo electrónico para los códigos OTP.
-- La asignación de permisos según el rol del usuario.
-- La protección de las operaciones administrativas en el backend.
+- `--conservar`: evita borrar el volumen de PostgreSQL.
+- `--si`: confirma directamente la operación que elimina ese volumen.
 
-Los usuarios no deben poder asignarse privilegios administrativos simplemente modificando una solicitud desde el frontend. La autorización debe validarse en el servidor.
+**Importante:** borrar el volumen de PostgreSQL elimina los datos locales almacenados en él. Usá esa opción únicamente si aceptás perder esos datos. Revisá `README-SCRIPT.md` antes de ejecutar el script.
+
+## Usuarios y datos de prueba
+
+Al iniciar el backend se ejecuta `seed_e2e`, que crea o actualiza usuarios de prueba con una contraseña conocida para facilitar las pruebas E2E.
+
+| Rol | Usuario de prueba | Contraseña de desarrollo |
+|---|---|---|
+| ADMIN | `admin@sgmb.com` | `Password123` |
+| MOZO | `mozo@sgmb.com` | `Password123` |
+| CAJERO | `cajero@sgmb.com` | `Password123` |
+| COCINA | `cocina@sgmb.com` | `Password123` |
+
+Estas credenciales son exclusivamente para el entorno local de desarrollo y pruebas. El comando `seed_e2e` restablece la contraseña de esos usuarios cada vez que se ejecuta. **No utilices estas cuentas ni contraseñas en producción.**
+
+Para volver a cargar las mesas de ejemplo:
+
+```bash
+docker exec -i sgmb_backend python manage.py seed_mesas
+```
+
+Para volver a preparar los usuarios y el producto de prueba E2E:
+
+```bash
+docker exec -i sgmb_backend python manage.py seed_e2e
+```
 
 ## Pruebas
 
-El proyecto contiene archivos de pruebas asociados al frontend y al backend.
+### Pruebas del backend
 
-Las pruebas deben utilizarse para verificar el comportamiento de las funcionalidades y detectar errores antes de integrar cambios.
+El backend incluye pruebas organizadas en las aplicaciones Django. Con los servicios y la configuración necesarios disponibles, pueden ejecutarse dentro del contenedor:
 
-Se recomienda documentar en esta sección:
+```bash
+docker exec -i sgmb_backend python manage.py test
+```
 
-- Los comandos específicos para ejecutar las pruebas de Angular.
-- Los comandos específicos para ejecutar las pruebas de Django.
-- Los requisitos de configuración necesarios para las pruebas.
-- Los casos de prueba implementados y sus resultados.
+### Pruebas end-to-end (E2E)
 
-Los comandos deben coincidir con la configuración real del proyecto y con las herramientas de testing utilizadas por el equipo.
+La suite E2E utiliza **Playwright para Python** y el patrón **Page Object Model (POM)**. Los casos verifican flujos de autenticación, mesas, pedidos y operaciones de productos sobre la aplicación levantada.
+
+La guía completa de instalación, configuración y ejecución está en [`e2e/README.md`](e2e/README.md).
+
+Resumen de los pasos principales:
+
+```bash
+cd e2e
+python -m venv .venv
+```
+
+Activá el entorno virtual:
+
+**Windows PowerShell**
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+**Linux o macOS**
+```bash
+source .venv/bin/activate
+```
+
+Instalá las dependencias y el navegador de Playwright:
+
+```bash
+pip install -r requirements.txt
+playwright install chromium
+```
+
+Ejecutá la suite:
+
+```bash
+pytest
+```
+
+Para correr un archivo específico:
+
+```bash
+pytest tests/test_auth.py
+pytest tests/test_productos_crud.py
+pytest tests/test_mesas_pedidos.py
+```
+
+Las pruebas E2E requieren que la aplicación esté levantada y que existan los usuarios y datos de prueba. Consultá `e2e/README.md` para conocer los requisitos y las variables de entorno opcionales.
+
+## Seguridad y configuración
+
+- No subas archivos `.env` ni credenciales reales a GitHub.
+- Usá valores de desarrollo solo en entornos locales.
+- Mantené protegidas las claves de Django, credenciales de bases de datos, claves de proveedores de correo y cualquier token.
+- La autorización de las operaciones debe validarse en el backend, no solamente en la interfaz.
+- No uses los usuarios E2E ni sus contraseñas conocidas en producción.
 
 ## Control de versiones y trabajo colaborativo
 
-El proyecto utiliza Git para el control de versiones y GitHub como plataforma de alojamiento del repositorio.
+El equipo utiliza Git y GitHub para versionar el código y coordinar el desarrollo.
 
-El desarrollo se organiza mediante ramas para facilitar el trabajo colaborativo, separar las funcionalidades y reducir los conflictos de integración.
-
-### Reglas de trabajo
+Reglas de trabajo acordadas:
 
 - No realizar commits directamente sobre `main` o `development`.
-- Desarrollar las tareas en ramas de trabajo.
-- Integrar los cambios mediante Pull Requests (PR).
-- Realizar una revisión de código (Code Review) antes de integrar los cambios.
-- Mantener las ramas actualizadas para reducir conflictos.
+- Trabajar en ramas para las tareas asignadas.
+- Integrar cambios mediante Pull Requests (PR).
+- Solicitar revisión de código antes de integrar cambios.
+- Mantener actualizada la documentación relacionada con los cambios.
 
-### Flujo de trabajo propuesto
+Flujo de trabajo habitual:
 
 1. Crear una rama de trabajo a partir de `development`.
-2. Implementar la funcionalidad o corrección asignada.
-3. Registrar los cambios mediante commits descriptivos.
-4. Abrir un Pull Request hacia `development`.
-5. Revisar el código y corregir las observaciones.
-6. Integrar los cambios una vez aprobados.
-7. Actualizar `main` cuando corresponda generar una versión estable.
-
-Los nombres de las ramas y las convenciones de commits deben respetar los acuerdos establecidos por el equipo.
+2. Implementar la tarea y registrar commits descriptivos.
+3. Abrir un Pull Request hacia `development`.
+4. Resolver las observaciones de la revisión.
+5. Integrar el cambio una vez aprobado.
+6. Actualizar `main` cuando corresponda generar una versión estable.
 
 ## Definition of Done (DoD)
 
-Un requerimiento técnico se considera finalizado cuando cumple los criterios aplicables siguientes:
+Un requerimiento se considera finalizado cuando cumple los criterios aplicables:
 
-1. **Funcionalidad:** el código resuelve el requerimiento y no presenta errores de compilación ni conflictos de integración.
-2. **Estándares de desarrollo:** se respeta el principio de responsabilidad única (SRP), se mantienen componentes modulares en Angular y se siguen las convenciones utilizadas en Django REST Framework.
-3. **Responsividad:** se comprueba el funcionamiento de la interfaz en resoluciones móviles, tablets y escritorio cuando la tarea afecta a la interfaz.
-4. **Pruebas:** se ejecutan las pruebas correspondientes y se verifican los casos principales de la funcionalidad modificada.
-5. **Integración:** se comprueba que los cambios no afecten negativamente a las funcionalidades existentes.
-6. **Revisión de código:** los cambios se integran mediante Pull Request y cuentan con la revisión requerida por el equipo.
-7. **Documentación:** se actualiza la documentación interna y el `CHANGELOG.md` cuando corresponde.
+1. **Funcionalidad:** resuelve el requerimiento sin errores conocidos de compilación o integración.
+2. **Calidad del código:** respeta la responsabilidad única, la modularidad de Angular y las convenciones de Django REST Framework.
+3. **Pruebas:** se ejecutan las pruebas pertinentes y se verifican los casos principales afectados por el cambio.
+4. **Integración:** se comprueba que los cambios no rompan funcionalidades existentes.
+5. **Revisión:** el Pull Request cuenta con la revisión requerida por el equipo.
+6. **Interfaz:** cuando corresponda, se verifica la responsividad y la accesibilidad.
+7. **Documentación:** se actualiza el README, el `CHANGELOG.md` u otra documentación afectada por el cambio.
 
 ## Equipo de desarrollo
 
-El proyecto **Sistema de Gestión de Mesas para Bares (SGMB)** es desarrollado por el equipo de trabajo de OpenCodeISPC.
-
-### Integrantes
+Proyecto desarrollado por el equipo OpenCodeISPC.
 
 - Cabrera Milagros Magaly
 - Casarino Mariano
 - Minoldo Aldo Alejandro
-- Minoldo Nicolas Federico
+- Minoldo Nicolás Federico
 - Moreno Juan Ignacio
