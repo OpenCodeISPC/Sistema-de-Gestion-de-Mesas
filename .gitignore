@@ -25,6 +25,7 @@ __pycache__/
 db.sqlite3
 staticfiles/
 media/
+backend/.coverage
 
 # ================================
 # Node / Angular
@@ -56,4 +57,4 @@ backend/static/frontend/*
 .idea/
 .DS_Store
 Thumbs.db
-backend/README2.md
+
