@@ -14,6 +14,7 @@ class ProductoListCreateAPIView(APIView):
     """
     GET /api/productos/ ==> Lista todos los productos
     POST /api/productos/ ==> Crea un nvo producto (usa ICrearProductoDTO)
+    IsAdminUser
     """
     
     def get_permissions(self):

@@ -5,6 +5,12 @@ Ejecutar y generar reporte
 docker exec -it sgmb_backend coverage run manage.py test
 generar reporte
 docker exec -it sgmb_backend coverage html
+
+Ver el reporte
+1- panel izquierdo(explorador) visual code
+2- carpeta htmlcov
+3- boton derecho >> mostrar en el explorador de archivos
+4- doble clich sobre index.html
 '''
 
 from django.urls import reverse
